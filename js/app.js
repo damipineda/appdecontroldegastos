@@ -545,6 +545,9 @@ class UI {
             UI.renderizarListas(),
             UI.renderizarPlanificacion()
         ]);
+        
+        // 3. Ocultar loader después de cargar todo
+        UI.toggleLoader(false);
     }
 
     static llenarSelectCategorias(tipo, datos) {
@@ -1866,15 +1869,20 @@ document.querySelector('#btnComparar').addEventListener('click', async () => {
 
 // Refresco suave al volver a la pestaña para evitar estados colgados del loader
 let ultimoRefrescoVisibilidad = 0;
+let refrescando = false;
+
 document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState !== 'visible') return;
     if (!supabaseClient) return;
+    if (refrescando) return; // Evitar múltiples llamadas simultáneas
 
     const appVisible = document.getElementById('appContainer')?.style.display !== 'none';
     if (!appVisible) return;
 
     const ahora = Date.now();
     if (ahora - ultimoRefrescoVisibilidad < 5000) return;
+    
+    refrescando = true;
     ultimoRefrescoVisibilidad = ahora;
 
     try {
@@ -1882,7 +1890,9 @@ document.addEventListener('visibilitychange', async () => {
         ocultarErrorInicio();
     } catch (error) {
         console.error('Error al refrescar la app al volver a la pestaña:', error);
-        UI.toggleLoader(false);
         mostrarErrorInicio('No se pudo refrescar automáticamente al volver a la app. Recarga la página si persiste.');
+    } finally {
+        UI.toggleLoader(false);
+        refrescando = false;
     }
 });
