@@ -51,22 +51,106 @@ const supabaseClient = window.supabase?.createClient
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
     : null;
 const IS_MOBILE_APP_MODE = Boolean(window.__IS_MOBILE_APP_MODE) || Boolean(window.Capacitor?.isNativePlatform?.());
+const CAP_APP_SCHEME = 'com.damipineda.finanzas';
+const CAP_OAUTH_CALLBACK_HOST = 'auth-callback';
+const CAP_OAUTH_REDIRECT_URL = `${CAP_APP_SCHEME}://${CAP_OAUTH_CALLBACK_HOST}`;
+const capAppPlugin = window.Capacitor?.Plugins?.App;
+const capBrowserPlugin = window.Capacitor?.Plugins?.Browser;
+let oauthMobileListenerRegistrado = false;
+
+function setLoginAlert(mensaje) {
+    const alert = document.getElementById('loginError');
+    if (!alert) return;
+    alert.textContent = mensaje;
+    alert.classList.remove('d-none');
+}
+
+function parsearHashOAuth(hash) {
+    const raw = hash?.startsWith('#') ? hash.slice(1) : hash;
+    const params = new URLSearchParams(raw || '');
+    return {
+        accessToken: params.get('access_token'),
+        refreshToken: params.get('refresh_token')
+    };
+}
+
+async function procesarCallbackOAuthMovil(url) {
+    if (!url || !url.startsWith(`${CAP_APP_SCHEME}://`)) return false;
+
+    let parsedUrl;
+    try {
+        parsedUrl = new URL(url);
+    } catch {
+        return false;
+    }
+
+    if (parsedUrl.host !== CAP_OAUTH_CALLBACK_HOST) return false;
+
+    const errorOAuth = parsedUrl.searchParams.get('error_description') || parsedUrl.searchParams.get('error');
+    if (errorOAuth) throw new Error(decodeURIComponent(errorOAuth));
+
+    const code = parsedUrl.searchParams.get('code');
+    if (code) {
+        const { error } = await supabaseClient.auth.exchangeCodeForSession(code);
+        if (error) throw error;
+        return true;
+    }
+
+    const { accessToken, refreshToken } = parsearHashOAuth(parsedUrl.hash);
+    if (accessToken && refreshToken) {
+        const { error } = await supabaseClient.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+        });
+        if (error) throw error;
+        return true;
+    }
+
+    return false;
+}
+
+async function inicializarOAuthMovil() {
+    if (!IS_MOBILE_APP_MODE) return;
+    if (!capAppPlugin?.addListener) return;
+    if (oauthMobileListenerRegistrado) return;
+
+    capAppPlugin.addListener('appUrlOpen', async ({ url }) => {
+        try {
+            const procesado = await procesarCallbackOAuthMovil(url);
+            if (procesado) await capBrowserPlugin?.close?.();
+        } catch (error) {
+            console.error('Error al procesar callback OAuth móvil:', error);
+            setLoginAlert('No se pudo completar el inicio con Google. Intenta nuevamente.');
+        }
+    });
+
+    oauthMobileListenerRegistrado = true;
+
+    try {
+        const launchData = await capAppPlugin.getLaunchUrl?.();
+        if (launchData?.url) {
+            await procesarCallbackOAuthMovil(launchData.url);
+        }
+    } catch (error) {
+        console.warn('No se pudo procesar launch URL para OAuth:', error);
+    }
+}
 
 function configurarLoginParaAppMovil() {
     if (!IS_MOBILE_APP_MODE) return;
 
-    const providerButtons = ['btnLoginGoogle', 'btnLoginFacebook']
-        .map((id) => document.getElementById(id))
-        .filter(Boolean);
-
-    providerButtons.forEach((button) => {
-        button.disabled = true;
-        button.classList.add('disabled');
-        button.setAttribute('aria-disabled', 'true');
-    });
+    const facebookButton = document.getElementById('btnLoginFacebook');
+    if (facebookButton) {
+        facebookButton.disabled = true;
+        facebookButton.classList.add('disabled');
+        facebookButton.setAttribute('aria-disabled', 'true');
+    }
 
     const hint = document.getElementById('socialLoginHint');
-    if (hint) hint.classList.remove('d-none');
+    if (hint) {
+        hint.textContent = 'Google funciona dentro de la app. Facebook no está habilitado en móvil.';
+        hint.classList.remove('d-none');
+    }
 }
 
 async function cargarInfoVersionApk() {
@@ -125,6 +209,31 @@ class Store {
     }
 
     static async iniciarSesionProvider(provider) {
+        if (IS_MOBILE_APP_MODE && provider === 'google') {
+            await inicializarOAuthMovil();
+
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider,
+                options: {
+                    redirectTo: CAP_OAUTH_REDIRECT_URL,
+                    skipBrowserRedirect: true,
+                    queryParams: {
+                        prompt: 'select_account'
+                    }
+                }
+            });
+
+            if (error) throw error;
+            if (!data?.url) throw new Error('No se pudo iniciar OAuth con Google.');
+
+            if (capBrowserPlugin?.open) {
+                await capBrowserPlugin.open({ url: data.url });
+            } else {
+                window.location.href = data.url;
+            }
+            return data;
+        }
+
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
             provider: provider,
             options: {
@@ -1443,6 +1552,7 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     configurarLoginParaAppMovil();
+    await inicializarOAuthMovil();
     await cargarInfoVersionApk();
 
     if (!supabaseClient) {
@@ -1559,28 +1669,17 @@ document.getElementById('btnRegister').addEventListener('click', async () => {
 
 // --- SOCIAL LOGIN ---
 document.getElementById('btnLoginGoogle').addEventListener('click', async () => {
-    if (IS_MOBILE_APP_MODE) {
-        const alert = document.getElementById('loginError');
-        alert.textContent = 'En la app móvil usa correo y contraseña para iniciar sesión.';
-        alert.classList.remove('d-none');
-        return;
-    }
-
     try {
         await Store.iniciarSesionProvider('google');
     } catch (err) {
         console.error(err);
-        const alert = document.getElementById('loginError');
-        alert.textContent = 'Error al iniciar con Google. Verifica la configuración en Supabase.';
-        alert.classList.remove('d-none');
+        setLoginAlert('Error al iniciar con Google. Verifica la configuración OAuth en Supabase.');
     }
 });
 
 document.getElementById('btnLoginFacebook').addEventListener('click', async () => {
     if (IS_MOBILE_APP_MODE) {
-        const alert = document.getElementById('loginError');
-        alert.textContent = 'En la app móvil usa correo y contraseña para iniciar sesión.';
-        alert.classList.remove('d-none');
+        setLoginAlert('Facebook no está habilitado en la app móvil.');
         return;
     }
 
@@ -1588,9 +1687,7 @@ document.getElementById('btnLoginFacebook').addEventListener('click', async () =
         await Store.iniciarSesionProvider('facebook');
     } catch (err) {
         console.error(err);
-        const alert = document.getElementById('loginError');
-        alert.textContent = 'Error al iniciar con Facebook. Verifica la configuración en Supabase.';
-        alert.classList.remove('d-none');
+        setLoginAlert('Error al iniciar con Facebook. Verifica la configuración en Supabase.');
     }
 });
 
