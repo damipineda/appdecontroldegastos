@@ -71,6 +71,10 @@ body {
     min-height: 100vh;
 }
 
+html.mobile-app-mode #landingPage {
+    display: none !important;
+}
+
 .hero-section {
     background:
         radial-gradient(circle at top left, rgba(16, 185, 129, 0.15), transparent 45%),

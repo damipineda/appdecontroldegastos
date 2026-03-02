@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        window.__IS_MOBILE_APP_MODE = new URLSearchParams(window.location.search).get('mobile_app') === '1';
+        if (window.__IS_MOBILE_APP_MODE) {
+            document.documentElement.classList.add('mobile-app-mode');
+        }
+    </script>
     <title>Control de Finanzas</title>
     <!-- Favicon -->
     <link rel="shortcut icon" href="asset/media/favicon/favicon.ico" type="image/x-icon">
@@ -776,6 +782,9 @@
                                 <i class="bi bi-facebook me-2"></i>Facebook
                             </button>
                         </div>
+                        <p id="socialLoginHint" class="small text-muted text-center mt-2 mb-0 d-none">
+                            En la app móvil usa correo y contraseña.
+                        </p>
                     </form>
                     <div id="loginError" class="alert alert-danger mt-3 d-none" role="alert" aria-live="assertive"></div>
                     <div id="loginSuccess" class="alert alert-success mt-3 d-none" role="status" aria-live="polite">Registro exitoso. ¡Revisa tu correo!</div>
@@ -799,7 +808,7 @@
             const loader = document.getElementById('globalLoader');
             if (loader) loader.style.display = 'none';
             const landing = document.getElementById('landingPage');
-            if (landing) landing.style.display = 'block';
+            if (landing && !window.__IS_MOBILE_APP_MODE) landing.style.display = 'block';
 
             if (!document.getElementById('startupFatalAlert')) {
                 const alert = document.createElement('div');
