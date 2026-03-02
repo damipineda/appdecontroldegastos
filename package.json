@@ -26,10 +26,11 @@
   },
   "homepage": "https://github.com/damipineda/appdecontroldegastos#readme",
   "dependencies": {
-    "@capacitor/app": "^8.0.1",
     "@capacitor/android": "^8.1.0",
+    "@capacitor/app": "^8.0.1",
     "@capacitor/browser": "^8.0.1",
-    "@capacitor/core": "^8.1.0"
+    "@capacitor/core": "^8.1.0",
+    "@capgo/capacitor-social-login": "^8.3.8"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.1.0"
