@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Finanzas</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="asset/media/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="asset/media/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="asset/media/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="asset/media/favicon/apple-icon-180x180.png">
+    <link rel="manifest" href="asset/media/favicon/manifest.json">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+
+    <!-- Global Loader -->
+    <div id="globalLoader" class="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center" style="z-index: 2000;">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3 text-muted fw-bold">Cargando tus finanzas...</p>
+    </div>
+
+    <!-- LANDING PAGE -->
+    <div id="landingPage">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+                    <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="48" height="48">
+                    <span class="text-dark fs-3">Finanzas</span>
+                </a>
+                <button class="btn btn-primary px-4 rounded-pill" onclick="new bootstrap.Modal(document.getElementById('modalLogin')).show()">Ingresar</button>
+            </div>
+        </nav>
+
+        <header class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="hero-title">Toma el control de tu dinero.</h1>
+                        <p class="lead text-muted mb-4">Administra gastos, deudas y presupuestos en un solo lugar. Simple, intuitivo y seguro.</p>
+                        <button class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg" onclick="new bootstrap.Modal(document.getElementById('modalLogin')).show()">Comenzar Gratis</button>
+                    </div>
+                    <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                         <img src="asset/media/image/6275641.jpg" class="img-fluid rounded-4 shadow-lg" alt="Finanzas" style="max-width: 80%;">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon mx-auto"><i class="bi bi-wallet2"></i></div>
+                            <h4 class="fw-bold mb-3">Gastos</h4>
+                            <p class="text-muted">Registra y categoriza cada movimiento para saber a dónde va tu dinero.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon mx-auto"><i class="bi bi-graph-up-arrow"></i></div>
+                            <h4 class="fw-bold mb-3">Análisis</h4>
+                            <p class="text-muted">Visualiza tu progreso con gráficos claros y estadísticas detalladas.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon mx-auto"><i class="bi bi-shield-lock"></i></div>
+                            <h4 class="fw-bold mb-3">Seguro</h4>
+                            <p class="text-muted">Tus datos están encriptados y sincronizados en la nube.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="py-4 bg-white text-center border-top mt-auto">
+            <small class="text-muted">&copy; 2025 Finanzas Personales.</small>
+        </footer>
+    </div>
+
+    <!-- APP CONTAINER -->
+    <div id="appContainer" style="display: none;">
+        <nav class="navbar navbar-expand-lg navbar-dark mb-4 shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+                    <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="48" height="48" class="bg-white rounded-circle p-1">
+                    <span class="fs-3">Finanzas Personales</span>
+                </a>
+                <div class="d-flex align-items-center">
+                    <span id="userEmail" class="text-white me-3 small"></span>
+                    <button id="btnLogout" class="btn btn-outline-light btn-sm">Cerrar Sesión</button>
+                </div>
+            </div>
+        </nav>
+
+    <div class="container">
+        <!-- Filtro Global de Mes -->
+        <div class="row mb-3">
+            <div class="col-md-12 d-flex justify-content-end align-items-center gap-2">
+                <label for="filtroMes" class="fw-bold">Periodo:</label>
+                <input type="month" id="filtroMes" class="form-control w-auto">
+            </div>
+        </div>
+
+        <!-- Navegación por Pestañas -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">Dashboard</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="gastos-tab" data-bs-toggle="tab" data-bs-target="#gastos" type="button" role="tab">Gastos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ingresos-tab" data-bs-toggle="tab" data-bs-target="#ingresos" type="button" role="tab">Ingresos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" role="tab">Presupuestos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="planificacion-tab" data-bs-toggle="tab" data-bs-target="#planificacion" type="button" role="tab">Planificación</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            
+            <!-- TAB: DASHBOARD -->
+            <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+                <!-- Resumen Tarjetas -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card text-white bg-success mb-3 shadow-sm border-0">
+                            <div class="card-header bg-transparent border-0">Ingresos Totales</div>
+                            <div class="card-body">
+                                <h3 class="card-title fw-bold" id="dashIngresos">0 Gs.</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-danger mb-3 shadow-sm border-0">
+                            <div class="card-header bg-transparent border-0">Gastos Totales</div>
+                            <div class="card-body">
+                                <h3 class="card-title fw-bold" id="dashGastos">0 Gs.</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-primary mb-3 shadow-sm border-0">
+                            <div class="card-header bg-transparent border-0">Balance</div>
+                            <div class="card-body">
+                                <h3 class="card-title fw-bold" id="dashBalance">0 Gs.</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos Principales -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-header bg-white border-bottom-0 pt-3">
+                                <h5 class="mb-0 text-primary fw-bold">Distribución de Gastos</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="chartGastos"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-header bg-white border-bottom-0 pt-3">
+                                <h5 class="mb-0 text-primary fw-bold">Ingresos vs Gastos</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="chartBalance"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nuevas Estadísticas Avanzadas -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-header bg-white border-bottom-0 pt-3">
+                                <h5 class="mb-0 text-primary fw-bold">Ranking de Categorías (Gastos)</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" id="rankingCategorias">
+                                    <!-- Se llena dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-4">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-header bg-white border-bottom-0 pt-3">
+                                <h5 class="mb-0 text-primary fw-bold">Análisis de Gastos Diarios</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="chartGastosDiarios"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                         <div class="card shadow-sm h-100 border-0">
+                            <div class="card-header bg-white border-bottom-0 pt-3 d-flex justify-content-between">
+                                <h5 class="mb-0 text-primary fw-bold">Día con Mayor Gasto</h5>
+                                <span class="badge bg-danger fs-6" id="diaMayorGasto">-</span>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- Sección Comparativa (Movida aquí) -->
+                <div class="card shadow-sm mb-4 border-0">
+                    <div class="card-header bg-white border-bottom-0 pt-3">
+                        <h5 class="mb-0 text-primary fw-bold">Comparar Periodos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-end bg-light p-3 rounded">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold text-muted">Periodo A (Base)</label>
+                                <input type="month" id="compMesA" class="form-control border-0 shadow-sm">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold text-muted">Periodo B (Comparar)</label>
+                                <input type="month" id="compMesB" class="form-control border-0 shadow-sm">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button class="btn btn-primary w-100 shadow-sm" id="btnComparar">Generar Comparativa</button>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4" id="resultadosComparativa" style="display: none;">
+                            <div class="col-md-6 mb-4">
+                                <h6 class="text-center text-muted mb-3">Balance Comparativo</h6>
+                                <div id="chartCompBalance"></div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h6 class="text-center text-muted mb-3">Evolución de Gastos</h6>
+                                <div id="chartCompGastos"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: GASTOS -->
+            <div class="tab-pane fade" id="gastos" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Registrar Gasto</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="gastoForm">
+                                    <input type="hidden" id="gastoIdEdit"> <!-- ID oculto para edición -->
+                                    
+                                    <!-- Selección Rápida de Recurrentes -->
+                                    <div class="mb-3">
+                                        <label class="form-label text-primary fw-bold">Cargar Recurrente / Plantilla</label>
+                                        <select class="form-select border-primary" id="gastoPlantilla">
+                                            <option value="" selected>-- Seleccionar (Opcional) --</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Concepto</label>
+                                        <input type="text" class="form-control" id="gastoConcepto" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Monto (Gs.)</label>
+                                        <input type="number" class="form-control" id="gastoMonto" min="1" required>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label class="form-label">Fecha</label>
+                                            <input type="date" class="form-control" id="gastoFecha" required>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">Hora</label>
+                                            <input type="time" class="form-control" id="gastoHora" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Categoría</label>
+                                        <div class="input-group">
+                                            <select class="form-select" id="gastoCategoria" required></select>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirModalCategoria('gasto')" title="Nueva Categoría">+</button>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirGestorCategorias('gasto')" title="Gestionar Categorías">⚙️</button>
+                                        </div>
+                                        <!-- Visualizador de Presupuesto -->
+                                        <div id="infoPresupuestoGasto" class="form-text mt-1 text-muted" style="font-size: 0.9em;">
+                                            <!-- Se llena dinámicamente -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Vincular Deuda -->
+                                    <div class="mb-3 p-2 bg-light rounded border">
+                                        <label class="form-label small fw-bold">Vincular a Deuda (Opcional)</label>
+                                        <select class="form-select form-select-sm" id="gastoDeuda">
+                                            <option value="" selected>-- Ninguna --</option>
+                                        </select>
+                                        <div id="infoDeuda" class="form-text mt-1 text-primary"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Método de Pago</label>
+                                        <select class="form-select" id="gastoMetodo" required>
+                                            <option value="Efectivo">Efectivo</option>
+                                            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                                            <option value="Tarjeta Débito">Tarjeta Débito</option>
+                                            <option value="Transferencia">Transferencia</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="gastoRecurrente">
+                                        <label class="form-check-label" for="gastoRecurrente">Es Recurrente (Mensual)</label>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-danger" id="btnGastoSubmit">Guardar Gasto</button>
+                                        <button type="button" class="btn btn-secondary mt-2" id="btnGastoCancel" style="display: none;">Cancelar Edición</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Historial de Gastos</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0 align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Concepto</th>
+                                                <th>Categoría</th>
+                                                <th>Pago</th>
+                                                <th class="text-end">Monto</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="listaGastos"></tbody>
+                                    </table>
+                                </div>
+                                <div id="noGastos" class="text-center p-4 text-muted">Sin registros.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: INGRESOS -->
+            <div class="tab-pane fade" id="ingresos" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Registrar Ingreso</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="ingresoForm">
+                                    <input type="hidden" id="ingresoIdEdit"> <!-- ID oculto para edición -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Fuente/Concepto</label>
+                                        <input type="text" class="form-control" id="ingresoConcepto" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Monto (Gs.)</label>
+                                        <input type="number" class="form-control" id="ingresoMonto" min="1" required>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label class="form-label">Fecha</label>
+                                            <input type="date" class="form-control" id="ingresoFecha" required>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">Hora</label>
+                                            <input type="time" class="form-control" id="ingresoHora" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Categoría</label>
+                                        <div class="input-group">
+                                            <select class="form-select" id="ingresoCategoria" required></select>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirModalCategoria('ingreso')" title="Nueva Categoría">+</button>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirGestorCategorias('ingreso')" title="Gestionar Categorías">⚙️</button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="ingresoRecurrente">
+                                        <label class="form-check-label" for="ingresoRecurrente">Es Recurrente (Mensual)</label>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-success" id="btnIngresoSubmit">Guardar Ingreso</button>
+                                        <button type="button" class="btn btn-secondary mt-2" id="btnIngresoCancel" style="display: none;">Cancelar Edición</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Historial de Ingresos</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0 align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Fuente</th>
+                                                <th>Categoría</th>
+                                                <th class="text-end">Monto</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="listaIngresos"></tbody>
+                                    </table>
+                                </div>
+                                <div id="noIngresos" class="text-center p-4 text-muted">Sin registros.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: PRESUPUESTOS -->
+            <div class="tab-pane fade" id="presupuesto" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Presupuestos Mensuales</h5>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalPresupuesto">Configurar Presupuesto</button>
+                            </div>
+                            <div class="card-body" id="listaPresupuestos">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: COMPARATIVA (Eliminado, movido a dashboard) -->
+            <!-- TAB: PLANIFICACIÓN -->
+            <div class="tab-pane fade" id="planificacion" role="tabpanel">
+                <div class="row">
+                    <!-- Columna: Gastos Recurrentes -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 text-primary">Plantillas / Recurrentes</h5>
+                                <button class="btn btn-sm btn-primary" id="btnAddRecurrente" data-bs-toggle="modal" data-bs-target="#modalRecurrente">+ Nuevo</button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" id="listaRecurrentes">
+                                    <!-- Items dinámicos -->
+                                </div>
+                                <div id="noRecurrentes" class="p-3 text-center text-muted">Sin plantillas configuradas.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna: Gestión de Deudas -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 text-danger">Control de Deudas</h5>
+                                <button class="btn btn-sm btn-danger" id="btnAddDeuda" data-bs-toggle="modal" data-bs-target="#modalDeuda">+ Nueva Deuda</button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" id="listaDeudas">
+                                    <!-- Items dinámicos -->
+                                </div>
+                                <div id="noDeudas" class="p-3 text-center text-muted">Sin deudas registradas.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal Nuevo Recurrente -->
+    <div class="modal fade" id="modalRecurrente" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRecurrenteTitle">Nueva Plantilla</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formRecurrente">
+                        <input type="hidden" id="recIdEdit">
+                        <div class="mb-3">
+                            <label class="form-label">Concepto</label>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" id="btnEmojiRec">📝</button>
+                                <input type="text" class="form-control" id="recConcepto" placeholder="Ej: Netflix" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Monto Aproximado (Gs.)</label>
+                            <input type="number" class="form-control" id="recMonto">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categoría</label>
+                            <select class="form-select" id="recCategoria" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Día de Vencimiento</label>
+                            <input type="number" class="form-control" id="recDia" min="1" max="31">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnGuardarRecurrente">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Deuda -->
+    <div class="modal fade" id="modalDeuda" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDeudaTitle">Registrar Deuda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formDeuda">
+                        <input type="hidden" id="deudaIdEdit">
+                        <div class="mb-3">
+                            <label class="form-label">Concepto</label>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" id="btnEmojiDeuda">💳</button>
+                                <input type="text" class="form-control" id="deudaConcepto" placeholder="Ej: Visa Itaú" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col mb-3">
+                                <label class="form-label">Monto Total (Gs.)</label>
+                                <input type="number" class="form-control" id="deudaMonto" required>
+                            </div>
+                            <div class="col mb-3">
+                                <label class="form-label">Cuota Mensual (Gs.)</label>
+                                <input type="number" class="form-control" id="deudaCuotaMonto" placeholder="Aprox">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col mb-3">
+                                <label class="form-label">Total Cuotas</label>
+                                <input type="number" class="form-control" id="deudaCuotas" min="1" value="1" required>
+                            </div>
+                            <div class="col mb-3">
+                                <label class="form-label">Pagadas</label>
+                                <input type="number" class="form-control" id="deudaPagadas" min="0" value="0" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="deudaFechaInicio">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnGuardarDeuda">Guardar Deuda</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Categoría -->
+    <div class="modal fade" id="modalCategoria" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCategoriaTitle">Nueva Categoría</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCategoria">
+                        <input type="hidden" id="catIdEdit"> <!-- ID para edición -->
+                        <input type="hidden" id="catTipo">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="catNombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Emoji</label>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" id="btnEmojiPicker">😊</button>
+                                <input type="text" class="form-control" id="catEmoji" placeholder="Selecciona un emoji" readonly required>
+                            </div>
+                            <div id="emojiPickerContainer" class="mt-2"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Color</label>
+                            <div class="input-group">
+                                <div id="colorPreview" class="form-control" style="background-color: #563d7c; cursor: pointer;"></div>
+                                <input type="hidden" id="catColor" value="#563d7c">
+                            </div>
+                            <small class="text-muted">Click en la barra para cambiar color</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnGuardarCategoria">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gestionar Categorías -->
+    <div class="modal fade" id="modalGestorCategorias" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gestionar Categorías</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="list-group list-group-flush" id="listaGestorCategorias">
+                        <!-- Items dinámicos -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Presupuesto -->
+    <div class="modal fade" id="modalPresupuesto" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Configurar Presupuesto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formPresupuesto">
+                        <div class="mb-3">
+                            <label class="form-label">Categoría de Gasto</label>
+                            <select class="form-select" id="presupuestoCategoria" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Límite Mensual (Gs.)</label>
+                            <input type="number" class="form-control" id="presupuestoMonto" min="1" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnGuardarPresupuesto">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal (Bloqueante) -->
+    <div class="modal fade" id="modalLogin" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white justify-content-center">
+                    <h5 class="modal-title">Bienvenido a Finanzas Personales</h5>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-center text-muted mb-4">Inicia sesión para acceder a tus datos seguros en la nube.</p>
+                    <form id="formLogin">
+                        <div class="mb-3">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="loginEmail" required placeholder="tu@email.com">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="loginPassword" required placeholder="********">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="btnLogin">Iniciar Sesión</button>
+                            <button type="button" class="btn btn-outline-secondary" id="btnRegister">Registrarse</button>
+                        </div>
+                        
+                        <div class="text-center my-3 position-relative">
+                            <hr class="position-absolute w-100 m-0" style="top: 50%; z-index: 0;">
+                            <span class="bg-white px-2 text-muted small position-relative" style="z-index: 1;">o continúa con</span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-danger" id="btnLoginGoogle">
+                                <i class="bi bi-google me-2"></i>Google
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="btnLoginFacebook">
+                                <i class="bi bi-facebook me-2"></i>Facebook
+                            </button>
+                        </div>
+                    </form>
+                    <div id="loginError" class="alert alert-danger mt-3 d-none"></div>
+                    <div id="loginSuccess" class="alert alert-success mt-3 d-none">Registro exitoso. ¡Revisa tu correo!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
+    <script src="https://unpkg.com/vanilla-picker@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+:root {
+    --primary-color: #059669; /* Emerald 600 */
+    --secondary-color: #047857; /* Emerald 700 */
+    --accent-color: #d97706; /* Amber 600 */
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --background-color: #f3f4f6;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: 'Poppins', sans-serif;
+    color: #1f2937;
+}
+
+/* Navbar Moderna */
+.navbar {
+    background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Landing Page Styles */
+#landingPage {
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #ecfdf5 0%, #fff 100%);
+    padding: 80px 0;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1.5rem;
+}
+
+.feature-card {
+    border: none;
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    height: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: #ecfdf5;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Tarjetas */
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--hover-shadow);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 1.2rem 1.5rem;
+    background-color: #fff;
+    font-weight: 600;
+}
+
+/* Corrección para tarjetas de dashboard (fondo de color) */
+.card.text-white .card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dashboard Cards */
+.bg-success { background: linear-gradient(135deg, #10b981, #059669) !important; }
+.bg-danger { background: linear-gradient(135deg, #ef4444, #dc2626) !important; }
+.bg-primary { background: linear-gradient(135deg, #3b82f6, #2563eb) !important; }
+.bg-warning { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
+
+/* Botones */
+.btn {
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-1px);
+}
+
+/* Tablas */
+.table {
+    margin-bottom: 0;
+}
+
+thead th {
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+tbody tr:hover {
+    background-color: #f9fafb !important;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 1em;
+    border-radius: 20px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Tabs */
+.nav-tabs {
+    border-bottom: none;
+    gap: 10px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #6b7280;
+    font-weight: 500;
+    padding: 0.8rem 1.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #f3f4f6;
+    color: var(--primary-color);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+}
+
+/* Pickers */
+#emojiPickerContainer {
+    display: none; /* Se controla via JS */
+    position: absolute;
+    z-index: 1000;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-radius: 12px;
+}
+
+#colorPreview {
+    height: 45px;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    transition: transform 0.1s;
+}
+
+#colorPreview:active {
+    transform: scale(0.98);
+}
