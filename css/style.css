@@ -5,56 +5,104 @@
     --success-color: #10b981;
     --danger-color: #ef4444;
     --background-color: #f3f4f6;
+    --surface-color: #ffffff;
+    --text-color: #111827;
+    --muted-color: #4b5563;
+    --focus-ring-color: rgba(5, 150, 105, 0.35);
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    background-color: var(--background-color);
+    background:
+        radial-gradient(circle at 10% -20%, rgba(16, 185, 129, 0.12), transparent 40%),
+        radial-gradient(circle at 95% 10%, rgba(245, 158, 11, 0.1), transparent 35%),
+        var(--background-color);
     font-family: 'Poppins', sans-serif;
-    color: #1f2937;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -5rem;
+    background-color: #ffffff;
+    color: #111827;
+    padding: 0.6rem 0.9rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    z-index: 2500;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus-visible {
+    top: 1rem;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid var(--focus-ring-color);
+    outline-offset: 2px;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.22rem rgba(5, 150, 105, 0.15);
 }
 
 /* Navbar Moderna */
 .navbar {
-    background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
-    padding: 1rem 0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(110deg, var(--secondary-color), var(--primary-color));
+    padding: 0.9rem 0;
+    box-shadow: 0 8px 20px -14px rgba(0, 0, 0, 0.45);
+    backdrop-filter: saturate(150%) blur(6px);
 }
 
 /* Landing Page Styles */
 #landingPage {
-    background-color: #fff;
+    background: linear-gradient(180deg, #ffffff, #f8fbfa);
     min-height: 100vh;
 }
 
 .hero-section {
-    background: linear-gradient(135deg, #ecfdf5 0%, #fff 100%);
-    padding: 80px 0;
+    background:
+        radial-gradient(circle at top left, rgba(16, 185, 129, 0.15), transparent 45%),
+        linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);
+    padding: clamp(3rem, 7vw, 5rem) 0;
 }
 
 .hero-title {
-    font-size: 3.5rem;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
     font-weight: 800;
     background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 1.5rem;
+    line-height: 1.1;
 }
 
 .feature-card {
     border: none;
-    background: #fff;
+    background: var(--surface-color);
     border-radius: 16px;
     padding: 2rem;
-    transition: all 0.3s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     height: 100%;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+@media (hover: hover) {
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
 }
 
 .feature-icon {
@@ -83,17 +131,20 @@ body {
     box-shadow: var(--card-shadow);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     overflow: hidden;
+    background-color: var(--surface-color);
 }
 
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--hover-shadow);
+@media (hover: hover) {
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--hover-shadow);
+    }
 }
 
 .card-header {
     border-bottom: 1px solid rgba(0,0,0,0.05);
     padding: 1.2rem 1.5rem;
-    background-color: #fff;
+    background-color: var(--surface-color);
     font-weight: 600;
 }
 
@@ -114,7 +165,7 @@ body {
     border-radius: 8px;
     padding: 0.6rem 1.2rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-primary {
@@ -158,6 +209,10 @@ tbody tr:hover {
 .nav-tabs {
     border-bottom: none;
     gap: 10px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.2rem;
+    scrollbar-width: thin;
 }
 
 .nav-tabs .nav-link {
@@ -167,8 +222,9 @@ tbody tr:hover {
     color: #6b7280;
     font-weight: 500;
     padding: 0.8rem 1.5rem;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    white-space: nowrap;
 }
 
 .nav-tabs .nav-link:hover {
@@ -179,7 +235,7 @@ tbody tr:hover {
 .nav-tabs .nav-link.active {
     background-color: var(--primary-color);
     color: #fff;
-    box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 4px 8px rgba(5, 150, 105, 0.25);
 }
 
 /* Pickers */
@@ -195,9 +251,62 @@ tbody tr:hover {
     height: 45px;
     border-radius: 8px;
     border: 2px solid #e5e7eb;
-    transition: transform 0.1s;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 #colorPreview:active {
     transform: scale(0.98);
+}
+
+.icon-only-btn {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0.45rem 0.55rem;
+    line-height: 1;
+}
+
+#globalLoader {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.16), transparent 45%),
+        #ffffff !important;
+}
+
+#appContainer .container {
+    max-width: 1240px;
+}
+
+#infoPresupuestoGasto,
+#infoDeuda {
+    min-height: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 3.5rem;
+        padding-bottom: 3.5rem;
+    }
+
+    .hero-title {
+        letter-spacing: -0.02em;
+    }
+
+    .feature-card {
+        padding: 1.4rem;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 0.65rem 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
 }
