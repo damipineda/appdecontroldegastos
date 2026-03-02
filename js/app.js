@@ -51,11 +51,9 @@ const supabaseClient = window.supabase?.createClient
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
     : null;
 const IS_MOBILE_APP_MODE = Boolean(window.__IS_MOBILE_APP_MODE) || Boolean(window.Capacitor?.isNativePlatform?.());
-const CAP_APP_SCHEME = 'com.damipineda.finanzas';
-const CAP_OAUTH_CALLBACK_HOST = 'auth-callback';
-const CAP_OAUTH_REDIRECT_URL = `${CAP_APP_SCHEME}://${CAP_OAUTH_CALLBACK_HOST}`;
 const capAppPlugin = window.Capacitor?.Plugins?.App;
 const capBrowserPlugin = window.Capacitor?.Plugins?.Browser;
+const capSocialLoginPlugin = window.Capacitor?.Plugins?.SocialLogin;
 const REPO_OWNER = 'damipineda';
 const REPO_NAME = 'appdecontroldegastos';
 const FALLBACK_APK_FILENAME = 'finanzas-mobile-debug.apk';
@@ -64,7 +62,13 @@ const RELEASE_METADATA_URLS = [
     `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/asset/downloads/latest.json`,
     'asset/downloads/latest.json'
 ];
-let oauthMobileListenerRegistrado = false;
+const GOOGLE_WEB_CLIENT_ID = String(
+    window.__GOOGLE_WEB_CLIENT_ID
+    || window.__APP_CONFIG__?.googleWebClientId
+    || document.querySelector('meta[name="google-web-client-id"]')?.content
+    || ''
+).trim();
+let socialLoginInicializado = false;
 let releaseInfoActual = null;
 let modalAppUpdate = null;
 
@@ -75,13 +79,45 @@ function setLoginAlert(mensaje) {
     alert.classList.remove('d-none');
 }
 
-function parsearHashOAuth(hash) {
-    const raw = hash?.startsWith('#') ? hash.slice(1) : hash;
-    const params = new URLSearchParams(raw || '');
-    return {
-        accessToken: params.get('access_token'),
-        refreshToken: params.get('refresh_token')
-    };
+function obtenerIdTokenGoogleNativo(respuesta) {
+    const candidatos = [
+        respuesta?.result?.idToken,
+        respuesta?.result?.authentication?.idToken,
+        respuesta?.idToken
+    ];
+    return candidatos.find((token) => typeof token === 'string' && token.length > 0) || null;
+}
+
+async function inicializarGoogleNativoMovil() {
+    if (!IS_MOBILE_APP_MODE) return;
+    if (!capSocialLoginPlugin?.initialize) {
+        throw new Error('GOOGLE_NATIVE_PLUGIN_NOT_AVAILABLE');
+    }
+    if (socialLoginInicializado) return;
+    if (!GOOGLE_WEB_CLIENT_ID) {
+        throw new Error('GOOGLE_WEB_CLIENT_ID_NOT_CONFIGURED');
+    }
+
+    await capSocialLoginPlugin.initialize({
+        google: {
+            webClientId: GOOGLE_WEB_CLIENT_ID
+        }
+    });
+    socialLoginInicializado = true;
+}
+
+function traducirErrorLoginGoogle(err) {
+    const mensaje = String(err?.message || '');
+    if (mensaje.includes('GOOGLE_WEB_CLIENT_ID_NOT_CONFIGURED')) {
+        return 'Falta configurar Google nativo en la app móvil (webClientId).';
+    }
+    if (mensaje.includes('GOOGLE_NATIVE_PLUGIN_NOT_AVAILABLE')) {
+        return 'Google nativo no está disponible en esta versión de la app. Actualiza la APK.';
+    }
+    if (mensaje.includes('NO_GOOGLE_ID_TOKEN')) {
+        return 'Google no devolvió un token válido. Intenta de nuevo.';
+    }
+    return 'Error al iniciar con Google. Verifica la configuración en Supabase y Google Cloud.';
 }
 
 function compararVersiones(versionA, versionB) {
@@ -197,68 +233,6 @@ async function verificarActualizacionMovil() {
     abrirModalActualizacion();
 }
 
-async function procesarCallbackOAuthMovil(url) {
-    if (!url || !url.startsWith(`${CAP_APP_SCHEME}://`)) return false;
-
-    let parsedUrl;
-    try {
-        parsedUrl = new URL(url);
-    } catch {
-        return false;
-    }
-
-    if (parsedUrl.host !== CAP_OAUTH_CALLBACK_HOST) return false;
-
-    const errorOAuth = parsedUrl.searchParams.get('error_description') || parsedUrl.searchParams.get('error');
-    if (errorOAuth) throw new Error(decodeURIComponent(errorOAuth));
-
-    const code = parsedUrl.searchParams.get('code');
-    if (code) {
-        const { error } = await supabaseClient.auth.exchangeCodeForSession(code);
-        if (error) throw error;
-        return true;
-    }
-
-    const { accessToken, refreshToken } = parsearHashOAuth(parsedUrl.hash);
-    if (accessToken && refreshToken) {
-        const { error } = await supabaseClient.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-        });
-        if (error) throw error;
-        return true;
-    }
-
-    return false;
-}
-
-async function inicializarOAuthMovil() {
-    if (!IS_MOBILE_APP_MODE) return;
-    if (!capAppPlugin?.addListener) return;
-    if (oauthMobileListenerRegistrado) return;
-
-    capAppPlugin.addListener('appUrlOpen', async ({ url }) => {
-        try {
-            const procesado = await procesarCallbackOAuthMovil(url);
-            if (procesado) await capBrowserPlugin?.close?.();
-        } catch (error) {
-            console.error('Error al procesar callback OAuth móvil:', error);
-            setLoginAlert('No se pudo completar el inicio con Google. Intenta nuevamente.');
-        }
-    });
-
-    oauthMobileListenerRegistrado = true;
-
-    try {
-        const launchData = await capAppPlugin.getLaunchUrl?.();
-        if (launchData?.url) {
-            await procesarCallbackOAuthMovil(launchData.url);
-        }
-    } catch (error) {
-        console.warn('No se pudo procesar launch URL para OAuth:', error);
-    }
-}
-
 function configurarLoginParaAppMovil() {
     if (!IS_MOBILE_APP_MODE) return;
 
@@ -331,31 +305,23 @@ class Store {
 
     static async iniciarSesionProvider(provider) {
         if (IS_MOBILE_APP_MODE && provider === 'google') {
-            await inicializarOAuthMovil();
+            await inicializarGoogleNativoMovil();
 
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider,
+            const loginNativo = await capSocialLoginPlugin.login({
+                provider: 'google',
                 options: {
-                    redirectTo: CAP_OAUTH_REDIRECT_URL,
-                    skipBrowserRedirect: true,
-                    queryParams: {
-                        prompt: 'select_account'
-                    }
+                    scopes: ['email', 'profile'],
+                    filterByAuthorizedAccounts: false
                 }
             });
+            const idToken = obtenerIdTokenGoogleNativo(loginNativo);
+            if (!idToken) throw new Error('NO_GOOGLE_ID_TOKEN');
 
+            const { data, error } = await supabaseClient.auth.signInWithIdToken({
+                provider: 'google',
+                token: idToken
+            });
             if (error) throw error;
-            if (!data?.url) throw new Error('No se pudo iniciar OAuth con Google.');
-
-            if (capBrowserPlugin?.open) {
-                await capBrowserPlugin.open({
-                    url: data.url,
-                    toolbarColor: '#047857',
-                    presentationStyle: 'fullscreen'
-                });
-            } else {
-                window.location.href = data.url;
-            }
             return data;
         }
 
@@ -370,6 +336,14 @@ class Store {
     }
 
     static async cerrarSesion() {
+        if (IS_MOBILE_APP_MODE && capSocialLoginPlugin?.logout) {
+            try {
+                await capSocialLoginPlugin.logout({ provider: 'google' });
+            } catch (error) {
+                console.warn('No se pudo cerrar sesión nativa de Google:', error);
+            }
+        }
+
         const { error } = await supabaseClient.auth.signOut();
         if (error) throw error;
         location.reload();
@@ -1698,7 +1672,11 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     configurarLoginParaAppMovil();
-    await inicializarOAuthMovil();
+    try {
+        await inicializarGoogleNativoMovil();
+    } catch (error) {
+        console.warn('Google nativo no pudo inicializarse al arrancar:', error);
+    }
     await cargarInfoVersionApk();
 
     if (!supabaseClient) {
@@ -1819,7 +1797,7 @@ document.getElementById('btnLoginGoogle').addEventListener('click', async () => 
         await Store.iniciarSesionProvider('google');
     } catch (err) {
         console.error(err);
-        setLoginAlert('Error al iniciar con Google. Verifica la configuración OAuth en Supabase.');
+        setLoginAlert(traducirErrorLoginGoogle(err));
     }
 });
 

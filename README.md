@@ -25,6 +25,15 @@ Aplicación web para gestionar finanzas personales, controlar gastos, ingresos, 
 
 https://appdecontroldegastos.vercel.app
 
+## 📱 Google Sign-In nativo (Capacitor)
+
+Para login de Google dentro de la app móvil (sin navegador externo):
+
+1. Configura tu `Web client ID` de Google en [`index.html`](index.html) usando el meta:
+   - `<meta name="google-web-client-id" content="TU_CLIENT_ID.apps.googleusercontent.com">`
+2. Verifica que ese mismo cliente esté permitido en Supabase Auth (Google provider).
+3. Ejecuta `npm run cap:sync` y recompila Android.
+
 ## 📄 Licencia
 
 MIT
