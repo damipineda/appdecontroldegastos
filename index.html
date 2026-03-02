@@ -731,6 +731,25 @@
     <script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
     <script src="https://unpkg.com/vanilla-picker@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Watchdog de arranque: evita loader infinito si app.js no llega a ejecutarse.
+        window.__appBootstrapped = false;
+        setTimeout(() => {
+            if (window.__appBootstrapped) return;
+            const loader = document.getElementById('globalLoader');
+            if (loader) loader.style.display = 'none';
+            const landing = document.getElementById('landingPage');
+            if (landing) landing.style.display = 'block';
+
+            if (!document.getElementById('startupFatalAlert')) {
+                const alert = document.createElement('div');
+                alert.id = 'startupFatalAlert';
+                alert.className = 'alert alert-danger text-center m-3';
+                alert.textContent = 'No se pudo iniciar la aplicación correctamente. Recarga la página.';
+                document.body.prepend(alert);
+            }
+        }, 8000);
+    </script>
     <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 
 // --- CONFIGURACIÓN SUPABASE ---
+window.__appBootstrapped = true;
 const SUPABASE_URL = 'https://lqjkethzsdzvhmeytvlh.supabase.co'; // Tu URL (ya la detecté en el error)
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxamtldGh6c2R6dmhtZXl0dmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjExNjEsImV4cCI6MjA4MTM5NzE2MX0.dJ0K7WTWd3ipwrMbBYL15VhC2_Qr-TKXqn4bFtw-uuA'; // ⚠️ IMPORTANTE: Usa la clave "anon public" (empieza con "ey..."), NO la "service_role" (secret)
 
@@ -1304,6 +1305,10 @@ window.addEventListener('error', (event) => {
 window.addEventListener('unhandledrejection', (event) => {
     manejarErrorGlobalInicio('Promesa rechazada no controlada:', event.reason);
 });
+
+async function arrancarAppSesionActiva(session, opciones = {}) {
+    const { mostrarLoader = false } = opciones;
+
 
 async function arrancarAppSesionActiva(session, opciones = {}) {
     const { mostrarLoader = false } = opciones;
