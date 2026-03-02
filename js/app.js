@@ -3,8 +3,52 @@
 const SUPABASE_URL = 'https://lqjkethzsdzvhmeytvlh.supabase.co'; // Tu URL (ya la detecté en el error)
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxamtldGh6c2R6dmhtZXl0dmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjExNjEsImV4cCI6MjA4MTM5NzE2MX0.dJ0K7WTWd3ipwrMbBYL15VhC2_Qr-TKXqn4bFtw-uuA'; // ⚠️ IMPORTANTE: Usa la clave "anon public" (empieza con "ey..."), NO la "service_role" (secret)
 
+function mostrarErrorInicio(mensaje) {
+    let alerta = document.getElementById('startupErrorAlert');
+    if (!alerta) {
+        alerta = document.createElement('div');
+        alerta.id = 'startupErrorAlert';
+        alerta.className = 'alert alert-warning text-center m-3';
+        document.body.prepend(alerta);
+    }
+    alerta.textContent = mensaje;
+}
+
+function ocultarErrorInicio() {
+    const alerta = document.getElementById('startupErrorAlert');
+    if (alerta) alerta.remove();
+}
+
+async function obtenerSesionConTimeout(ms = 10000) {
+    let timeoutId;
+    try {
+        const sessionPromise = supabaseClient.auth.getSession();
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error('Timeout al consultar sesión')), ms);
+        });
+        return await Promise.race([sessionPromise, timeoutPromise]);
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+
+async function conTimeout(promesa, ms, mensaje) {
+    let timeoutId;
+    try {
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error(mensaje)), ms);
+        });
+        return await Promise.race([promesa, timeoutPromise]);
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
 // Inicializar cliente
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase?.createClient
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
 
 // --- CLASES (Modelo de Datos Local) ---
 class Transaccion {
@@ -735,20 +779,40 @@ class UI {
         // 2. Deudas
         const listaDeudas = document.querySelector('#listaDeudas');
         listaDeudas.innerHTML = '';
-        if (deudas.length === 0) {
+
+        const deudasOrdenadas = [...deudas].sort((a, b) => {
+            const restanteA = (a.total_cuotas || 0) - (a.cuotas_pagadas || 0);
+            const restanteB = (b.total_cuotas || 0) - (b.cuotas_pagadas || 0);
+            return restanteB - restanteA;
+        });
+        const deudasPendientes = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) < (d.total_cuotas || 0));
+        const deudasPagadas = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) >= (d.total_cuotas || 0));
+
+        if (deudasPendientes.length === 0) {
             document.querySelector('#noDeudas').style.display = 'block';
+            document.querySelector('#noDeudas').textContent = deudasPagadas.length > 0
+                ? 'No tienes deudas pendientes. ✅'
+                : 'Sin deudas registradas.';
         } else {
             document.querySelector('#noDeudas').style.display = 'none';
-            deudas.forEach(d => {
-                const progreso = (d.cuotas_pagadas / d.total_cuotas) * 100;
-                
+
+            const resumen = document.createElement('div');
+            resumen.className = 'list-group-item bg-light';
+            resumen.innerHTML = `<small class="text-muted">Mostrando deudas pendientes: <strong>${deudasPendientes.length}</strong> · Pagadas/ocultas: <strong>${deudasPagadas.length}</strong></small>`;
+            listaDeudas.appendChild(resumen);
+
+            deudasPendientes.forEach(d => {
+                const totalCuotas = Math.max(Number(d.total_cuotas || 0), 1);
+                const cuotasPagadas = Math.min(Number(d.cuotas_pagadas || 0), totalCuotas);
+                const cuotasRestantes = Math.max(totalCuotas - cuotasPagadas, 0);
+                const progreso = Math.min((cuotasPagadas / totalCuotas) * 100, 100);
+
                 // Cálculos de fechas
                 let fechaFin = '-';
                 if (d.fecha_inicio) {
                     const parts = d.fecha_inicio.split('-');
-                    // Crear fecha localmente: año, mes (0-index), dia
                     const fecha = new Date(parts[0], parts[1] - 1, parts[2]);
-                    fecha.setMonth(fecha.getMonth() + d.total_cuotas);
+                    fecha.setMonth(fecha.getMonth() + totalCuotas);
                     fechaFin = fecha.toLocaleDateString('es-PY', { month: 'short', year: 'numeric' });
                 }
 
@@ -760,23 +824,25 @@ class UI {
                              <span class="me-2 fs-4">${d.emoji || '💳'}</span>
                              <div>
                                 <span class="fw-bold d-block">${d.concepto}</span>
-                                <small class="text-muted">
-                                    ${d.cuota_monto ? 'Cuota: ' + UI.formatearMoneda(d.cuota_monto) : ''}
-                                </small>
+                                <small class="text-muted">${d.cuota_monto ? 'Cuota: ' + UI.formatearMoneda(d.cuota_monto) : 'Cuota variable'}</small>
                              </div>
                         </div>
                         <span class="badge bg-danger">${UI.formatearMoneda(d.monto_total)}</span>
                     </div>
-                    
-                    <div class="d-flex justify-content-between text-muted small mb-1">
-                        <span>Pagado: ${d.cuotas_pagadas} / ${d.total_cuotas}</span>
-                        <span>Fin: ${fechaFin} (Inicio: ${UI.formatearFecha(d.fecha_inicio)})</span>
+
+                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                        <span class="text-success fw-semibold">Pagadas: ${cuotasPagadas}</span>
+                        <span class="text-warning fw-semibold">Restan: ${cuotasRestantes}</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small mb-2">
+                        <span>Progreso: ${cuotasPagadas}/${totalCuotas} cuotas</span>
+                        <span>Fin: ${fechaFin}${d.fecha_inicio ? ` (Inicio: ${UI.formatearFecha(d.fecha_inicio)})` : ''}</span>
                     </div>
 
                     <div class="progress mb-2" style="height: 10px;">
                         <div class="progress-bar bg-success" style="width: ${progreso}%"></div>
                     </div>
-                    
+
                     <div class="text-end">
                         <button class="btn btn-sm btn-outline-secondary btn-edit-deuda me-1" data-id="${d.id}">Editar</button>
                         <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}">Eliminar</button>
@@ -810,7 +876,7 @@ class UI {
                         document.querySelector('#deudaFechaInicio').value = item.fecha_inicio;
                         document.querySelector('#btnEmojiDeuda').textContent = item.emoji || '💳';
                         document.querySelector('#modalDeudaTitle').textContent = 'Editar Deuda';
-                        
+
                         const modalEl = document.getElementById('modalDeuda');
                         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
                         modal.show();
@@ -1221,34 +1287,83 @@ function toggleView(isLoggedIn) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Chequear Sesión
-    const { data: { session } } = await supabaseClient.auth.getSession();
+function manejarErrorGlobalInicio(contexto, error) {
+    console.error(contexto, error);
+    UI.toggleLoader(false);
+    if (document.getElementById('appContainer')?.style.display !== 'block') {
+        toggleView(false);
+    }
+    mostrarErrorInicio('Ocurrió un error al cargar la aplicación. Recarga la página para continuar.');
+}
 
-    if (!session) {
+window.addEventListener('error', (event) => {
+    if (!event?.error) return;
+    manejarErrorGlobalInicio('Error de ejecución no controlado:', event.error);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+    manejarErrorGlobalInicio('Promesa rechazada no controlada:', event.reason);
+});
+
+async function arrancarAppSesionActiva(session, opciones = {}) {
+    const { mostrarLoader = false } = opciones;
+
+    if (!session?.user?.email) {
         UI.toggleLoader(false);
         toggleView(false);
-    } else {
-        toggleView(true);
-        document.getElementById('userEmail').textContent = session.user.email;
-        document.getElementById('btnLogout').style.display = 'block';
-        initApp();
+        return;
     }
 
-    // Auth Listener
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN') {
-            UI.toggleLoader(true); 
-            modalLogin.hide();
-            toggleView(true);
-            document.getElementById('userEmail').textContent = session.user.email;
-            document.getElementById('btnLogout').style.display = 'block';
-            initApp();
-        } else if (event === 'SIGNED_OUT') {
+    if (mostrarLoader) UI.toggleLoader(true);
+
+    toggleView(true);
+    document.getElementById('userEmail').textContent = session.user.email;
+    document.getElementById('btnLogout').style.display = 'block';
+
+    try {
+        await conTimeout(initApp(), 15000, 'Timeout al cargar datos iniciales');
+        ocultarErrorInicio();
+    } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        UI.toggleLoader(false);
+        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!supabaseClient) {
+        UI.toggleLoader(false);
+        toggleView(false);
+        mostrarErrorInicio('No se pudo inicializar la conexión. Recarga la página y verifica tu conexión a internet.');
+        return;
+    }
+
+    try {
+        const { data: { session } } = await obtenerSesionConTimeout(10000);
+
+        if (!session) {
             UI.toggleLoader(false);
             toggleView(false);
+        } else {
+            await arrancarAppSesionActiva(session, { mostrarLoader: false });
         }
-    });
+
+        // Auth Listener
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN') {
+                modalLogin.hide();
+                await arrancarAppSesionActiva(session, { mostrarLoader: false });
+            } else if (event === 'SIGNED_OUT') {
+                UI.toggleLoader(false);
+                toggleView(false);
+            }
+        });
+    } catch (error) {
+        console.error('Error al iniciar la app:', error);
+        UI.toggleLoader(false);
+        toggleView(false);
+        mostrarErrorInicio('No se pudo conectar con el servidor en este momento. Intenta recargar en unos segundos.');
+    }
 });
 
 async function initApp() {
@@ -1657,7 +1772,7 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
         document.querySelector('#deudaIdEdit').value = '';
         document.querySelector('#formDeuda').reset();
         document.querySelector('#modalDeudaTitle').textContent = 'Registrar Deuda';
-        document.querySelector('#btnEmojiDeuda').textContent = '�';
+        document.querySelector('#btnEmojiDeuda').textContent = '💳';
     });
 
     // 2. Cargar categorías al abrir modal recurrente (siempre)
@@ -1746,4 +1861,27 @@ document.querySelector('#btnComparar').addEventListener('click', async () => {
 
     const data2 = [{ x: [mesA, mesB], y: [totalGastosA, totalGastosB], type: 'scatter', mode: 'lines+markers', line: { color: '#ef4444', width: 3 }, marker: { size: 10 } }];
     Plotly.newPlot('chartCompGastos', data2, { height: 300, margin: { t: 20, b: 30, l: 40, r: 20 }, yaxis: { title: 'Gastos Totales' } }, {displayModeBar: false});
+});
+
+// Refresco suave al volver a la pestaña para evitar estados colgados del loader
+let ultimoRefrescoVisibilidad = 0;
+document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState !== 'visible') return;
+    if (!supabaseClient) return;
+
+    const appVisible = document.getElementById('appContainer')?.style.display !== 'none';
+    if (!appVisible) return;
+
+    const ahora = Date.now();
+    if (ahora - ultimoRefrescoVisibilidad < 5000) return;
+    ultimoRefrescoVisibilidad = ahora;
+
+    try {
+        await conTimeout(UI.cargarTodo(), 12000, 'Timeout al refrescar al volver a la pestaña');
+        ocultarErrorInicio();
+    } catch (error) {
+        console.error('Error al refrescar la app al volver a la pestaña:', error);
+        UI.toggleLoader(false);
+        mostrarErrorInicio('No se pudo refrescar automáticamente al volver a la app. Recarga la página si persiste.');
+    }
 });
