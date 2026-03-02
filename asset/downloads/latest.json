@@ -1,5 +1,7 @@
 {
   "version": "1.1.1",
   "apk": "finanzas-mobile-debug.apk",
-  "updatedAt": "2026-03-02T18:16:50.532Z"
+  "downloadUrl": "https://github.com/damipineda/appdecontroldegastos/raw/main/asset/downloads/finanzas-mobile-debug.apk",
+  "downloadUrlVercel": "https://appdecontroldegastos.vercel.app/asset/downloads/finanzas-mobile-debug.apk",
+  "updatedAt": "2026-03-02T18:26:38.673Z"
 }

@@ -307,26 +307,48 @@ tbody tr:hover {
 }
 
 #appContainer {
+    padding-top: 5.9rem;
     padding-bottom: 1.25rem;
 }
 
-#appContainer .navbar {
-    position: sticky;
+#appContainer .app-navbar-fixed {
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 1020;
     border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 }
 
-.app-user-email {
-    display: inline-block;
-    max-width: 240px;
+.app-userbox .btn-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+}
+
+.app-userbox .btn-icon i {
+    font-size: 1.2rem;
+}
+
+.app-user-menu {
+    min-width: 250px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 14px 26px -20px rgba(2, 6, 23, 0.45);
+}
+
+.app-user-email-item {
+    display: block;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding: 0.3rem 0.55rem;
-    border: 1px solid rgba(255, 255, 255, 0.32);
-    border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.08);
+    font-weight: 600;
+    color: #0f172a;
 }
 
 .app-shell {
@@ -536,8 +558,12 @@ tbody tr:hover {
         font-size: 0.95rem;
     }
 
-    .app-user-email {
+    .app-user-email-item {
         max-width: 150px;
+    }
+
+    #appContainer {
+        padding-top: 5.2rem;
     }
 
     .panel-toolbar .card-body {
@@ -572,7 +598,14 @@ tbody tr:hover {
     }
 
     #appContainer {
+        padding-top: 4.8rem;
         padding-bottom: 5.6rem;
+    }
+
+    .app-userbox #btnOpenUpdateModal {
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+        font-size: 0.8rem;
     }
 
     .app-shell {

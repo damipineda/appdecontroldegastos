@@ -8,6 +8,8 @@ const downloadsDir = join(rootDir, 'asset', 'downloads');
 const apkFileName = 'finanzas-mobile-debug.apk';
 const targetApkPath = join(downloadsDir, apkFileName);
 const latestMetadataPath = join(downloadsDir, 'latest.json');
+const githubDownloadUrl = `https://github.com/damipineda/appdecontroldegastos/raw/main/asset/downloads/${apkFileName}`;
+const vercelDownloadUrl = `https://appdecontroldegastos.vercel.app/asset/downloads/${apkFileName}`;
 
 async function publishApk() {
   const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
@@ -19,6 +21,8 @@ async function publishApk() {
   const metadata = {
     version,
     apk: apkFileName,
+    downloadUrl: githubDownloadUrl,
+    downloadUrlVercel: vercelDownloadUrl,
     updatedAt: new Date().toISOString()
   };
 

@@ -119,15 +119,31 @@
 
     <!-- APP CONTAINER -->
     <div id="appContainer" style="display: none;">
-        <nav class="navbar navbar-expand-lg navbar-dark mb-4 shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm app-navbar-fixed">
             <div class="container">
                 <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
                     <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="48" height="48" class="bg-white rounded-circle p-1">
                     <span class="fs-3">Finanzas Personales</span>
                 </a>
-                <div class="d-flex align-items-center app-userbox">
-                    <span id="userEmail" class="text-white me-3 small app-user-email"></span>
-                    <button id="btnLogout" class="btn btn-outline-light btn-sm px-3">Cerrar Sesión</button>
+                <div class="d-flex align-items-center gap-2 app-userbox">
+                    <button id="btnOpenUpdateModal" class="btn btn-outline-light btn-sm px-3 d-none" type="button" aria-label="Abrir actualización de app">
+                        <i class="bi bi-arrow-repeat me-1"></i><span id="updateBadgeText">Actualizar</span>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light btn-icon" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú de usuario">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end app-user-menu" aria-labelledby="userMenuBtn">
+                            <li><h6 class="dropdown-header">Sesión activa</h6></li>
+                            <li><span id="userEmail" class="dropdown-item-text app-user-email-item">-</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button id="btnLogout" class="dropdown-item text-danger" type="button">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -788,6 +804,28 @@
                     </form>
                     <div id="loginError" class="alert alert-danger mt-3 d-none" role="alert" aria-live="assertive"></div>
                     <div id="loginSuccess" class="alert alert-success mt-3 d-none" role="status" aria-live="polite">Registro exitoso. ¡Revisa tu correo!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Actualización App -->
+    <div class="modal fade" id="modalAppUpdate" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-phone me-2"></i>Actualización disponible</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">Hay una versión nueva de la app: <strong id="updateVersionLabel">-</strong></p>
+                    <p class="text-muted small mb-0">Puedes instalar encima de la versión actual, sin desinstalar.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Después</button>
+                    <button type="button" class="btn btn-primary" id="btnDownloadUpdate">
+                        <i class="bi bi-download me-1"></i>Descargar e instalar
+                    </button>
                 </div>
             </div>
         </div>

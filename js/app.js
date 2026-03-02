@@ -56,7 +56,17 @@ const CAP_OAUTH_CALLBACK_HOST = 'auth-callback';
 const CAP_OAUTH_REDIRECT_URL = `${CAP_APP_SCHEME}://${CAP_OAUTH_CALLBACK_HOST}`;
 const capAppPlugin = window.Capacitor?.Plugins?.App;
 const capBrowserPlugin = window.Capacitor?.Plugins?.Browser;
+const REPO_OWNER = 'damipineda';
+const REPO_NAME = 'appdecontroldegastos';
+const FALLBACK_APK_FILENAME = 'finanzas-mobile-debug.apk';
+const RELEASE_METADATA_URLS = [
+    'https://appdecontroldegastos.vercel.app/asset/downloads/latest.json',
+    `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/asset/downloads/latest.json`,
+    'asset/downloads/latest.json'
+];
 let oauthMobileListenerRegistrado = false;
+let releaseInfoActual = null;
+let modalAppUpdate = null;
 
 function setLoginAlert(mensaje) {
     const alert = document.getElementById('loginError');
@@ -72,6 +82,119 @@ function parsearHashOAuth(hash) {
         accessToken: params.get('access_token'),
         refreshToken: params.get('refresh_token')
     };
+}
+
+function compararVersiones(versionA, versionB) {
+    const a = String(versionA || '0.0.0').split('.').map((n) => Number(n) || 0);
+    const b = String(versionB || '0.0.0').split('.').map((n) => Number(n) || 0);
+    const maxLen = Math.max(a.length, b.length);
+
+    for (let i = 0; i < maxLen; i++) {
+        const va = a[i] || 0;
+        const vb = b[i] || 0;
+        if (va > vb) return 1;
+        if (va < vb) return -1;
+    }
+    return 0;
+}
+
+function construirDownloadUrl(info) {
+    if (info?.downloadUrl) return info.downloadUrl;
+    if (info?.download_url) return info.download_url;
+    const apk = info?.apk || FALLBACK_APK_FILENAME;
+    return `https://github.com/${REPO_OWNER}/${REPO_NAME}/raw/main/asset/downloads/${apk}`;
+}
+
+async function obtenerReleaseInfo() {
+    for (const url of RELEASE_METADATA_URLS) {
+        try {
+            const response = await fetch(url, { cache: 'no-store' });
+            if (!response.ok) continue;
+            const data = await response.json();
+            if (!data?.version) continue;
+            const apkName = data.apk || FALLBACK_APK_FILENAME;
+            return {
+                version: data.version,
+                apk: apkName,
+                downloadUrl: construirDownloadUrl(data),
+                updatedAt: data.updatedAt || null
+            };
+        } catch (error) {
+            console.warn(`No se pudo leer metadata desde ${url}:`, error);
+        }
+    }
+    return null;
+}
+
+async function obtenerVersionInstalada() {
+    if (!IS_MOBILE_APP_MODE) return null;
+    if (!capAppPlugin?.getInfo) return null;
+    try {
+        const info = await capAppPlugin.getInfo();
+        return info?.version || null;
+    } catch (error) {
+        console.warn('No se pudo obtener versión instalada:', error);
+        return null;
+    }
+}
+
+function refrescarEstadoBotonActualizacion(disponible) {
+    const btnUpdate = document.getElementById('btnOpenUpdateModal');
+    const label = document.getElementById('updateBadgeText');
+    if (!btnUpdate) return;
+    if (disponible?.version) {
+        btnUpdate.classList.remove('d-none');
+        if (label) label.textContent = `Nueva v${disponible.version}`;
+    } else {
+        btnUpdate.classList.add('d-none');
+        if (label) label.textContent = 'Actualizar';
+    }
+}
+
+function abrirModalActualizacion() {
+    if (!modalAppUpdate) return;
+    const versionLabel = document.getElementById('updateVersionLabel');
+    if (versionLabel && releaseInfoActual?.version) {
+        versionLabel.textContent = releaseInfoActual.version;
+    }
+    modalAppUpdate.show();
+}
+
+async function iniciarActualizacionApp() {
+    const url = releaseInfoActual?.downloadUrl;
+    if (!url) {
+        setLoginAlert('No se encontró enlace de actualización disponible.');
+        return;
+    }
+
+    if (modalAppUpdate) modalAppUpdate.hide();
+
+    if (IS_MOBILE_APP_MODE && capBrowserPlugin?.open) {
+        await capBrowserPlugin.open({
+            url,
+            toolbarColor: '#047857'
+        });
+        return;
+    }
+
+    window.open(url, '_blank', 'noopener');
+}
+
+async function verificarActualizacionMovil() {
+    if (!IS_MOBILE_APP_MODE) return;
+    if (!releaseInfoActual?.version) return;
+
+    const versionInstalada = await obtenerVersionInstalada();
+    if (!versionInstalada) return;
+
+    const hayNuevaVersion = compararVersiones(releaseInfoActual.version, versionInstalada) > 0;
+    refrescarEstadoBotonActualizacion(hayNuevaVersion ? releaseInfoActual : null);
+    if (!hayNuevaVersion) return;
+
+    const storageKey = `update_prompted_${releaseInfoActual.version}`;
+    if (localStorage.getItem(storageKey)) return;
+    localStorage.setItem(storageKey, '1');
+    abrirModalActualizacion();
 }
 
 async function procesarCallbackOAuthMovil(url) {
@@ -156,22 +279,20 @@ function configurarLoginParaAppMovil() {
 async function cargarInfoVersionApk() {
     const btnDownload = document.getElementById('btnDownloadApk');
     const fileLabel = document.getElementById('apkFilenameLabel');
-    if (!btnDownload || !fileLabel) return;
-
-    try {
-        const response = await fetch('asset/downloads/latest.json', { cache: 'no-store' });
-        if (!response.ok) return;
-
-        const metadata = await response.json();
-        if (!metadata?.apk) return;
-
-        btnDownload.href = `asset/downloads/${metadata.apk}`;
-        fileLabel.textContent = metadata.version
-            ? `${metadata.apk} (v${metadata.version})`
-            : metadata.apk;
-    } catch (error) {
-        console.warn('No se pudo cargar metadata de APK:', error);
+    releaseInfoActual = await obtenerReleaseInfo();
+    if (!releaseInfoActual) {
+        refrescarEstadoBotonActualizacion(null);
+        return;
     }
+
+    if (btnDownload) {
+        btnDownload.href = releaseInfoActual.downloadUrl;
+    }
+    if (fileLabel) {
+        fileLabel.textContent = `${releaseInfoActual.apk} (v${releaseInfoActual.version})`;
+    }
+
+    await verificarActualizacionMovil();
 }
 
 // --- CLASES (Modelo de Datos Local) ---
@@ -227,7 +348,11 @@ class Store {
             if (!data?.url) throw new Error('No se pudo iniciar OAuth con Google.');
 
             if (capBrowserPlugin?.open) {
-                await capBrowserPlugin.open({ url: data.url });
+                await capBrowserPlugin.open({
+                    url: data.url,
+                    toolbarColor: '#047857',
+                    presentationStyle: 'fullscreen'
+                });
             } else {
                 window.location.href = data.url;
             }
@@ -1435,6 +1560,10 @@ class UI {
 
 // --- INIT & AUTH HANDLER ---
 const modalLogin = new bootstrap.Modal(document.getElementById('modalLogin'));
+const modalUpdateEl = document.getElementById('modalAppUpdate');
+if (modalUpdateEl) {
+    modalAppUpdate = new bootstrap.Modal(modalUpdateEl);
+}
 
 ['btnOpenLogin', 'btnStartFree'].forEach((buttonId) => {
     const button = document.getElementById(buttonId);
@@ -1484,6 +1613,23 @@ mobileTabButtons.forEach((mobileBtn) => {
 
 const tabActivoInicial = document.querySelector('#myTab button.active');
 if (tabActivoInicial) sincronizarTabMovil(tabActivoInicial.id);
+
+const btnOpenUpdateModal = document.getElementById('btnOpenUpdateModal');
+if (btnOpenUpdateModal) {
+    btnOpenUpdateModal.addEventListener('click', abrirModalActualizacion);
+}
+
+const btnDownloadUpdate = document.getElementById('btnDownloadUpdate');
+if (btnDownloadUpdate) {
+    btnDownloadUpdate.addEventListener('click', async () => {
+        try {
+            await iniciarActualizacionApp();
+        } catch (error) {
+            console.error('Error al iniciar actualización de app:', error);
+            mostrarErrorInicio('No se pudo iniciar la descarga de la actualización.');
+        }
+    });
+}
 
 // --- VIEW TOGGLER ---
 function toggleView(isLoggedIn) {
@@ -1538,7 +1684,7 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
 
     toggleView(true);
     document.getElementById('userEmail').textContent = session.user.email;
-    document.getElementById('btnLogout').style.display = 'block';
+    await verificarActualizacionMovil();
 
     try {
         await conTimeout(initApp(), 15000, 'Timeout al cargar datos iniciales');
