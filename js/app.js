@@ -50,6 +50,45 @@ async function conTimeout(promesa, ms, mensaje) {
 const supabaseClient = window.supabase?.createClient
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
     : null;
+const IS_MOBILE_APP_MODE = Boolean(window.__IS_MOBILE_APP_MODE) || Boolean(window.Capacitor?.isNativePlatform?.());
+
+function configurarLoginParaAppMovil() {
+    if (!IS_MOBILE_APP_MODE) return;
+
+    const providerButtons = ['btnLoginGoogle', 'btnLoginFacebook']
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+    providerButtons.forEach((button) => {
+        button.disabled = true;
+        button.classList.add('disabled');
+        button.setAttribute('aria-disabled', 'true');
+    });
+
+    const hint = document.getElementById('socialLoginHint');
+    if (hint) hint.classList.remove('d-none');
+}
+
+async function cargarInfoVersionApk() {
+    const btnDownload = document.getElementById('btnDownloadApk');
+    const fileLabel = document.getElementById('apkFilenameLabel');
+    if (!btnDownload || !fileLabel) return;
+
+    try {
+        const response = await fetch('asset/downloads/latest.json', { cache: 'no-store' });
+        if (!response.ok) return;
+
+        const metadata = await response.json();
+        if (!metadata?.apk) return;
+
+        btnDownload.href = `asset/downloads/${metadata.apk}`;
+        fileLabel.textContent = metadata.version
+            ? `${metadata.apk} (v${metadata.version})`
+            : metadata.apk;
+    } catch (error) {
+        console.warn('No se pudo cargar metadata de APK:', error);
+    }
+}
 
 // --- CLASES (Modelo de Datos Local) ---
 class Transaccion {
@@ -1346,7 +1385,15 @@ function toggleView(isLoggedIn) {
         if(landing) landing.style.display = 'none';
         if(app) app.style.display = 'block';
     } else {
-        if(landing) landing.style.display = 'block';
+        if (IS_MOBILE_APP_MODE) {
+            if (landing) landing.style.display = 'none';
+            const modalEl = document.getElementById('modalLogin');
+            if (modalEl && !modalEl.classList.contains('show')) {
+                modalLogin.show();
+            }
+        } else if (landing) {
+            landing.style.display = 'block';
+        }
         if(app) app.style.display = 'none';
     }
 }
@@ -1395,6 +1442,9 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    configurarLoginParaAppMovil();
+    await cargarInfoVersionApk();
+
     if (!supabaseClient) {
         UI.toggleLoader(false);
         toggleView(false);
@@ -1509,6 +1559,13 @@ document.getElementById('btnRegister').addEventListener('click', async () => {
 
 // --- SOCIAL LOGIN ---
 document.getElementById('btnLoginGoogle').addEventListener('click', async () => {
+    if (IS_MOBILE_APP_MODE) {
+        const alert = document.getElementById('loginError');
+        alert.textContent = 'En la app móvil usa correo y contraseña para iniciar sesión.';
+        alert.classList.remove('d-none');
+        return;
+    }
+
     try {
         await Store.iniciarSesionProvider('google');
     } catch (err) {
@@ -1520,6 +1577,13 @@ document.getElementById('btnLoginGoogle').addEventListener('click', async () => 
 });
 
 document.getElementById('btnLoginFacebook').addEventListener('click', async () => {
+    if (IS_MOBILE_APP_MODE) {
+        const alert = document.getElementById('loginError');
+        alert.textContent = 'En la app móvil usa correo y contraseña para iniciar sesión.';
+        alert.classList.remove('d-none');
+        return;
+    }
+
     try {
         await Store.iniciarSesionProvider('facebook');
     } catch (err) {

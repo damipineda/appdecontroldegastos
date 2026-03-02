@@ -1,13 +1,16 @@
 {
   "name": "appdecontroldegastos",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Aplicación web para gestionar finanzas personales, controlar gastos, ingresos, deudas y presupuestos.",
   "main": "index.js",
   "scripts": {
     "build:web": "node scripts/build-web.mjs",
+    "android:icons": "node scripts/sync-android-icons.mjs",
+    "android:version": "node scripts/sync-android-version.mjs",
+    "android:publish": "node scripts/publish-apk.mjs",
     "cap:init": "npx cap init \"Finanzas Personales\" \"com.damipineda.finanzas\" --web-dir=www",
     "cap:sync": "npm run build:web && npx cap sync android",
-    "android:build": "npm run cap:sync && cd android && gradlew.bat assembleDebug",
+    "android:build": "npm run android:icons && npm run cap:sync && npm run android:version && cd android && gradlew.bat assembleDebug && cd .. && npm run android:publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
