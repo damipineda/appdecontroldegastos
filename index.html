@@ -12,6 +12,8 @@
     <link rel="manifest" href="asset/media/favicon/manifest.json">
     
     <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,6 +22,8 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-light">
+    <a class="skip-link" href="#mainContent">Saltar al contenido principal</a>
+    <main id="mainContent" tabindex="-1">
 
     <!-- Global Loader -->
     <div id="globalLoader" class="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center" style="z-index: 2000;">
@@ -37,7 +41,7 @@
                     <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="48" height="48">
                     <span class="text-dark fs-3">Finanzas</span>
                 </a>
-                <button class="btn btn-primary px-4 rounded-pill" onclick="new bootstrap.Modal(document.getElementById('modalLogin')).show()">Ingresar</button>
+                <button type="button" class="btn btn-primary px-4 rounded-pill" id="btnOpenLogin" aria-controls="modalLogin">Ingresar</button>
             </div>
         </nav>
 
@@ -47,10 +51,10 @@
                     <div class="col-lg-6">
                         <h1 class="hero-title">Toma el control de tu dinero.</h1>
                         <p class="lead text-muted mb-4">Administra gastos, deudas y presupuestos en un solo lugar. Simple, intuitivo y seguro.</p>
-                        <button class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg" onclick="new bootstrap.Modal(document.getElementById('modalLogin')).show()">Comenzar Gratis</button>
+                        <button type="button" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg" id="btnStartFree" aria-controls="modalLogin">Comenzar Gratis</button>
                     </div>
                     <div class="col-lg-6 text-center mt-5 mt-lg-0">
-                         <img src="asset/media/image/6275641.jpg" class="img-fluid rounded-4 shadow-lg" alt="Finanzas" style="max-width: 80%;">
+                         <img src="asset/media/image/6275641.jpg" class="img-fluid rounded-4 shadow-lg" alt="Finanzas" width="960" height="640" loading="eager" decoding="async" style="max-width: 80%;">
                     </div>
                 </div>
             </div>
@@ -109,7 +113,7 @@
         <div class="row mb-3">
             <div class="col-md-12 d-flex justify-content-end align-items-center gap-2">
                 <label for="filtroMes" class="fw-bold">Periodo:</label>
-                <input type="month" id="filtroMes" class="form-control w-auto">
+                <input type="month" id="filtroMes" name="filtro_mes" class="form-control w-auto">
             </div>
         </div>
 
@@ -273,55 +277,55 @@
                                     
                                     <!-- Selección Rápida de Recurrentes -->
                                     <div class="mb-3">
-                                        <label class="form-label text-primary fw-bold">Cargar Recurrente / Plantilla</label>
-                                        <select class="form-select border-primary" id="gastoPlantilla">
+                                        <label class="form-label text-primary fw-bold" for="gastoPlantilla">Cargar Recurrente / Plantilla</label>
+                                        <select class="form-select border-primary" id="gastoPlantilla" name="gasto_plantilla">
                                             <option value="" selected>-- Seleccionar (Opcional) --</option>
                                         </select>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Concepto</label>
-                                        <input type="text" class="form-control" id="gastoConcepto" required>
+                                        <label class="form-label" for="gastoConcepto">Concepto</label>
+                                        <input type="text" class="form-control" id="gastoConcepto" name="gasto_concepto" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Monto (Gs.)</label>
-                                        <input type="number" class="form-control" id="gastoMonto" min="1" required>
+                                        <label class="form-label" for="gastoMonto">Monto (Gs.)</label>
+                                        <input type="number" class="form-control" id="gastoMonto" name="gasto_monto" min="1" required>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col">
-                                            <label class="form-label">Fecha</label>
-                                            <input type="date" class="form-control" id="gastoFecha" required>
+                                            <label class="form-label" for="gastoFecha">Fecha</label>
+                                            <input type="date" class="form-control" id="gastoFecha" name="gasto_fecha" required>
                                         </div>
                                         <div class="col">
-                                            <label class="form-label">Hora</label>
-                                            <input type="time" class="form-control" id="gastoHora" required>
+                                            <label class="form-label" for="gastoHora">Hora</label>
+                                            <input type="time" class="form-control" id="gastoHora" name="gasto_hora" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Categoría</label>
+                                        <label class="form-label" for="gastoCategoria">Categoría</label>
                                         <div class="input-group">
-                                            <select class="form-select" id="gastoCategoria" required></select>
-                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirModalCategoria('gasto')" title="Nueva Categoría">+</button>
-                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirGestorCategorias('gasto')" title="Gestionar Categorías">⚙️</button>
+                                            <select class="form-select" id="gastoCategoria" name="gasto_categoria" required></select>
+                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaGasto" aria-label="Crear nueva categoría de gasto">+</button>
+                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaGasto" aria-label="Gestionar categorías de gasto">⚙️</button>
                                         </div>
                                         <!-- Visualizador de Presupuesto -->
-                                        <div id="infoPresupuestoGasto" class="form-text mt-1 text-muted" style="font-size: 0.9em;">
+                                        <div id="infoPresupuestoGasto" class="form-text mt-1 text-muted" style="font-size: 0.9em;" role="status" aria-live="polite">
                                             <!-- Se llena dinámicamente -->
                                         </div>
                                     </div>
 
                                     <!-- Vincular Deuda -->
                                     <div class="mb-3 p-2 bg-light rounded border">
-                                        <label class="form-label small fw-bold">Vincular a Deuda (Opcional)</label>
-                                        <select class="form-select form-select-sm" id="gastoDeuda">
+                                        <label class="form-label small fw-bold" for="gastoDeuda">Vincular a Deuda (Opcional)</label>
+                                        <select class="form-select form-select-sm" id="gastoDeuda" name="gasto_deuda">
                                             <option value="" selected>-- Ninguna --</option>
                                         </select>
-                                        <div id="infoDeuda" class="form-text mt-1 text-primary"></div>
+                                        <div id="infoDeuda" class="form-text mt-1 text-primary" role="status" aria-live="polite"></div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Método de Pago</label>
-                                        <select class="form-select" id="gastoMetodo" required>
+                                        <label class="form-label" for="gastoMetodo">Método de Pago</label>
+                                        <select class="form-select" id="gastoMetodo" name="gasto_metodo" required>
                                             <option value="Efectivo">Efectivo</option>
                                             <option value="Tarjeta Crédito">Tarjeta Crédito</option>
                                             <option value="Tarjeta Débito">Tarjeta Débito</option>
@@ -355,7 +359,7 @@
                                                 <th>Categoría</th>
                                                 <th>Pago</th>
                                                 <th class="text-end">Monto</th>
-                                                <th></th>
+                                                <th><span class="visually-hidden">Acciones</span></th>
                                             </tr>
                                         </thead>
                                         <tbody id="listaGastos"></tbody>
@@ -380,29 +384,29 @@
                                 <form id="ingresoForm">
                                     <input type="hidden" id="ingresoIdEdit"> <!-- ID oculto para edición -->
                                     <div class="mb-3">
-                                        <label class="form-label">Fuente/Concepto</label>
-                                        <input type="text" class="form-control" id="ingresoConcepto" required>
+                                        <label class="form-label" for="ingresoConcepto">Fuente/Concepto</label>
+                                        <input type="text" class="form-control" id="ingresoConcepto" name="ingreso_concepto" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Monto (Gs.)</label>
-                                        <input type="number" class="form-control" id="ingresoMonto" min="1" required>
+                                        <label class="form-label" for="ingresoMonto">Monto (Gs.)</label>
+                                        <input type="number" class="form-control" id="ingresoMonto" name="ingreso_monto" min="1" required>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col">
-                                            <label class="form-label">Fecha</label>
-                                            <input type="date" class="form-control" id="ingresoFecha" required>
+                                            <label class="form-label" for="ingresoFecha">Fecha</label>
+                                            <input type="date" class="form-control" id="ingresoFecha" name="ingreso_fecha" required>
                                         </div>
                                         <div class="col">
-                                            <label class="form-label">Hora</label>
-                                            <input type="time" class="form-control" id="ingresoHora" required>
+                                            <label class="form-label" for="ingresoHora">Hora</label>
+                                            <input type="time" class="form-control" id="ingresoHora" name="ingreso_hora" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Categoría</label>
+                                        <label class="form-label" for="ingresoCategoria">Categoría</label>
                                         <div class="input-group">
-                                            <select class="form-select" id="ingresoCategoria" required></select>
-                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirModalCategoria('ingreso')" title="Nueva Categoría">+</button>
-                                            <button class="btn btn-outline-secondary" type="button" onclick="UI.abrirGestorCategorias('ingreso')" title="Gestionar Categorías">⚙️</button>
+                                            <select class="form-select" id="ingresoCategoria" name="ingreso_categoria" required></select>
+                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaIngreso" aria-label="Crear nueva categoría de ingreso">+</button>
+                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaIngreso" aria-label="Gestionar categorías de ingreso">⚙️</button>
                                         </div>
                                     </div>
                                     <div class="mb-3 form-check">
@@ -431,7 +435,7 @@
                                                 <th>Fuente</th>
                                                 <th>Categoría</th>
                                                 <th class="text-end">Monto</th>
-                                                <th></th>
+                                                <th><span class="visually-hidden">Acciones</span></th>
                                             </tr>
                                         </thead>
                                         <tbody id="listaIngresos"></tbody>
@@ -515,23 +519,23 @@
                     <form id="formRecurrente">
                         <input type="hidden" id="recIdEdit">
                         <div class="mb-3">
-                            <label class="form-label">Concepto</label>
+                            <label class="form-label" for="recConcepto">Concepto</label>
                             <div class="input-group">
-                                <button class="btn btn-outline-secondary" type="button" id="btnEmojiRec">📝</button>
-                                <input type="text" class="form-control" id="recConcepto" placeholder="Ej: Netflix" required>
+                                <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiRec" aria-label="Elegir emoji para plantilla">📝</button>
+                                <input type="text" class="form-control" id="recConcepto" name="recurrente_concepto" placeholder="Ej: Netflix" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Monto Aproximado (Gs.)</label>
-                            <input type="number" class="form-control" id="recMonto">
+                            <label class="form-label" for="recMonto">Monto Aproximado (Gs.)</label>
+                            <input type="number" class="form-control" id="recMonto" name="recurrente_monto">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Categoría</label>
-                            <select class="form-select" id="recCategoria" required></select>
+                            <label class="form-label" for="recCategoria">Categoría</label>
+                            <select class="form-select" id="recCategoria" name="recurrente_categoria" required></select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Día de Vencimiento</label>
-                            <input type="number" class="form-control" id="recDia" min="1" max="31">
+                            <label class="form-label" for="recDia">Día de Vencimiento</label>
+                            <input type="number" class="form-control" id="recDia" name="recurrente_dia" min="1" max="31">
                         </div>
                     </form>
                 </div>
@@ -554,35 +558,35 @@
                     <form id="formDeuda">
                         <input type="hidden" id="deudaIdEdit">
                         <div class="mb-3">
-                            <label class="form-label">Concepto</label>
+                            <label class="form-label" for="deudaConcepto">Concepto</label>
                             <div class="input-group">
-                                <button class="btn btn-outline-secondary" type="button" id="btnEmojiDeuda">💳</button>
-                                <input type="text" class="form-control" id="deudaConcepto" placeholder="Ej: Visa Itaú" required>
+                                <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiDeuda" aria-label="Elegir emoji para deuda">💳</button>
+                                <input type="text" class="form-control" id="deudaConcepto" name="deuda_concepto" placeholder="Ej: Visa Itaú" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col mb-3">
-                                <label class="form-label">Monto Total (Gs.)</label>
-                                <input type="number" class="form-control" id="deudaMonto" required>
+                                <label class="form-label" for="deudaMonto">Monto Total (Gs.)</label>
+                                <input type="number" class="form-control" id="deudaMonto" name="deuda_monto_total" required>
                             </div>
                             <div class="col mb-3">
-                                <label class="form-label">Cuota Mensual (Gs.)</label>
-                                <input type="number" class="form-control" id="deudaCuotaMonto" placeholder="Aprox">
+                                <label class="form-label" for="deudaCuotaMonto">Cuota Mensual (Gs.)</label>
+                                <input type="number" class="form-control" id="deudaCuotaMonto" name="deuda_cuota_monto" placeholder="Aprox">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col mb-3">
-                                <label class="form-label">Total Cuotas</label>
-                                <input type="number" class="form-control" id="deudaCuotas" min="1" value="1" required>
+                                <label class="form-label" for="deudaCuotas">Total Cuotas</label>
+                                <input type="number" class="form-control" id="deudaCuotas" name="deuda_cuotas" min="1" value="1" required>
                             </div>
                             <div class="col mb-3">
-                                <label class="form-label">Pagadas</label>
-                                <input type="number" class="form-control" id="deudaPagadas" min="0" value="0" required>
+                                <label class="form-label" for="deudaPagadas">Pagadas</label>
+                                <input type="number" class="form-control" id="deudaPagadas" name="deuda_pagadas" min="0" value="0" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Fecha Inicio</label>
-                            <input type="date" class="form-control" id="deudaFechaInicio">
+                            <label class="form-label" for="deudaFechaInicio">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="deudaFechaInicio" name="deuda_fecha_inicio">
                         </div>
                     </form>
                 </div>
@@ -606,22 +610,22 @@
                         <input type="hidden" id="catIdEdit"> <!-- ID para edición -->
                         <input type="hidden" id="catTipo">
                         <div class="mb-3">
-                            <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="catNombre" required>
+                            <label class="form-label" for="catNombre">Nombre</label>
+                            <input type="text" class="form-control" id="catNombre" name="categoria_nombre" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Emoji</label>
+                            <label class="form-label" for="catEmoji">Emoji</label>
                             <div class="input-group">
-                                <button class="btn btn-outline-secondary" type="button" id="btnEmojiPicker">😊</button>
-                                <input type="text" class="form-control" id="catEmoji" placeholder="Selecciona un emoji" readonly required>
+                                <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiPicker" aria-label="Elegir emoji para categoría">😊</button>
+                                <input type="text" class="form-control" id="catEmoji" name="categoria_emoji" placeholder="Selecciona un emoji" readonly required>
                             </div>
                             <div id="emojiPickerContainer" class="mt-2"></div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Color</label>
                             <div class="input-group">
-                                <div id="colorPreview" class="form-control" style="background-color: #563d7c; cursor: pointer;"></div>
-                                <input type="hidden" id="catColor" value="#563d7c">
+                                <div id="colorPreview" class="form-control" style="background-color: #059669; cursor: pointer;" role="button" tabindex="0" aria-label="Seleccionar color de categoría"></div>
+                                <input type="hidden" id="catColor" value="#059669">
                             </div>
                             <small class="text-muted">Click en la barra para cambiar color</small>
                         </div>
@@ -665,12 +669,12 @@
                 <div class="modal-body">
                     <form id="formPresupuesto">
                         <div class="mb-3">
-                            <label class="form-label">Categoría de Gasto</label>
-                            <select class="form-select" id="presupuestoCategoria" required></select>
+                            <label class="form-label" for="presupuestoCategoria">Categoría de Gasto</label>
+                            <select class="form-select" id="presupuestoCategoria" name="presupuesto_categoria" required></select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Límite Mensual (Gs.)</label>
-                            <input type="number" class="form-control" id="presupuestoMonto" min="1" required>
+                            <label class="form-label" for="presupuestoMonto">Límite Mensual (Gs.)</label>
+                            <input type="number" class="form-control" id="presupuestoMonto" name="presupuesto_monto" min="1" required>
                         </div>
                     </form>
                 </div>
@@ -692,12 +696,12 @@
                     <p class="text-center text-muted mb-4">Inicia sesión para acceder a tus datos seguros en la nube.</p>
                     <form id="formLogin">
                         <div class="mb-3">
-                            <label class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="loginEmail" required placeholder="tu@email.com">
+                            <label class="form-label" for="loginEmail">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="loginEmail" name="login_email" autocomplete="email" required placeholder="tu@email.com">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="loginPassword" required placeholder="********">
+                            <label class="form-label" for="loginPassword">Contraseña</label>
+                            <input type="password" class="form-control" id="loginPassword" name="login_password" autocomplete="current-password" required placeholder="********">
                         </div>
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary" id="btnLogin">Iniciar Sesión</button>
@@ -718,12 +722,13 @@
                             </button>
                         </div>
                     </form>
-                    <div id="loginError" class="alert alert-danger mt-3 d-none"></div>
-                    <div id="loginSuccess" class="alert alert-success mt-3 d-none">Registro exitoso. ¡Revisa tu correo!</div>
+                    <div id="loginError" class="alert alert-danger mt-3 d-none" role="alert" aria-live="assertive"></div>
+                    <div id="loginSuccess" class="alert alert-success mt-3 d-none" role="status" aria-live="polite">Registro exitoso. ¡Revisa tu correo!</div>
                 </div>
             </div>
         </div>
     </div>
+    </main>
 
     <!-- Bootstrap & Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

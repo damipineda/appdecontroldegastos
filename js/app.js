@@ -654,8 +654,8 @@ class UI {
                     </td>
                     <td style="width: 10%;" class="text-end">
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-secondary edit" data-id="${g.id}" data-tipo="gasto" title="Editar">✏️</button>
-                            <button class="btn btn-outline-danger delete" data-id="${g.id}" data-tipo="gasto" title="Eliminar">&times;</button>
+                            <button class="btn btn-outline-secondary edit" data-id="${g.id}" data-tipo="gasto" aria-label="Editar gasto">✏️</button>
+                            <button class="btn btn-outline-danger delete" data-id="${g.id}" data-tipo="gasto" aria-label="Eliminar gasto">&times;</button>
                         </div>
                     </td>
                 `;
@@ -695,8 +695,8 @@ class UI {
                     </td>
                     <td style="width: 10%;" class="text-end">
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-secondary edit" data-id="${i.id}" data-tipo="ingreso" title="Editar">✏️</button>
-                            <button class="btn btn-outline-danger delete" data-id="${i.id}" data-tipo="ingreso" title="Eliminar">&times;</button>
+                            <button class="btn btn-outline-secondary edit" data-id="${i.id}" data-tipo="ingreso" aria-label="Editar ingreso">✏️</button>
+                            <button class="btn btn-outline-danger delete" data-id="${i.id}" data-tipo="ingreso" aria-label="Eliminar ingreso">&times;</button>
                         </div>
                     </td>
                 `;
@@ -738,8 +738,8 @@ class UI {
                         </div>
                     </div>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary btn-edit-rec" data-id="${r.id}">✏️</button>
-                        <button class="btn btn-outline-danger btn-del-rec" data-id="${r.id}">&times;</button>
+                        <button class="btn btn-outline-primary btn-edit-rec" data-id="${r.id}" aria-label="Editar plantilla">✏️</button>
+                        <button class="btn btn-outline-danger btn-del-rec" data-id="${r.id}" aria-label="Eliminar plantilla">&times;</button>
                     </div>
                 `;
                 listaRec.appendChild(div);
@@ -1115,8 +1115,8 @@ class UI {
         document.querySelector('#catIdEdit').value = ''; // Reset ID
         document.querySelector('#modalCategoriaTitle').textContent = 'Nueva Categoría';
         document.querySelector('#formCategoria').reset();
-        document.querySelector('#catColor').value = '#563d7c';
-        document.querySelector('#colorPreview').style.backgroundColor = '#563d7c';
+        document.querySelector('#catColor').value = '#059669';
+        document.querySelector('#colorPreview').style.backgroundColor = '#059669';
 
         const modalEl = document.getElementById('modalCategoria');
         const modal = new bootstrap.Modal(modalEl);
@@ -1129,6 +1129,17 @@ class UI {
                 parent.style.backgroundColor = color.rgbaString;
                 document.querySelector('#catColor').value = color.hex.substring(0, 7);
             };
+        }
+
+        const colorPreview = document.querySelector('#colorPreview');
+        if (colorPreview && !colorPreview.dataset.keyboardBound) {
+            colorPreview.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    colorPreview.click();
+                }
+            });
+            colorPreview.dataset.keyboardBound = 'true';
         }
         
         // Emoji Picker (Unified)
@@ -1166,8 +1177,8 @@ class UI {
                     <span class="badge" style="background-color: ${c.color}">&nbsp;</span>
                 </div>
                 <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-primary btn-edit-cat" data-id="${c.id}" data-nombre="${c.nombre}" data-emoji="${c.emoji}" data-color="${c.color}" data-tipo="${c.tipo}">✏️</button>
-                    <button class="btn btn-outline-danger btn-del-cat" data-id="${c.id}">🗑️</button>
+                    <button class="btn btn-outline-primary btn-edit-cat" data-id="${c.id}" data-nombre="${c.nombre}" data-emoji="${c.emoji}" data-color="${c.color}" data-tipo="${c.tipo}" aria-label="Editar categoría">✏️</button>
+                    <button class="btn btn-outline-danger btn-del-cat" data-id="${c.id}" aria-label="Eliminar categoría">🗑️</button>
                 </div>
             `;
             lista.appendChild(item);
@@ -1276,6 +1287,25 @@ class UI {
 
 // --- INIT & AUTH HANDLER ---
 const modalLogin = new bootstrap.Modal(document.getElementById('modalLogin'));
+
+['btnOpenLogin', 'btnStartFree'].forEach((buttonId) => {
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+    button.addEventListener('click', () => modalLogin.show());
+});
+
+const categoryActionButtons = [
+    { id: 'btnNuevaCategoriaGasto', action: () => UI.abrirModalCategoria('gasto') },
+    { id: 'btnGestionarCategoriaGasto', action: () => UI.abrirGestorCategorias('gasto') },
+    { id: 'btnNuevaCategoriaIngreso', action: () => UI.abrirModalCategoria('ingreso') },
+    { id: 'btnGestionarCategoriaIngreso', action: () => UI.abrirGestorCategorias('ingreso') }
+];
+
+categoryActionButtons.forEach(({ id, action }) => {
+    const button = document.getElementById(id);
+    if (!button) return;
+    button.addEventListener('click', action);
+});
 
 // --- VIEW TOGGLER ---
 function toggleView(isLoggedIn) {
