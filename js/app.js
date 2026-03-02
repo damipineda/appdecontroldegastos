@@ -1287,6 +1287,53 @@ function toggleView(isLoggedIn) {
     }
 }
 
+function manejarErrorGlobalInicio(contexto, error) {
+    console.error(contexto, error);
+    UI.toggleLoader(false);
+    if (document.getElementById('appContainer')?.style.display !== 'block') {
+        toggleView(false);
+    }
+    mostrarErrorInicio('Ocurrió un error al cargar la aplicación. Recarga la página para continuar.');
+}
+
+window.addEventListener('error', (event) => {
+    if (!event?.error) return;
+    manejarErrorGlobalInicio('Error de ejecución no controlado:', event.error);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+    manejarErrorGlobalInicio('Promesa rechazada no controlada:', event.reason);
+});
+
+async function arrancarAppSesionActiva(session, opciones = {}) {
+    const { mostrarLoader = false } = opciones;
+
+    if (!session?.user?.email) {
+        UI.toggleLoader(false);
+        toggleView(false);
+        return;
+    }
+
+    if (mostrarLoader) UI.toggleLoader(true);
+
+    toggleView(true);
+    document.getElementById('userEmail').textContent = session.user.email;
+    document.getElementById('btnLogout').style.display = 'block';
+
+    try {
+        await conTimeout(initApp(), 15000, 'Timeout al cargar datos iniciales');
+        ocultarErrorInicio();
+    } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        UI.toggleLoader(false);
+        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!supabaseClient) {
+        UI.toggleLoader(false);
+        toggleView(false);
 async function arrancarAppSesionActiva(session, opciones = {}) {
     const { mostrarLoader = false } = opciones;
 
@@ -1777,7 +1824,7 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
         document.querySelector('#deudaIdEdit').value = '';
         document.querySelector('#formDeuda').reset();
         document.querySelector('#modalDeudaTitle').textContent = 'Registrar Deuda';
-        document.querySelector('#btnEmojiDeuda').textContent = '�';
+        document.querySelector('#btnEmojiDeuda').textContent = '💳';
     });
 
     // 2. Cargar categorías al abrir modal recurrente (siempre)
