@@ -3,8 +3,39 @@
 const SUPABASE_URL = 'https://lqjkethzsdzvhmeytvlh.supabase.co'; // Tu URL (ya la detecté en el error)
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxamtldGh6c2R6dmhtZXl0dmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjExNjEsImV4cCI6MjA4MTM5NzE2MX0.dJ0K7WTWd3ipwrMbBYL15VhC2_Qr-TKXqn4bFtw-uuA'; // ⚠️ IMPORTANTE: Usa la clave "anon public" (empieza con "ey..."), NO la "service_role" (secret)
 
+function mostrarErrorInicio(mensaje) {
+    let alerta = document.getElementById('startupErrorAlert');
+    if (!alerta) {
+        alerta = document.createElement('div');
+        alerta.id = 'startupErrorAlert';
+        alerta.className = 'alert alert-warning text-center m-3';
+        document.body.prepend(alerta);
+    }
+    alerta.textContent = mensaje;
+}
+
+function ocultarErrorInicio() {
+    const alerta = document.getElementById('startupErrorAlert');
+    if (alerta) alerta.remove();
+}
+
+async function obtenerSesionConTimeout(ms = 10000) {
+    let timeoutId;
+    try {
+        const sessionPromise = supabaseClient.auth.getSession();
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error('Timeout al consultar sesión')), ms);
+        });
+        return await Promise.race([sessionPromise, timeoutPromise]);
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
 // Inicializar cliente
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase?.createClient
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
 
 // --- CLASES (Modelo de Datos Local) ---
 class Transaccion {
@@ -1221,34 +1252,56 @@ function toggleView(isLoggedIn) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Chequear Sesión
-    const { data: { session } } = await supabaseClient.auth.getSession();
+async function arrancarAppSesionActiva(session) {
+    toggleView(true);
+    document.getElementById('userEmail').textContent = session.user.email;
+    document.getElementById('btnLogout').style.display = 'block';
 
-    if (!session) {
+    try {
+        await initApp();
+        ocultarErrorInicio();
+    } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        UI.toggleLoader(false);
+        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!supabaseClient) {
         UI.toggleLoader(false);
         toggleView(false);
-    } else {
-        toggleView(true);
-        document.getElementById('userEmail').textContent = session.user.email;
-        document.getElementById('btnLogout').style.display = 'block';
-        initApp();
+        mostrarErrorInicio('No se pudo inicializar la conexión. Recarga la página y verifica tu conexión a internet.');
+        return;
     }
 
-    // Auth Listener
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN') {
-            UI.toggleLoader(true); 
-            modalLogin.hide();
-            toggleView(true);
-            document.getElementById('userEmail').textContent = session.user.email;
-            document.getElementById('btnLogout').style.display = 'block';
-            initApp();
-        } else if (event === 'SIGNED_OUT') {
+    try {
+        const { data: { session } } = await obtenerSesionConTimeout(10000);
+
+        if (!session) {
             UI.toggleLoader(false);
             toggleView(false);
+        } else {
+            await arrancarAppSesionActiva(session);
         }
-    });
+
+        // Auth Listener
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN') {
+                UI.toggleLoader(true);
+                modalLogin.hide();
+                await arrancarAppSesionActiva(session);
+            } else if (event === 'SIGNED_OUT') {
+                UI.toggleLoader(false);
+                toggleView(false);
+            }
+        });
+    } catch (error) {
+        console.error('Error al iniciar la app:', error);
+        UI.toggleLoader(false);
+        toggleView(false);
+        mostrarErrorInicio('No se pudo conectar con el servidor en este momento. Intenta recargar en unos segundos.');
+    }
 });
 
 async function initApp() {
