@@ -118,6 +118,33 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.download-apk-section {
+    background: linear-gradient(180deg, rgba(5, 150, 105, 0.06), rgba(255, 255, 255, 0.9));
+}
+
+.download-apk-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.4rem 1.5rem;
+    border: 1px solid #dbe7e2;
+    border-radius: 18px;
+    background-color: #ffffff;
+    box-shadow: 0 14px 24px -24px rgba(0, 0, 0, 0.45);
+}
+
+.download-kicker {
+    color: #0f766e;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+}
+
+.download-apk-actions {
+    text-align: right;
+}
+
 
 .navbar-brand {
     font-weight: 600;
@@ -302,6 +329,50 @@ tbody tr:hover {
     padding-bottom: 1rem;
 }
 
+.mobile-tabbar {
+    position: fixed;
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.25rem;
+    padding: 0.38rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #d6e2dc;
+    box-shadow: 0 20px 30px -24px rgba(0, 0, 0, 0.55);
+    z-index: 1080;
+    backdrop-filter: blur(8px);
+}
+
+.mobile-tab-link {
+    flex: 1 1 20%;
+    border: 0;
+    background: transparent;
+    color: #6b7280;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.1;
+    padding: 0.42rem 0.1rem;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.mobile-tab-link i {
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+}
+
+.mobile-tab-link.is-active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #059669, #0f766e);
+}
+
 .panel-toolbar {
     background: linear-gradient(135deg, #ffffff 0%, #f3faf8 100%);
     box-shadow: 0 18px 34px -26px rgba(0, 0, 0, 0.45) !important;
@@ -479,6 +550,81 @@ tbody tr:hover {
 
     .tabs-shell {
         padding: 0.4rem;
+    }
+
+    .download-apk-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.2rem;
+    }
+
+    .download-apk-actions {
+        width: 100%;
+        text-align: left;
+    }
+
+    .download-apk-actions .btn {
+        width: 100%;
+    }
+
+    #appContainer {
+        padding-bottom: 5.6rem;
+    }
+
+    .app-shell {
+        padding-bottom: 0.4rem;
+    }
+
+    .form-duo > .col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .table-mobile-cards thead {
+        display: none;
+    }
+
+    .table-mobile-cards tbody tr {
+        display: block;
+        margin: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #ffffff;
+        overflow: hidden;
+    }
+
+    .table-mobile-cards tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.9rem;
+        width: 100% !important;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 0.62rem 0.82rem;
+        text-align: right !important;
+    }
+
+    .table-mobile-cards tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #475569;
+        text-align: left;
+        margin-right: auto;
+    }
+
+    .table-mobile-cards tbody td:last-child {
+        border-bottom: 0;
+    }
+
+    .table-mobile-cards .btn-group {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .table-mobile-cards .badge {
+        max-width: 62vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

@@ -634,25 +634,25 @@ class UI {
                 const tr = document.createElement('tr');
                 tr.className = 'align-middle'; // Centrado vertical
                 tr.innerHTML = `
-                    <td style="width: 15%;">
+                    <td style="width: 15%;" data-label="Fecha">
                         <div class="d-flex flex-column">
                             <span class="fw-bold text-nowrap">${UI.formatearFecha(g.fecha)}</span>
                             <small class="text-muted">${g.hora || ''}</small>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Concepto">
                         <div class="fw-medium text-break">${g.concepto}</div>
                     </td>
-                    <td style="width: 15%;">
+                    <td style="width: 15%;" data-label="Categoría">
                         <span class="badge rounded-pill text-dark border" style="background-color: ${cat.color}33; border-color: ${cat.color} !important;">
                             ${cat.emoji} ${cat.nombre}
                         </span>
                     </td>
-                    <td style="width: 15%;"><small class="text-muted">${g.metodoPago || '-'}</small></td>
-                    <td class="text-end fw-bold text-danger" style="width: 15%; font-size: 1.1em;">
+                    <td style="width: 15%;" data-label="Pago"><small class="text-muted">${g.metodoPago || '-'}</small></td>
+                    <td class="text-end fw-bold text-danger" style="width: 15%; font-size: 1.1em;" data-label="Monto">
                         - ${UI.formatearMoneda(g.monto)}
                     </td>
-                    <td style="width: 10%;" class="text-end">
+                    <td style="width: 10%;" class="text-end" data-label="Acciones">
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-outline-secondary edit" data-id="${g.id}" data-tipo="gasto" aria-label="Editar gasto">✏️</button>
                             <button class="btn btn-outline-danger delete" data-id="${g.id}" data-tipo="gasto" aria-label="Eliminar gasto">&times;</button>
@@ -676,24 +676,24 @@ class UI {
                 const tr = document.createElement('tr');
                 tr.className = 'align-middle';
                 tr.innerHTML = `
-                    <td style="width: 15%;">
+                    <td style="width: 15%;" data-label="Fecha">
                         <div class="d-flex flex-column">
                             <span class="fw-bold text-nowrap">${UI.formatearFecha(i.fecha)}</span>
                             <small class="text-muted">${i.hora || ''}</small>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Fuente">
                         <div class="fw-medium text-break">${i.concepto}</div>
                     </td>
-                    <td style="width: 15%;">
+                    <td style="width: 15%;" data-label="Categoría">
                         <span class="badge rounded-pill text-dark border" style="background-color: ${cat.color}33; border-color: ${cat.color} !important;">
                             ${cat.emoji} ${cat.nombre}
                         </span>
                     </td>
-                    <td class="text-end fw-bold text-success" style="width: 15%; font-size: 1.1em;">
+                    <td class="text-end fw-bold text-success" style="width: 15%; font-size: 1.1em;" data-label="Monto">
                         + ${UI.formatearMoneda(i.monto)}
                     </td>
-                    <td style="width: 10%;" class="text-end">
+                    <td style="width: 10%;" class="text-end" data-label="Acciones">
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-outline-secondary edit" data-id="${i.id}" data-tipo="ingreso" aria-label="Editar ingreso">✏️</button>
                             <button class="btn btn-outline-danger delete" data-id="${i.id}" data-tipo="ingreso" aria-label="Eliminar ingreso">&times;</button>
@@ -1306,6 +1306,36 @@ categoryActionButtons.forEach(({ id, action }) => {
     if (!button) return;
     button.addEventListener('click', action);
 });
+
+const desktopTabButtons = Array.from(document.querySelectorAll('#myTab button[data-bs-toggle="tab"]'));
+const mobileTabButtons = Array.from(document.querySelectorAll('.mobile-tab-link'));
+
+function sincronizarTabMovil(tabIdActivo) {
+    mobileTabButtons.forEach((btn) => {
+        const isActive = btn.getAttribute('data-tab-trigger') === tabIdActivo;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+}
+
+desktopTabButtons.forEach((tabBtn) => {
+    tabBtn.addEventListener('shown.bs.tab', () => {
+        sincronizarTabMovil(tabBtn.id);
+    });
+});
+
+mobileTabButtons.forEach((mobileBtn) => {
+    mobileBtn.addEventListener('click', () => {
+        const targetTabId = mobileBtn.getAttribute('data-tab-trigger');
+        const desktopBtn = document.getElementById(targetTabId);
+        if (!desktopBtn) return;
+        desktopBtn.click();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+});
+
+const tabActivoInicial = document.querySelector('#myTab button.active');
+if (tabActivoInicial) sincronizarTabMovil(tabActivoInicial.id);
 
 // --- VIEW TOGGLER ---
 function toggleView(isLoggedIn) {
