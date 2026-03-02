@@ -1,0 +1,76 @@
+# ============================================
+# Carpetas de Agentes y Skills de IA
+# ============================================
+
+# Agente de diferentes plataformas
+.adal/
+.agent/
+.agents/
+.augment/
+.claude/
+.codebuddy/
+.commandcode/
+.continue/
+.cortex/
+.crush/
+.factory/
+.goose/
+.iflow/
+.junie/
+.kilocode/
+.kiro/
+.kode/
+.mcpjam/
+.mux/
+.neovate/
+.openhands/
+.pi/
+.pochi/
+.qoder/
+.qwen/
+.roo/
+.trae/
+.vibe/
+.windsurf/
+.zencoder/
+
+# Skills de IA
+skills/
+skills-lock.json
+
+# ============================================
+# Dependencias y Build
+# ============================================
+node_modules/
+dist/
+build/
+.cache/
+
+# ============================================
+# Archivos de entorno
+# ============================================
+.env
+.env.local
+.env.*.local
+
+# ============================================
+# Archivos del sistema
+# ============================================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# ============================================
+# IDEs y editores
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================
+# Archivos de despliegue
+# ============================================
+.vercel/
