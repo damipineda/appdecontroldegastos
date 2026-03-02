@@ -545,6 +545,9 @@ class UI {
             UI.renderizarListas(),
             UI.renderizarPlanificacion()
         ]);
+        
+        // 3. Ocultar loader después de cargar todo
+        UI.toggleLoader(false);
     }
 
     static llenarSelectCategorias(tipo, datos) {
@@ -1309,10 +1312,6 @@ window.addEventListener('unhandledrejection', (event) => {
 async function arrancarAppSesionActiva(session, opciones = {}) {
     const { mostrarLoader = false } = opciones;
 
-
-async function arrancarAppSesionActiva(session, opciones = {}) {
-    const { mostrarLoader = false } = opciones;
-
     if (!session?.user?.email) {
         UI.toggleLoader(false);
         toggleView(false);
@@ -1327,54 +1326,6 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
 
     try {
         await conTimeout(initApp(), 15000, 'Timeout al cargar datos iniciales');
-        ocultarErrorInicio();
-    } catch (error) {
-        console.error('Error al cargar datos iniciales:', error);
-        UI.toggleLoader(false);
-        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    if (!supabaseClient) {
-        UI.toggleLoader(false);
-        toggleView(false);
-async function arrancarAppSesionActiva(session, opciones = {}) {
-    const { mostrarLoader = false } = opciones;
-
-    if (!session?.user?.email) {
-        UI.toggleLoader(false);
-        toggleView(false);
-        return;
-    }
-
-    if (mostrarLoader) UI.toggleLoader(true);
-
-    toggleView(true);
-    document.getElementById('userEmail').textContent = session.user.email;
-    document.getElementById('btnLogout').style.display = 'block';
-
-    try {
-        await conTimeout(initApp(), 15000, 'Timeout al cargar datos iniciales');
-        ocultarErrorInicio();
-    } catch (error) {
-        console.error('Error al cargar datos iniciales:', error);
-        UI.toggleLoader(false);
-        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    if (!supabaseClient) {
-        UI.toggleLoader(false);
-        toggleView(false);
-async function arrancarAppSesionActiva(session) {
-    toggleView(true);
-    document.getElementById('userEmail').textContent = session.user.email;
-    document.getElementById('btnLogout').style.display = 'block';
-
-    try {
-        await initApp();
         ocultarErrorInicio();
     } catch (error) {
         console.error('Error al cargar datos iniciales:', error);
@@ -1398,18 +1349,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             UI.toggleLoader(false);
             toggleView(false);
         } else {
-            await arrancarAppSesionActiva(session, { mostrarLoader: false });
-            await arrancarAppSesionActiva(session);
+            await arrancarAppSesionActiva(session, { mostrarLoader: true });
         }
 
         // Auth Listener
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_IN') {
                 modalLogin.hide();
-                await arrancarAppSesionActiva(session, { mostrarLoader: false });
-                UI.toggleLoader(true);
-                modalLogin.hide();
-                await arrancarAppSesionActiva(session);
+                await arrancarAppSesionActiva(session, { mostrarLoader: true });
             } else if (event === 'SIGNED_OUT') {
                 UI.toggleLoader(false);
                 toggleView(false);
@@ -1718,13 +1665,13 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
 });
 
 // Cancelar Edición
-    document.querySelector('#btnGastoCancel').addEventListener('click', () => UI.cancelarEdicion('gasto'));
-    document.querySelector('#btnIngresoCancel').addEventListener('click', () => UI.cancelarEdicion('ingreso'));
+document.querySelector('#btnGastoCancel').addEventListener('click', () => UI.cancelarEdicion('gasto'));
+document.querySelector('#btnIngresoCancel').addEventListener('click', () => UI.cancelarEdicion('ingreso'));
 
-    // --- EVENTOS NUEVOS ---
+// --- EVENTOS NUEVOS ---
 
-    // 1. Guardar Recurrente (Plantilla)
-    document.querySelector('#btnGuardarRecurrente').addEventListener('click', async () => {
+// 1. Guardar Recurrente (Plantilla)
+document.querySelector('#btnGuardarRecurrente').addEventListener('click', async () => {
         UI.setLoadingButton('btnGuardarRecurrente', true);
         const id = document.querySelector('#recIdEdit').value;
         const concepto = document.querySelector('#recConcepto').value;
@@ -1755,8 +1702,8 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
         }
     });
 
-    // 2. Guardar Deuda
-    document.querySelector('#btnGuardarDeuda').addEventListener('click', async () => {
+// 2. Guardar Deuda
+document.querySelector('#btnGuardarDeuda').addEventListener('click', async () => {
         UI.setLoadingButton('btnGuardarDeuda', true);
         const id = document.querySelector('#deudaIdEdit').value;
         const concepto = document.querySelector('#deudaConcepto').value;
@@ -1789,9 +1736,9 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
         }
     });
 
-    // --- PICKERS EMOJIS NUEVOS ---
-    // Picker Recurrente
-    const btnRec = document.querySelector('#btnEmojiRec');
+// --- PICKERS EMOJIS NUEVOS ---
+// Picker Recurrente
+const btnRec = document.querySelector('#btnEmojiRec');
     btnRec.classList.add('btn-emoji-trigger');
     btnRec.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1800,40 +1747,40 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
         });
     });
 
-    // Picker Deuda
-    const btnDeuda = document.querySelector('#btnEmojiDeuda');
-    btnDeuda.classList.add('btn-emoji-trigger');
-    btnDeuda.addEventListener('click', (e) => {
-        e.preventDefault();
-        UI.abrirPicker(btnDeuda, (selection) => {
-            btnDeuda.textContent = selection.emoji;
-        });
+// Picker Deuda
+const btnDeuda = document.querySelector('#btnEmojiDeuda');
+btnDeuda.classList.add('btn-emoji-trigger');
+btnDeuda.addEventListener('click', (e) => {
+    e.preventDefault();
+    UI.abrirPicker(btnDeuda, (selection) => {
+        btnDeuda.textContent = selection.emoji;
     });
+});
 
-    // Seguridad: Cerrar picker si se cierra cualquier modal
-    document.addEventListener('hidden.bs.modal', () => {
-        if(UI.pickerEmojiContainer) UI.pickerEmojiContainer.style.display = 'none';
-    });
+// Seguridad: Cerrar picker si se cierra cualquier modal
+document.addEventListener('hidden.bs.modal', () => {
+    if(UI.pickerEmojiContainer) UI.pickerEmojiContainer.style.display = 'none';
+});
 
-    // --- GESTIÓN DE MODALES (Fix Sombra y Edición) ---
-    
-    // 1. Reset forms al clickear "+ Nuevo"
-    document.getElementById('btnAddRecurrente').addEventListener('click', () => {
+// --- GESTIÓN DE MODALES (Fix Sombra y Edición) ---
+
+// 1. Reset forms al clickear "+ Nuevo"
+document.getElementById('btnAddRecurrente').addEventListener('click', () => {
         document.querySelector('#recIdEdit').value = '';
         document.querySelector('#formRecurrente').reset();
         document.querySelector('#modalRecurrenteTitle').textContent = 'Nueva Plantilla';
         document.querySelector('#btnEmojiRec').textContent = '📝';
     });
 
-    document.getElementById('btnAddDeuda').addEventListener('click', () => {
-        document.querySelector('#deudaIdEdit').value = '';
-        document.querySelector('#formDeuda').reset();
-        document.querySelector('#modalDeudaTitle').textContent = 'Registrar Deuda';
-        document.querySelector('#btnEmojiDeuda').textContent = '💳';
-    });
+document.getElementById('btnAddDeuda').addEventListener('click', () => {
+    document.querySelector('#deudaIdEdit').value = '';
+    document.querySelector('#formDeuda').reset();
+    document.querySelector('#modalDeudaTitle').textContent = 'Registrar Deuda';
+    document.querySelector('#btnEmojiDeuda').textContent = '💳';
+});
 
-    // 2. Cargar categorías al abrir modal recurrente (siempre)
-    document.getElementById('modalRecurrente').addEventListener('show.bs.modal', async () => {
+// 2. Cargar categorías al abrir modal recurrente (siempre)
+document.getElementById('modalRecurrente').addEventListener('show.bs.modal', async () => {
         const cats = await Store.obtenerCategorias('gasto');
         const select = document.querySelector('#recCategoria');
         const currentVal = select.value;
@@ -1841,15 +1788,15 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
         cats.forEach(c => {
             select.innerHTML += `<option value="${c.id}">${c.emoji} ${c.nombre}</option>`;
         });
-        if(currentVal && currentVal !== '') select.value = currentVal;
-    });
+    if(currentVal && currentVal !== '') select.value = currentVal;
+});
 
-    document.getElementById('modalDeuda').addEventListener('show.bs.modal', (e) => {
-        // Nada especial que hacer aquí, el reset ya se hizo en el click
-    });
+document.getElementById('modalDeuda').addEventListener('show.bs.modal', (e) => {
+    // Nada especial que hacer aquí, el reset ya se hizo en el click
+});
 
-    // 3. Cargar Plantilla en Formulario Gasto
-    document.querySelector('#gastoPlantilla').addEventListener('change', (e) => {
+// 3. Cargar Plantilla en Formulario Gasto
+document.querySelector('#gastoPlantilla').addEventListener('change', (e) => {
         const val = e.target.value;
         if (!val) return;
         
@@ -1858,12 +1805,12 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
         if(data.monto) document.querySelector('#gastoMonto').value = data.monto;
         if(data.category_id) document.querySelector('#gastoCategoria').value = data.category_id;
         
-        // Simular evento change en categoria para mostrar presupuesto
-        document.querySelector('#gastoCategoria').dispatchEvent(new Event('change'));
-    });
+    // Simular evento change en categoria para mostrar presupuesto
+    document.querySelector('#gastoCategoria').dispatchEvent(new Event('change'));
+});
 
-    // 4. Mostrar Presupuesto al cambiar Categoría
-    document.querySelector('#gastoCategoria').addEventListener('change', async (e) => {
+// 4. Mostrar Presupuesto al cambiar Categoría
+document.querySelector('#gastoCategoria').addEventListener('change', async (e) => {
         const catId = e.target.value;
         const presupuestos = await Store.obtenerPresupuestos();
         const infoDiv = document.querySelector('#infoPresupuestoGasto');
@@ -1922,15 +1869,20 @@ document.querySelector('#btnComparar').addEventListener('click', async () => {
 
 // Refresco suave al volver a la pestaña para evitar estados colgados del loader
 let ultimoRefrescoVisibilidad = 0;
+let refrescando = false;
+
 document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState !== 'visible') return;
     if (!supabaseClient) return;
+    if (refrescando) return; // Evitar múltiples llamadas simultáneas
 
     const appVisible = document.getElementById('appContainer')?.style.display !== 'none';
     if (!appVisible) return;
 
     const ahora = Date.now();
     if (ahora - ultimoRefrescoVisibilidad < 5000) return;
+    
+    refrescando = true;
     ultimoRefrescoVisibilidad = ahora;
 
     try {
@@ -1938,7 +1890,9 @@ document.addEventListener('visibilitychange', async () => {
         ocultarErrorInicio();
     } catch (error) {
         console.error('Error al refrescar la app al volver a la pestaña:', error);
-        UI.toggleLoader(false);
         mostrarErrorInicio('No se pudo refrescar automáticamente al volver a la app. Recarga la página si persiste.');
+    } finally {
+        UI.toggleLoader(false);
+        refrescando = false;
     }
 });
