@@ -333,7 +333,6 @@ class Store {
             const loginNativo = await capSocialLoginPlugin.login({
                 provider: 'google',
                 options: {
-                    scopes: ['openid', 'email', 'profile'],
                     style: 'standard',
                     filterByAuthorizedAccounts: false
                 }
