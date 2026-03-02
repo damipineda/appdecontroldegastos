@@ -88,6 +88,15 @@ function obtenerIdTokenGoogleNativo(respuesta) {
     return candidatos.find((token) => typeof token === 'string' && token.length > 0) || null;
 }
 
+function extraerMensajeError(err) {
+    if (!err) return '';
+    if (typeof err === 'string') return err;
+    if (typeof err?.message === 'string') return err.message;
+    if (typeof err?.error_description === 'string') return err.error_description;
+    if (typeof err?.error === 'string') return err.error;
+    return '';
+}
+
 async function inicializarGoogleNativoMovil() {
     if (!IS_MOBILE_APP_MODE) return;
     if (!capSocialLoginPlugin?.initialize) {
@@ -107,7 +116,9 @@ async function inicializarGoogleNativoMovil() {
 }
 
 function traducirErrorLoginGoogle(err) {
-    const mensaje = String(err?.message || '');
+    const mensaje = String(extraerMensajeError(err) || '');
+    const normalizado = mensaje.toLowerCase();
+
     if (mensaje.includes('GOOGLE_WEB_CLIENT_ID_NOT_CONFIGURED')) {
         return 'Falta configurar Google nativo en la app móvil (webClientId).';
     }
@@ -116,6 +127,18 @@ function traducirErrorLoginGoogle(err) {
     }
     if (mensaje.includes('NO_GOOGLE_ID_TOKEN')) {
         return 'Google no devolvió un token válido. Intenta de nuevo.';
+    }
+    if (normalizado.includes('unacceptable audience') || normalizado.includes('audience')) {
+        return 'Google devolvió un token con audiencia inválida. Revisa Client ID web en Supabase y Google Cloud.';
+    }
+    if (normalizado.includes('developer_error') || normalizado.includes('12500') || normalizado.includes('10:')) {
+        return 'Google rechazó la app (DEVELOPER_ERROR). Verifica package name y SHA-1/SHA-256 del cliente OAuth Android.';
+    }
+    if (normalizado.includes('no credentials available') || normalizado.includes('nocredential')) {
+        return 'No hay credenciales de Google disponibles en este dispositivo/cuenta. Intenta elegir otra cuenta.';
+    }
+    if (mensaje) {
+        return `Error Google: ${mensaje}`;
     }
     return 'Error al iniciar con Google. Verifica la configuración en Supabase y Google Cloud.';
 }
@@ -310,7 +333,8 @@ class Store {
             const loginNativo = await capSocialLoginPlugin.login({
                 provider: 'google',
                 options: {
-                    scopes: ['email', 'profile'],
+                    scopes: ['openid', 'email', 'profile'],
+                    style: 'standard',
                     filterByAuthorizedAccounts: false
                 }
             });
@@ -321,7 +345,9 @@ class Store {
                 provider: 'google',
                 token: idToken
             });
-            if (error) throw error;
+            if (error) {
+                throw new Error(`SUPABASE_GOOGLE_ID_TOKEN_ERROR: ${error.message || 'desconocido'}`);
+            }
             return data;
         }
 
