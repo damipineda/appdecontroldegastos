@@ -1334,6 +1334,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!supabaseClient) {
         UI.toggleLoader(false);
         toggleView(false);
+async function arrancarAppSesionActiva(session, opciones = {}) {
+    const { mostrarLoader = false } = opciones;
+
+    if (!session?.user?.email) {
+        UI.toggleLoader(false);
+        toggleView(false);
+        return;
+    }
+
+    if (mostrarLoader) UI.toggleLoader(true);
+
+    toggleView(true);
+    document.getElementById('userEmail').textContent = session.user.email;
+    document.getElementById('btnLogout').style.display = 'block';
+
+    try {
+        await conTimeout(initApp(), 15000, 'Timeout al cargar datos iniciales');
+        ocultarErrorInicio();
+    } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        UI.toggleLoader(false);
+        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!supabaseClient) {
+        UI.toggleLoader(false);
+        toggleView(false);
+async function arrancarAppSesionActiva(session) {
+    toggleView(true);
+    document.getElementById('userEmail').textContent = session.user.email;
+    document.getElementById('btnLogout').style.display = 'block';
+
+    try {
+        await initApp();
+        ocultarErrorInicio();
+    } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        UI.toggleLoader(false);
+        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!supabaseClient) {
+        UI.toggleLoader(false);
+        toggleView(false);
         mostrarErrorInicio('No se pudo inicializar la conexión. Recarga la página y verifica tu conexión a internet.');
         return;
     }
@@ -1346,6 +1394,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             toggleView(false);
         } else {
             await arrancarAppSesionActiva(session, { mostrarLoader: false });
+            await arrancarAppSesionActiva(session);
         }
 
         // Auth Listener
@@ -1353,6 +1402,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (event === 'SIGNED_IN') {
                 modalLogin.hide();
                 await arrancarAppSesionActiva(session, { mostrarLoader: false });
+                UI.toggleLoader(true);
+                modalLogin.hide();
+                await arrancarAppSesionActiva(session);
             } else if (event === 'SIGNED_OUT') {
                 UI.toggleLoader(false);
                 toggleView(false);
