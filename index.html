@@ -87,6 +87,24 @@
                 </div>
             </div>
         </section>
+
+        <section class="download-apk-section py-5">
+            <div class="container">
+                <div class="download-apk-card">
+                    <div class="download-apk-copy">
+                        <p class="download-kicker mb-1 text-uppercase">App Android</p>
+                        <h2 class="h4 mb-2">Descarga la versión móvil</h2>
+                        <p class="text-muted mb-0">Instala la APK para usar tus finanzas desde tu teléfono, incluso con pantalla pequeña.</p>
+                    </div>
+                    <div class="download-apk-actions">
+                        <a id="btnDownloadApk" href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-primary btn-lg" download>
+                            <i class="bi bi-android2 me-2"></i>Descargar APK
+                        </a>
+                        <small class="text-muted d-block mt-2">Archivo: <span id="apkFilenameLabel">finanzas-mobile-debug.apk</span></small>
+                    </div>
+                </div>
+            </div>
+        </section>
         
         <footer class="py-4 bg-white text-center border-top mt-auto">
             <small class="text-muted">&copy; 2025 Finanzas Personales.</small>
@@ -311,7 +329,7 @@
                                         <label class="form-label" for="gastoMonto">Monto (Gs.)</label>
                                         <input type="number" class="form-control" id="gastoMonto" name="gasto_monto" min="1" required>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div class="row mb-3 form-duo">
                                         <div class="col">
                                             <label class="form-label" for="gastoFecha">Fecha</label>
                                             <input type="date" class="form-control" id="gastoFecha" name="gasto_fecha" required>
@@ -371,7 +389,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-hover mb-0 align-middle">
+                                    <table class="table table-striped table-hover mb-0 align-middle table-mobile-cards">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Fecha</th>
@@ -411,7 +429,7 @@
                                         <label class="form-label" for="ingresoMonto">Monto (Gs.)</label>
                                         <input type="number" class="form-control" id="ingresoMonto" name="ingreso_monto" min="1" required>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div class="row mb-3 form-duo">
                                         <div class="col">
                                             <label class="form-label" for="ingresoFecha">Fecha</label>
                                             <input type="date" class="form-control" id="ingresoFecha" name="ingreso_fecha" required>
@@ -448,7 +466,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-hover mb-0 align-middle">
+                                    <table class="table table-striped table-hover mb-0 align-middle table-mobile-cards">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Fecha</th>
@@ -525,6 +543,23 @@
 
         </div>
     </div>
+    <nav class="mobile-tabbar d-md-none" aria-label="Navegación móvil principal">
+        <button type="button" class="mobile-tab-link is-active" data-tab-trigger="dashboard-tab" aria-controls="dashboard">
+            <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i><span>Inicio</span>
+        </button>
+        <button type="button" class="mobile-tab-link" data-tab-trigger="gastos-tab" aria-controls="gastos">
+            <i class="bi bi-wallet2" aria-hidden="true"></i><span>Gastos</span>
+        </button>
+        <button type="button" class="mobile-tab-link" data-tab-trigger="ingresos-tab" aria-controls="ingresos">
+            <i class="bi bi-cash-coin" aria-hidden="true"></i><span>Ingresos</span>
+        </button>
+        <button type="button" class="mobile-tab-link" data-tab-trigger="presupuesto-tab" aria-controls="presupuesto">
+            <i class="bi bi-pie-chart-fill" aria-hidden="true"></i><span>Presupuesto</span>
+        </button>
+        <button type="button" class="mobile-tab-link" data-tab-trigger="planificacion-tab" aria-controls="planificacion">
+            <i class="bi bi-calendar2-check-fill" aria-hidden="true"></i><span>Plan</span>
+        </button>
+    </nav>
     </div>
 
     <!-- Modal Nuevo Recurrente -->
@@ -584,7 +619,7 @@
                                 <input type="text" class="form-control" id="deudaConcepto" name="deuda_concepto" placeholder="Ej: Visa Itaú" required>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-duo">
                             <div class="col mb-3">
                                 <label class="form-label" for="deudaMonto">Monto Total (Gs.)</label>
                                 <input type="number" class="form-control" id="deudaMonto" name="deuda_monto_total" required>
@@ -594,7 +629,7 @@
                                 <input type="number" class="form-control" id="deudaCuotaMonto" name="deuda_cuota_monto" placeholder="Aprox">
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-duo">
                             <div class="col mb-3">
                                 <label class="form-label" for="deudaCuotas">Total Cuotas</label>
                                 <input type="number" class="form-control" id="deudaCuotas" name="deuda_cuotas" min="1" value="1" required>

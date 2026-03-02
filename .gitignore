@@ -45,6 +45,7 @@ node_modules/
 dist/
 build/
 .cache/
+www/
 
 # ============================================
 # Archivos de entorno
@@ -69,6 +70,14 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# ============================================
+# Android / Capacitor
+# ============================================
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
 
 # ============================================
 # Archivos de despliegue
