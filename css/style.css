@@ -339,6 +339,7 @@ tbody tr:hover {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     box-shadow: 0 14px 26px -20px rgba(2, 6, 23, 0.45);
+    padding: 0.45rem;
 }
 
 .app-user-email-item {
@@ -349,6 +350,17 @@ tbody tr:hover {
     white-space: nowrap;
     font-weight: 600;
     color: #0f172a;
+}
+
+.app-logout-item {
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.app-logout-item:hover,
+.app-logout-item:focus-visible {
+    background: #fee2e2;
+    color: #b91c1c !important;
 }
 
 .app-shell {
@@ -562,6 +574,37 @@ tbody tr:hover {
         max-width: 150px;
     }
 
+    #appContainer .app-navbar-fixed .container {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    #appContainer .app-brand {
+        min-width: 0;
+        margin-right: 0.25rem;
+        flex: 1 1 auto;
+    }
+
+    #appContainer .app-brand img {
+        width: 38px;
+        height: 38px;
+    }
+
+    #appContainer .app-brand-title {
+        font-size: 1.6rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .app-userbox {
+        flex: 0 0 auto;
+        gap: 0.35rem !important;
+    }
+
     #appContainer {
         padding-top: 5.2rem;
     }
@@ -606,6 +649,23 @@ tbody tr:hover {
         padding-left: 0.65rem;
         padding-right: 0.65rem;
         font-size: 0.8rem;
+    }
+
+    .app-user-menu {
+        min-width: 220px;
+    }
+
+    .app-user-menu .dropdown-header {
+        font-size: 0.78rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+    }
+
+    .app-logout-item {
+        margin-top: 0.15rem;
+        padding: 0.52rem 0.65rem;
+        border: 1px solid #fecaca;
+        background: #fff5f5;
     }
 
     .app-shell {

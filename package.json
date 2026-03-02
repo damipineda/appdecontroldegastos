@@ -1,6 +1,6 @@
 {
   "name": "appdecontroldegastos",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Aplicación web para gestionar finanzas personales, controlar gastos, ingresos, deudas y presupuestos.",
   "main": "index.js",
   "scripts": {
