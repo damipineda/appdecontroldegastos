@@ -928,7 +928,7 @@ class UI {
         document.querySelector('#dashGastos').textContent = UI.formatearMoneda(totalGastos);
         const elBalance = document.querySelector('#dashBalance');
         elBalance.textContent = UI.formatearMoneda(balance);
-        elBalance.parentElement.parentElement.className = `card text-white mb-3 ${balance >= 0 ? 'bg-primary' : 'bg-warning'}`;
+        elBalance.parentElement.parentElement.className = `card kpi-card kpi-balance text-white border-0 h-100 mb-3 ${balance >= 0 ? 'bg-primary' : 'bg-warning'}`;
 
         UI.renderizarGraficos(ingresos, gastos);
     }
