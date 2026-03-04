@@ -57,11 +57,16 @@ const capSocialLoginPlugin = window.Capacitor?.Plugins?.SocialLogin;
 const REPO_OWNER = 'damipineda';
 const REPO_NAME = 'appdecontroldegastos';
 const FALLBACK_APK_FILENAME = 'finanzas-mobile-debug.apk';
-const RELEASE_METADATA_URLS = [
-    'https://appdecontroldegastos.vercel.app/asset/downloads/latest.json',
-    `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/asset/downloads/latest.json`,
-    'asset/downloads/latest.json'
-];
+const RELEASE_METADATA_URLS = (() => {
+    const urls = [
+        'asset/downloads/latest.json',
+        `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/asset/downloads/latest.json`
+    ];
+    if (window.location.origin.includes('appdecontroldegastos.vercel.app')) {
+        urls.unshift('https://appdecontroldegastos.vercel.app/asset/downloads/latest.json');
+    }
+    return urls;
+})();
 const GOOGLE_WEB_CLIENT_ID = String(
     window.__GOOGLE_WEB_CLIENT_ID
     || window.__APP_CONFIG__?.googleWebClientId
@@ -183,6 +188,14 @@ async function obtenerReleaseInfo() {
         }
     }
     return null;
+}
+
+function obtenerMensajeErrorOperacion(error, mensajePorDefecto) {
+    const mensaje = String(extraerMensajeError(error) || '');
+    if (mensaje.includes('AUTH_REQUIRED') || mensaje.includes('AUTH_USER_ERROR')) {
+        return 'Tu sesión expiró o no está disponible. Inicia sesión nuevamente.';
+    }
+    return mensaje || mensajePorDefecto;
 }
 
 async function obtenerVersionInstalada() {
@@ -378,6 +391,17 @@ class Store {
         return supabaseClient.auth.getUser();
     }
 
+    static async obtenerUsuarioAutenticado() {
+        const { data, error } = await supabaseClient.auth.getUser();
+        if (error) {
+            throw new Error(`AUTH_USER_ERROR: ${error.message || 'No se pudo verificar la sesión.'}`);
+        }
+        if (!data?.user?.id) {
+            throw new Error('AUTH_REQUIRED');
+        }
+        return data.user;
+    }
+
     // --- TRANSACCIONES (Gastos e Ingresos) ---
     static obtenerRangoMes(mesStr) {
         // mesStr: 'YYYY-MM'
@@ -451,7 +475,7 @@ class Store {
     }
 
     static async guardarDato(item, tipo) {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const user = await Store.obtenerUsuarioAutenticado();
 
         // Mapeo JS -> DB
         const dbItem = {
@@ -543,7 +567,7 @@ class Store {
     }
 
     static async agregarCategoria(cat) {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const user = await Store.obtenerUsuarioAutenticado();
         
         const { error } = await supabaseClient.from('categories').insert([{
             user_id: user.id,
@@ -603,7 +627,7 @@ class Store {
     }
 
     static async guardarPresupuesto(categoriaId, monto) {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const user = await Store.obtenerUsuarioAutenticado();
 
         const { error } = await supabaseClient
             .from('budgets')
@@ -620,7 +644,7 @@ class Store {
     }
 
     static async guardarRecurrente(item) {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const user = await Store.obtenerUsuarioAutenticado();
         const payload = {
             user_id: user.id,
             concepto: item.concepto,
@@ -658,7 +682,7 @@ class Store {
     }
 
     static async guardarDeuda(item) {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const user = await Store.obtenerUsuarioAutenticado();
         const payload = {
             user_id: user.id,
             concepto: item.concepto,
@@ -1898,7 +1922,7 @@ document.querySelector('#gastoForm').addEventListener('submit', async (e) => {
         
     } catch (error) {
         console.error(error);
-        alert('Error al guardar gasto');
+        alert(obtenerMensajeErrorOperacion(error, 'Error al guardar gasto'));
     } finally {
         UI.setLoadingButton('btnGastoSubmit', false, 'Guardar Gasto');
     }
@@ -1938,7 +1962,7 @@ document.querySelector('#ingresoForm').addEventListener('submit', async (e) => {
         
     } catch (error) {
         console.error(error);
-        alert('Error al guardar ingreso');
+        alert(obtenerMensajeErrorOperacion(error, 'Error al guardar ingreso'));
     } finally {
         UI.setLoadingButton('btnIngresoSubmit', false, 'Guardar Ingreso');
     }
@@ -1982,7 +2006,7 @@ document.querySelector('#ingresoForm').addEventListener('submit', async (e) => {
                 if (id) setTimeout(() => UI.abrirGestorCategorias(tipo), 500);
             } catch(e) {
                 console.error(e);
-                alert('Error al guardar categoría');
+                alert(obtenerMensajeErrorOperacion(e, 'Error al guardar categoría'));
             } finally {
                 UI.setLoadingButton('btnGuardarCategoria', false, 'Guardar');
             }
@@ -2005,7 +2029,7 @@ document.querySelector('#btnGuardarPresupuesto').addEventListener('click', async
             document.querySelector('#formPresupuesto').reset();
         } catch (e) {
             console.error(e);
-            alert('Error al guardar presupuesto');
+            alert(obtenerMensajeErrorOperacion(e, 'Error al guardar presupuesto'));
         } finally {
             UI.setLoadingButton('btnGuardarPresupuesto', false, 'Guardar');
         }
@@ -2066,7 +2090,7 @@ document.querySelector('#btnGuardarRecurrente').addEventListener('click', async 
             await UI.renderizarOpcionesGasto();
         } catch (e) { 
             console.error(e); 
-            alert('Error al guardar'); 
+            alert(obtenerMensajeErrorOperacion(e, 'Error al guardar'));
         } finally {
             UI.setLoadingButton('btnGuardarRecurrente', false, 'Guardar');
         }
@@ -2100,7 +2124,7 @@ document.querySelector('#btnGuardarDeuda').addEventListener('click', async () =>
             await UI.renderizarOpcionesGasto();
         } catch (e) { 
             console.error(e); 
-            alert('Error al guardar'); 
+            alert(obtenerMensajeErrorOperacion(e, 'Error al guardar'));
         } finally {
             UI.setLoadingButton('btnGuardarDeuda', false, 'Guardar Deuda');
         }
