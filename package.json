@@ -4,6 +4,7 @@
   "description": "Aplicación web para gestionar finanzas personales, controlar gastos, ingresos, deudas y presupuestos.",
   "main": "index.js",
   "scripts": {
+    "dev": "npx serve . -l 5500",
     "build:web": "node scripts/build-web.mjs",
     "android:icons": "node scripts/sync-android-icons.mjs",
     "android:version": "node scripts/sync-android-version.mjs",

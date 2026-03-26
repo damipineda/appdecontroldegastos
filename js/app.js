@@ -162,6 +162,18 @@ function compararVersiones(versionA, versionB) {
     return 0;
 }
 
+function crearLayoutPlotly(base = {}) {
+    return {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: {
+            color: '#dae2fd',
+            family: 'Inter, sans-serif'
+        },
+        ...base
+    };
+}
+
 function construirDownloadUrl(info) {
     if (info?.downloadUrl) return info.downloadUrl;
     if (info?.download_url) return info.download_url;
@@ -1254,12 +1266,12 @@ class UI {
             hoverinfo: 'label+value+percent'
         }];
 
-        const layoutGastos = {
+        const layoutGastos = crearLayoutPlotly({
             height: 350,
             margin: { t: 0, b: 0, l: 0, r: 0 },
             showlegend: true,
             legend: { orientation: 'h', y: -0.1 }
-        };
+        });
 
         Plotly.newPlot('chartGastos', dataGastos, layoutGastos, {displayModeBar: false});
 
@@ -1276,12 +1288,12 @@ class UI {
             textposition: 'auto',
         }];
 
-        const layoutBalance = {
+        const layoutBalance = crearLayoutPlotly({
             height: 350,
             margin: { t: 20, b: 30, l: 40, r: 20 },
             xaxis: { fixedrange: true },
             yaxis: { fixedrange: true, title: 'Guaraníes' }
-        };
+        });
 
         Plotly.newPlot('chartBalance', dataBalance, layoutBalance, {displayModeBar: false});
 
@@ -1355,12 +1367,12 @@ class UI {
             marker: { size: 6 }
         };
 
-        const layoutDiario = {
+        const layoutDiario = crearLayoutPlotly({
             height: 300,
             margin: { t: 20, b: 30, l: 40, r: 20 },
             xaxis: { title: 'Día del Mes' },
             yaxis: { title: 'Monto' }
-        };
+        });
 
         Plotly.newPlot('chartGastosDiarios', [traceDiario], layoutDiario, {displayModeBar: false});
     }
@@ -2255,10 +2267,10 @@ document.querySelector('#btnComparar').addEventListener('click', async () => {
     const traceA = { x: ['Ingresos', 'Gastos'], y: [totalIngresosA, totalGastosA], name: mesA, type: 'bar', marker: { color: '#4361ee' } };
     const traceB = { x: ['Ingresos', 'Gastos'], y: [totalIngresosB, totalGastosB], name: mesB, type: 'bar', marker: { color: '#f72585' } };
     
-    Plotly.newPlot('chartCompBalance', [traceA, traceB], { barmode: 'group', height: 300, margin: { t: 20, b: 30, l: 40, r: 20 }, legend: { orientation: 'h', y: -0.1 } }, {displayModeBar: false});
+        Plotly.newPlot('chartCompBalance', [traceA, traceB], crearLayoutPlotly({ barmode: 'group', height: 300, margin: { t: 20, b: 30, l: 40, r: 20 }, legend: { orientation: 'h', y: -0.1 } }), {displayModeBar: false});
 
     const data2 = [{ x: [mesA, mesB], y: [totalGastosA, totalGastosB], type: 'scatter', mode: 'lines+markers', line: { color: '#ef4444', width: 3 }, marker: { size: 10 } }];
-    Plotly.newPlot('chartCompGastos', data2, { height: 300, margin: { t: 20, b: 30, l: 40, r: 20 }, yaxis: { title: 'Gastos Totales' } }, {displayModeBar: false});
+        Plotly.newPlot('chartCompGastos', data2, crearLayoutPlotly({ height: 300, margin: { t: 20, b: 30, l: 40, r: 20 }, yaxis: { title: 'Gastos Totales' } }), {displayModeBar: false});
 });
 
 // Refresco suave al volver a la pestaña para evitar estados colgados del loader
