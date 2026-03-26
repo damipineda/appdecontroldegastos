@@ -691,6 +691,118 @@ html.mobile-app-mode #landingPage {
     min-height: 100%;
 }
 
+.dashboard-overview-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.dashboard-hero-card,
+.dashboard-side-card,
+.section-card {
+    border-radius: 28px;
+    border: 1px solid rgba(140, 144, 159, 0.14);
+    box-shadow: var(--shadow-soft);
+}
+
+.dashboard-hero-card {
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(19, 27, 46, 0.96), rgba(34, 42, 61, 0.88));
+    min-height: 17rem;
+}
+
+.dashboard-hero-card::after {
+    content: "";
+    position: absolute;
+    right: -52px;
+    top: -36px;
+    width: 180px;
+    height: 180px;
+    border-radius: 999px;
+    background: rgba(173, 198, 255, 0.12);
+    filter: blur(18px);
+}
+
+.dashboard-card-label,
+.section-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--on-surface-muted);
+}
+
+.dashboard-hero-amount {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(2.6rem, 5vw, 4.75rem);
+    line-height: 0.95;
+    letter-spacing: -0.08em;
+    font-weight: 900;
+    margin: 0.8rem 0 1.25rem;
+    color: var(--on-surface);
+}
+
+.dashboard-hero-insight {
+    position: relative;
+    z-index: 1;
+    max-width: 24rem;
+}
+
+.dashboard-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.9rem;
+    margin-bottom: 0.9rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.dashboard-chip-positive {
+    background: rgba(78, 222, 163, 0.12);
+    color: var(--secondary);
+}
+
+.dashboard-side-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 8rem;
+}
+
+.dashboard-income-card {
+    background: linear-gradient(135deg, rgba(0, 165, 114, 0.2), rgba(34, 42, 61, 0.88));
+}
+
+.dashboard-expense-card {
+    background: linear-gradient(135deg, rgba(234, 100, 121, 0.2), rgba(34, 42, 61, 0.88));
+}
+
+.app-section-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.78fr) minmax(0, 1.22fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.app-section-form {
+    position: sticky;
+    top: 7.2rem;
+}
+
+.section-card .card-header {
+    padding-bottom: 0.25rem;
+}
+
+.section-card .card-body {
+    padding-top: 1rem;
+}
+
 #dashboard > .row:first-child {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1082,12 +1194,23 @@ thead th {
         padding-bottom: 6rem;
     }
 
-    #dashboard > .row:first-child {
+    .dashboard-overview-grid,
+    .app-section-grid {
         grid-template-columns: 1fr;
     }
 
-    #dashboard > .row:first-child > [class*="col-"]:first-child {
-        grid-column: auto;
+    .app-section-form {
+        position: static;
+        top: auto;
+    }
+
+    .dashboard-hero-card {
+        min-height: auto;
+        padding: 1.5rem;
+    }
+
+    .dashboard-side-card {
+        min-height: auto;
     }
 
     .hero-section {

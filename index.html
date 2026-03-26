@@ -236,44 +236,31 @@
             
             <!-- TAB: DASHBOARD -->
             <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-                <!-- Resumen Tarjetas -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-4">
-                        <div class="card kpi-card text-white bg-success mb-3 shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <div class="kpi-head">
-                                    <span class="kpi-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
-                                    <span class="kpi-label">Ingresos Totales</span>
-                                </div>
-                                <h3 class="card-title fw-bold" id="dashIngresos">0 Gs.</h3>
-                                <p class="kpi-caption mb-0">Entradas acumuladas del periodo</p>
-                            </div>
+                <div class="dashboard-overview-grid mb-4">
+                    <article class="dashboard-hero-card">
+                        <p class="dashboard-card-label">Balance actual</p>
+                        <h3 class="dashboard-hero-amount" id="dashBalance">0 Gs.</h3>
+                        <div class="dashboard-hero-insight">
+                            <span class="dashboard-chip dashboard-chip-positive">Vista central del periodo</span>
+                            <p class="mb-0">Lectura consolidada entre ingresos y gastos del mes seleccionado.</p>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card kpi-card text-white bg-danger mb-3 shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <div class="kpi-head">
-                                    <span class="kpi-icon" aria-hidden="true"><i class="bi bi-cash-stack"></i></span>
-                                    <span class="kpi-label">Gastos Totales</span>
-                                </div>
-                                <h3 class="card-title fw-bold" id="dashGastos">0 Gs.</h3>
-                                <p class="kpi-caption mb-0">Salidas registradas en el mes</p>
-                            </div>
+                    </article>
+                    <article class="dashboard-side-card dashboard-income-card">
+                        <div class="kpi-head">
+                            <span class="kpi-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
+                            <span class="kpi-label">Ingresos</span>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card kpi-card kpi-balance text-white bg-primary mb-3 shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <div class="kpi-head">
-                                    <span class="kpi-icon" aria-hidden="true"><i class="bi bi-pie-chart"></i></span>
-                                    <span class="kpi-label">Balance</span>
-                                </div>
-                                <h3 class="card-title fw-bold" id="dashBalance">0 Gs.</h3>
-                                <p class="kpi-caption mb-0">Diferencia entre ingresos y gastos</p>
-                            </div>
+                        <h3 class="card-title fw-bold" id="dashIngresos">0 Gs.</h3>
+                        <p class="kpi-caption mb-0">Entradas acumuladas del periodo</p>
+                    </article>
+                    <article class="dashboard-side-card dashboard-expense-card">
+                        <div class="kpi-head">
+                            <span class="kpi-icon" aria-hidden="true"><i class="bi bi-cash-stack"></i></span>
+                            <span class="kpi-label">Gastos</span>
                         </div>
-                    </div>
+                        <h3 class="card-title fw-bold" id="dashGastos">0 Gs.</h3>
+                        <p class="kpi-caption mb-0">Salidas registradas en el mes</p>
+                    </article>
                 </div>
 
                 <!-- Gráficos Principales -->
@@ -373,11 +360,12 @@
 
             <!-- TAB: GASTOS -->
             <div class="tab-pane fade" id="gastos" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card shadow-sm mb-4">
+                <div class="app-section-grid">
+                    <div class="app-section-form">
+                        <div class="card shadow-sm mb-4 section-card">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0">Registrar Gasto</h5>
+                                <p class="section-label mb-1">Expenses</p>
+                                <h5 class="mb-0">Registrar gasto</h5>
                             </div>
                             <div class="card-body">
                                 <form id="gastoForm">
@@ -452,10 +440,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <div class="card shadow-sm">
+                    <div class="app-section-content">
+                        <div class="card shadow-sm section-card">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0">Historial de Gastos</h5>
+                                <p class="section-label mb-1">Transactions</p>
+                                <h5 class="mb-0">Historial de gastos</h5>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -482,11 +471,12 @@
 
             <!-- TAB: INGRESOS -->
             <div class="tab-pane fade" id="ingresos" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card shadow-sm mb-4">
+                <div class="app-section-grid">
+                    <div class="app-section-form">
+                        <div class="card shadow-sm mb-4 section-card">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0">Registrar Ingreso</h5>
+                                <p class="section-label mb-1">Income</p>
+                                <h5 class="mb-0">Registrar ingreso</h5>
                             </div>
                             <div class="card-body">
                                 <form id="ingresoForm">
@@ -529,10 +519,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <div class="card shadow-sm">
+                    <div class="app-section-content">
+                        <div class="card shadow-sm section-card">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0">Historial de Ingresos</h5>
+                                <p class="section-label mb-1">Transactions</p>
+                                <h5 class="mb-0">Historial de ingresos</h5>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -560,9 +551,12 @@
             <div class="tab-pane fade" id="presupuesto" role="tabpanel">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card shadow-sm">
+                        <div class="card shadow-sm section-card">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Presupuestos Mensuales</h5>
+                                <div>
+                                    <p class="section-label mb-1">Budgets</p>
+                                    <h5 class="mb-0">Presupuestos mensuales</h5>
+                                </div>
                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalPresupuesto">Configurar Presupuesto</button>
                             </div>
                             <div class="card-body" id="listaPresupuestos">
@@ -579,9 +573,12 @@
                 <div class="row">
                     <!-- Columna: Gastos Recurrentes -->
                     <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm h-100">
+                        <div class="card shadow-sm h-100 section-card">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-primary">Plantillas / Recurrentes</h5>
+                                <div>
+                                    <p class="section-label mb-1">Planning</p>
+                                    <h5 class="mb-0 text-primary">Plantillas / recurrentes</h5>
+                                </div>
                                 <button class="btn btn-sm btn-primary" id="btnAddRecurrente" data-bs-toggle="modal" data-bs-target="#modalRecurrente">+ Nuevo</button>
                             </div>
                             <div class="card-body p-0">
@@ -595,9 +592,12 @@
 
                     <!-- Columna: Gestión de Deudas -->
                     <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm h-100">
+                        <div class="card shadow-sm h-100 section-card">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-danger">Control de Deudas</h5>
+                                <div>
+                                    <p class="section-label mb-1">Liabilities</p>
+                                    <h5 class="mb-0 text-danger">Control de deudas</h5>
+                                </div>
                                 <button class="btn btn-sm btn-danger" id="btnAddDeuda" data-bs-toggle="modal" data-bs-target="#modalDeuda">+ Nueva Deuda</button>
                             </div>
                             <div class="card-body p-0">
