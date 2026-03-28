@@ -918,6 +918,13 @@ class UI {
             document.querySelector('#filtroMes').value = filtroMes;
         }
 
+        const topPeriodTitle = document.getElementById('topPeriodTitle');
+        if (topPeriodTitle && filtroMes) {
+            const [anio, mes] = filtroMes.split('-');
+            const fechaTitulo = new Date(Number(anio), Number(mes) - 1, 1);
+            topPeriodTitle.textContent = fechaTitulo.toLocaleDateString('es-PY', { month: 'long', year: 'numeric' });
+        }
+
         // Obtener datos DB ya filtrados por mes (Paralelo)
         const [gastos, ingresos] = await Promise.all([
             Store.obtenerDatos('gasto', filtroMes),
@@ -930,8 +937,8 @@ class UI {
         ingresos.sort((a, b) => b.fecha.localeCompare(a.fecha));
 
         // --- Render GASTOS ---
-        const tbodyGastos = document.querySelector('#listaGastos');
-        tbodyGastos.innerHTML = '';
+        const listaGastos = document.querySelector('#listaGastos');
+        listaGastos.innerHTML = '';
         
         if (gastos.length === 0) {
             document.querySelector('#noGastos').style.display = 'block';
@@ -939,41 +946,34 @@ class UI {
             document.querySelector('#noGastos').style.display = 'none';
             for (const g of gastos) {
                 const cat = await Store.obtenerCategoriaPorId(g.categoriaId);
-                const tr = document.createElement('tr');
-                tr.className = 'align-middle'; // Centrado vertical
-                tr.innerHTML = `
-                    <td style="width: 15%;" data-label="Fecha">
-                        <div class="d-flex flex-column">
-                            <span class="fw-bold text-nowrap">${UI.formatearFecha(g.fecha)}</span>
-                            <small class="text-muted">${g.hora || ''}</small>
+                const item = document.createElement('article');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div class="activity-item-main">
+                        <div class="activity-item-icon expense">
+                            <span>${cat.emoji || '💸'}</span>
                         </div>
-                    </td>
-                    <td data-label="Concepto">
-                        <div class="fw-medium text-break">${g.concepto}</div>
-                    </td>
-                    <td style="width: 15%;" data-label="Categoría">
-                        <span class="badge rounded-pill text-dark border" style="background-color: ${cat.color}33; border-color: ${cat.color} !important;">
-                            ${cat.emoji} ${cat.nombre}
-                        </span>
-                    </td>
-                    <td style="width: 15%;" data-label="Pago"><small class="text-muted">${g.metodoPago || '-'}</small></td>
-                    <td class="text-end fw-bold text-danger" style="width: 15%; font-size: 1.1em;" data-label="Monto">
-                        - ${UI.formatearMoneda(g.monto)}
-                    </td>
-                    <td style="width: 10%;" class="text-end" data-label="Acciones">
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-secondary edit" data-id="${g.id}" data-tipo="gasto" aria-label="Editar gasto">✏️</button>
-                            <button class="btn btn-outline-danger delete" data-id="${g.id}" data-tipo="gasto" aria-label="Eliminar gasto">&times;</button>
+                        <div class="activity-item-copy">
+                            <h3>${g.concepto}</h3>
+                            <p>${cat.nombre} · ${UI.formatearFecha(g.fecha)} · ${g.hora || '--:--'}</p>
+                            <small>Método: ${g.metodoPago || 'No definido'}</small>
                         </div>
-                    </td>
+                    </div>
+                    <div class="activity-item-meta">
+                        <strong class="expense">- ${UI.formatearMoneda(g.monto)}</strong>
+                        <div class="activity-item-actions">
+                            <button class="btn btn-outline-secondary btn-sm edit" data-id="${g.id}" data-tipo="gasto" aria-label="Editar gasto">Editar</button>
+                            <button class="btn btn-outline-danger btn-sm delete" data-id="${g.id}" data-tipo="gasto" aria-label="Eliminar gasto">Eliminar</button>
+                        </div>
+                    </div>
                 `;
-                tbodyGastos.appendChild(tr);
+                listaGastos.appendChild(item);
             }
         }
 
         // --- Render INGRESOS ---
-        const tbodyIngresos = document.querySelector('#listaIngresos');
-        tbodyIngresos.innerHTML = '';
+        const listaIngresos = document.querySelector('#listaIngresos');
+        listaIngresos.innerHTML = '';
 
         if (ingresos.length === 0) {
             document.querySelector('#noIngresos').style.display = 'block';
@@ -981,34 +981,28 @@ class UI {
             document.querySelector('#noIngresos').style.display = 'none';
             for (const i of ingresos) {
                 const cat = await Store.obtenerCategoriaPorId(i.categoriaId);
-                const tr = document.createElement('tr');
-                tr.className = 'align-middle';
-                tr.innerHTML = `
-                    <td style="width: 15%;" data-label="Fecha">
-                        <div class="d-flex flex-column">
-                            <span class="fw-bold text-nowrap">${UI.formatearFecha(i.fecha)}</span>
-                            <small class="text-muted">${i.hora || ''}</small>
+                const item = document.createElement('article');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div class="activity-item-main">
+                        <div class="activity-item-icon income">
+                            <span>${cat.emoji || '💰'}</span>
                         </div>
-                    </td>
-                    <td data-label="Fuente">
-                        <div class="fw-medium text-break">${i.concepto}</div>
-                    </td>
-                    <td style="width: 15%;" data-label="Categoría">
-                        <span class="badge rounded-pill text-dark border" style="background-color: ${cat.color}33; border-color: ${cat.color} !important;">
-                            ${cat.emoji} ${cat.nombre}
-                        </span>
-                    </td>
-                    <td class="text-end fw-bold text-success" style="width: 15%; font-size: 1.1em;" data-label="Monto">
-                        + ${UI.formatearMoneda(i.monto)}
-                    </td>
-                    <td style="width: 10%;" class="text-end" data-label="Acciones">
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-secondary edit" data-id="${i.id}" data-tipo="ingreso" aria-label="Editar ingreso">✏️</button>
-                            <button class="btn btn-outline-danger delete" data-id="${i.id}" data-tipo="ingreso" aria-label="Eliminar ingreso">&times;</button>
+                        <div class="activity-item-copy">
+                            <h3>${i.concepto}</h3>
+                            <p>${cat.nombre} · ${UI.formatearFecha(i.fecha)} · ${i.hora || '--:--'}</p>
+                            <small>Ingreso registrado</small>
                         </div>
-                    </td>
+                    </div>
+                    <div class="activity-item-meta">
+                        <strong class="income">+ ${UI.formatearMoneda(i.monto)}</strong>
+                        <div class="activity-item-actions">
+                            <button class="btn btn-outline-secondary btn-sm edit" data-id="${i.id}" data-tipo="ingreso" aria-label="Editar ingreso">Editar</button>
+                            <button class="btn btn-outline-danger btn-sm delete" data-id="${i.id}" data-tipo="ingreso" aria-label="Eliminar ingreso">Eliminar</button>
+                        </div>
+                    </div>
                 `;
-                tbodyIngresos.appendChild(tr);
+                listaIngresos.appendChild(item);
             }
         }
 
@@ -1483,17 +1477,21 @@ class UI {
         lista.innerHTML = '';
 
         cats.forEach(c => {
-            const item = document.createElement('div');
-            item.className = 'list-group-item d-flex justify-content-between align-items-center';
+            const item = document.createElement('article');
+            item.className = 'category-manager-card';
             item.innerHTML = `
-                <div class="d-flex align-items-center gap-2">
-                    <span style="font-size: 1.5rem;">${c.emoji}</span>
-                    <span class="fw-bold">${c.nombre}</span>
-                    <span class="badge" style="background-color: ${c.color}">&nbsp;</span>
+                <div class="category-manager-main">
+                    <div class="category-manager-icon" style="background-color: ${c.color}22;">
+                        <span>${c.emoji}</span>
+                    </div>
+                    <div>
+                        <h3>${c.nombre}</h3>
+                        <p>${c.tipo === 'gasto' ? 'Gasto' : 'Ingreso'}</p>
+                    </div>
                 </div>
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-primary btn-edit-cat" data-id="${c.id}" data-nombre="${c.nombre}" data-emoji="${c.emoji}" data-color="${c.color}" data-tipo="${c.tipo}" aria-label="Editar categoría">✏️</button>
-                    <button class="btn btn-outline-danger btn-del-cat" data-id="${c.id}" aria-label="Eliminar categoría">🗑️</button>
+                <div class="category-manager-actions">
+                    <button class="btn btn-outline-primary btn-sm btn-edit-cat" data-id="${c.id}" data-nombre="${c.nombre}" data-emoji="${c.emoji}" data-color="${c.color}" data-tipo="${c.tipo}" aria-label="Editar categoría">Editar</button>
+                    <button class="btn btn-outline-danger btn-sm btn-del-cat" data-id="${c.id}" aria-label="Eliminar categoría">Eliminar</button>
                 </div>
             `;
             lista.appendChild(item);
