@@ -58,14 +58,13 @@ const REPO_OWNER = 'damipineda';
 const REPO_NAME = 'appdecontroldegastos';
 const FALLBACK_APK_FILENAME = 'finanzas-mobile-debug.apk';
 const RELEASE_METADATA_URLS = (() => {
-    const urls = [
-        'asset/downloads/latest.json',
+    const remoteUrls = [
+        'https://appdecontroldegastos.vercel.app/asset/downloads/latest.json',
         `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/asset/downloads/latest.json`
     ];
-    if (window.location.origin.includes('appdecontroldegastos.vercel.app')) {
-        urls.unshift('https://appdecontroldegastos.vercel.app/asset/downloads/latest.json');
-    }
-    return urls;
+    const localUrls = ['asset/downloads/latest.json'];
+    const urls = IS_MOBILE_APP_MODE ? [...remoteUrls, ...localUrls] : [...localUrls, ...remoteUrls];
+    return [...new Set(urls)];
 })();
 const GOOGLE_WEB_CLIENT_ID = String(
     window.__GOOGLE_WEB_CLIENT_ID
@@ -182,24 +181,32 @@ function construirDownloadUrl(info) {
 }
 
 async function obtenerReleaseInfo() {
+    let mejorRelease = null;
+
     for (const url of RELEASE_METADATA_URLS) {
         try {
-            const response = await fetch(url, { cache: 'no-store' });
+            const cacheBustedUrl = `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}`;
+            const response = await fetch(cacheBustedUrl, { cache: 'no-store' });
             if (!response.ok) continue;
             const data = await response.json();
             if (!data?.version) continue;
             const apkName = data.apk || FALLBACK_APK_FILENAME;
-            return {
+            const release = {
                 version: data.version,
                 apk: apkName,
                 downloadUrl: construirDownloadUrl(data),
                 updatedAt: data.updatedAt || null
             };
+
+            if (!mejorRelease || compararVersiones(release.version, mejorRelease.version) > 0) {
+                mejorRelease = release;
+            }
         } catch (error) {
             console.warn(`No se pudo leer metadata desde ${url}:`, error);
         }
     }
-    return null;
+
+    return mejorRelease;
 }
 
 function obtenerMensajeErrorOperacion(error, mensajePorDefecto) {
