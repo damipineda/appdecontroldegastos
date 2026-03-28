@@ -53,6 +53,7 @@ const supabaseClient = window.supabase?.createClient
 const IS_MOBILE_APP_MODE = Boolean(window.__IS_MOBILE_APP_MODE) || Boolean(window.Capacitor?.isNativePlatform?.());
 const capAppPlugin = window.Capacitor?.Plugins?.App;
 const capBrowserPlugin = window.Capacitor?.Plugins?.Browser;
+const capLocalNotificationsPlugin = window.Capacitor?.Plugins?.LocalNotifications;
 const capSocialLoginPlugin = window.Capacitor?.Plugins?.SocialLogin;
 const REPO_OWNER = 'damipineda';
 const REPO_NAME = 'appdecontroldegastos';
@@ -75,6 +76,7 @@ const GOOGLE_WEB_CLIENT_ID = String(
 let socialLoginInicializado = false;
 let releaseInfoActual = null;
 let modalAppUpdate = null;
+let ultimaVersionNotificada = null;
 
 function setLoginAlert(mensaje) {
     const alert = document.getElementById('loginError');
@@ -229,6 +231,56 @@ async function obtenerVersionInstalada() {
     }
 }
 
+async function asegurarPermisoNotificaciones() {
+    if (!IS_MOBILE_APP_MODE || !capLocalNotificationsPlugin?.checkPermissions) return false;
+
+    try {
+        const estado = await capLocalNotificationsPlugin.checkPermissions();
+        if (estado?.display === 'granted') return true;
+
+        if (!capLocalNotificationsPlugin.requestPermissions) return false;
+        const permiso = await capLocalNotificationsPlugin.requestPermissions();
+        return permiso?.display === 'granted';
+    } catch (error) {
+        console.warn('No se pudo solicitar permiso de notificaciones:', error);
+        return false;
+    }
+}
+
+async function notificarNuevaVersionDisponible(info) {
+    if (!info?.version || ultimaVersionNotificada === info.version) return;
+
+    const storageKey = `update_notified_${info.version}`;
+    if (localStorage.getItem(storageKey)) {
+        ultimaVersionNotificada = info.version;
+        return;
+    }
+
+    const permitido = await asegurarPermisoNotificaciones();
+    if (!permitido || !capLocalNotificationsPlugin?.schedule) return;
+
+    try {
+        await capLocalNotificationsPlugin.schedule({
+            notifications: [{
+                id: Number(String(info.version).replace(/\D/g, '').slice(-6) || Date.now().toString().slice(-6)),
+                title: 'Nueva versión disponible',
+                body: `Finanzas Personales ${info.version} ya está lista para descargar.`,
+                schedule: { at: new Date(Date.now() + 1500) },
+                smallIcon: 'ic_launcher',
+                actionTypeId: '',
+                extra: {
+                    version: info.version,
+                    url: info.downloadUrl || ''
+                }
+            }]
+        });
+        localStorage.setItem(storageKey, '1');
+        ultimaVersionNotificada = info.version;
+    } catch (error) {
+        console.warn('No se pudo programar la notificación de actualización:', error);
+    }
+}
+
 function refrescarEstadoBotonActualizacion(disponible) {
     const btnUpdate = document.getElementById('btnOpenUpdateModal');
     const label = document.getElementById('updateBadgeText');
@@ -283,6 +335,7 @@ async function verificarActualizacionMovil() {
     if (!hayNuevaVersion) return;
 
     const storageKey = `update_prompted_${releaseInfoActual.version}`;
+    await notificarNuevaVersionDisponible(releaseInfoActual);
     if (localStorage.getItem(storageKey)) return;
     localStorage.setItem(storageKey, '1');
     abrirModalActualizacion();
@@ -2314,3 +2367,31 @@ document.addEventListener('visibilitychange', async () => {
         refrescando = false;
     }
 });
+
+if (IS_MOBILE_APP_MODE && capAppPlugin?.addListener) {
+    capAppPlugin.addListener('appStateChange', async ({ isActive }) => {
+        if (!isActive) return;
+
+        try {
+            await cargarInfoVersionApk();
+        } catch (error) {
+            console.warn('No se pudo verificar actualización al volver a la app:', error);
+        }
+    });
+}
+
+if (IS_MOBILE_APP_MODE && capLocalNotificationsPlugin?.addListener) {
+    capLocalNotificationsPlugin.addListener('localNotificationActionPerformed', async (event) => {
+        const version = event?.notification?.extra?.version;
+
+        try {
+            if (!releaseInfoActual || (version && releaseInfoActual.version !== version)) {
+                releaseInfoActual = await obtenerReleaseInfo();
+            }
+            refrescarEstadoBotonActualizacion(releaseInfoActual);
+            abrirModalActualizacion();
+        } catch (error) {
+            console.warn('No se pudo abrir el detalle de actualización desde la notificación:', error);
+        }
+    });
+}
