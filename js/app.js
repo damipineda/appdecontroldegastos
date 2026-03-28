@@ -77,6 +77,7 @@ let socialLoginInicializado = false;
 let releaseInfoActual = null;
 let modalAppUpdate = null;
 let ultimaVersionNotificada = null;
+let ultimaVersionModalMostrada = null;
 
 function setLoginAlert(mensaje) {
     const alert = document.getElementById('loginError');
@@ -332,12 +333,15 @@ async function verificarActualizacionMovil() {
 
     const hayNuevaVersion = compararVersiones(releaseInfoActual.version, versionInstalada) > 0;
     refrescarEstadoBotonActualizacion(hayNuevaVersion ? releaseInfoActual : null);
-    if (!hayNuevaVersion) return;
+    if (!hayNuevaVersion) {
+        ultimaVersionModalMostrada = null;
+        return;
+    }
 
-    const storageKey = `update_prompted_${releaseInfoActual.version}`;
     await notificarNuevaVersionDisponible(releaseInfoActual);
-    if (localStorage.getItem(storageKey)) return;
-    localStorage.setItem(storageKey, '1');
+    if (ultimaVersionModalMostrada === releaseInfoActual.version) return;
+
+    ultimaVersionModalMostrada = releaseInfoActual.version;
     abrirModalActualizacion();
 }
 
