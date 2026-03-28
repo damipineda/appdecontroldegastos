@@ -26,6 +26,8 @@
     --control-radius: 18px;
     --chip-radius: 999px;
     --focus-ring: 0 0 0 0.24rem rgba(173, 198, 255, 0.18);
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 html {
@@ -549,8 +551,8 @@ html.mobile-app-mode #landingPage {
 }
 
 #appContainer {
-    padding-top: 6.15rem;
-    padding-bottom: 1.5rem;
+    padding-top: calc(6.15rem + var(--safe-area-top));
+    padding-bottom: calc(1.5rem + var(--safe-area-bottom));
 }
 
 #appContainer .container {
@@ -561,6 +563,7 @@ html.mobile-app-mode #landingPage {
     position: fixed;
     inset: 0 0 auto;
     z-index: 1020;
+    padding-top: var(--safe-area-top);
 }
 
 .app-userbox .btn-icon {
@@ -973,11 +976,12 @@ thead th {
     position: fixed;
     left: 0.8rem;
     right: 0.8rem;
-    bottom: 0.8rem;
+    bottom: calc(0.8rem + var(--safe-area-bottom));
     display: flex;
     justify-content: space-between;
     gap: 0.35rem;
     padding: 0.42rem;
+    padding-bottom: calc(0.42rem + (var(--safe-area-bottom) * 0.25));
     border-radius: 24px;
     background: rgba(19, 27, 46, 0.84);
     z-index: 1080;
@@ -1197,8 +1201,59 @@ thead th {
     }
 
     #appContainer {
-        padding-top: 5.7rem;
-        padding-bottom: 6rem;
+        padding-top: calc(5.35rem + var(--safe-area-top));
+        padding-bottom: calc(6.15rem + var(--safe-area-bottom));
+    }
+
+    #appContainer .app-navbar-fixed .container {
+        min-height: 4.1rem;
+        padding-top: 0.15rem;
+        padding-bottom: 0.35rem;
+        align-items: flex-start;
+    }
+
+    .app-brand {
+        min-width: 0;
+        align-items: flex-start !important;
+        gap: 0.7rem !important;
+    }
+
+    .brand-mark.app-brand-mark {
+        width: 2.85rem;
+        height: 2.85rem;
+        border-radius: 16px;
+        flex: 0 0 auto;
+    }
+
+    .brand-mark.app-brand-mark img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .app-brand-copy {
+        min-width: 0;
+        padding-top: 0.1rem;
+    }
+
+    .app-brand-subtitle {
+        font-size: 0.72rem;
+        line-height: 1.05;
+        margin-bottom: 0.08rem;
+    }
+
+    .app-brand-title {
+        font-size: 1.05rem !important;
+        line-height: 1.05;
+    }
+
+    .app-userbox {
+        align-self: flex-start;
+        padding-top: 0.1rem;
+    }
+
+    .app-userbox .btn-icon {
+        width: 2.5rem;
+        height: 2.5rem;
     }
 
     .dashboard-overview-grid,
@@ -1248,9 +1303,15 @@ thead th {
     }
 
     .mobile-tabbar {
-        left: 0.7rem;
-        right: 0.7rem;
-        bottom: 0.65rem;
+        left: 0.55rem;
+        right: 0.55rem;
+        bottom: calc(0.55rem + var(--safe-area-bottom));
+        padding: 0.38rem;
+        padding-bottom: calc(0.38rem + (var(--safe-area-bottom) * 0.25));
+    }
+
+    .mobile-tab-link {
+        min-height: 3.6rem;
     }
 
     .table-mobile-cards thead {
