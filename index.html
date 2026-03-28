@@ -61,14 +61,17 @@
             <div class="container">
                 <div class="row align-items-center hero-grid g-5">
                     <div class="col-lg-6">
-                        <p class="hero-kicker mb-3">Observatorio financiero personal</p>
-                        <h1 class="hero-title">Controla gastos, deudas y presupuesto desde una sola vista operativa.</h1>
-                        <p class="hero-copy mb-4">La app concentra ingresos, gastos, compromisos recurrentes y alertas de actualización en un entorno claro, rápido y preparado para móvil y escritorio.</p>
+                        <div class="hero-kicker-badge">
+                            <i class="bi bi-shield-check"></i>
+                            Finanzas de Nueva Generación
+                        </div>
+                        <h1 class="hero-title">Domina tu <span style="color: var(--primary); font-style: italic;">Dinero</span>.</h1>
+                        <p class="hero-copy mb-4">Controla gastos, liquida deudas y visualiza el crecimiento de tu patrimonio en un entorno diseñado para la claridad absoluta.</p>
                         <div class="hero-actions d-flex flex-wrap gap-3">
                             <button type="button" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg" id="btnStartFree" aria-controls="modalLogin">Entrar al panel</button>
                             <a id="landingDownloadApk" href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-outline-light btn-lg rounded-pill px-4" download>Descargar APK</a>
                         </div>
-                        <div class="hero-metrics mt-5">
+                        <div class="hero-metrics mt-4">
                             <div class="hero-metric-card">
                                 <span class="hero-metric-label">Vista unificada</span>
                                 <strong>Dashboard, registros y deudas</strong>
@@ -78,30 +81,58 @@
                                 <strong>Sesión y datos en la nube</strong>
                             </div>
                         </div>
+                        <div class="hero-avatar-stack">
+                            <div class="hero-avatar-faces">
+                                <div class="avatar-face">👨</div>
+                                <div class="avatar-face">👩</div>
+                                <div class="avatar-face">🧑</div>
+                            </div>
+                            <p class="hero-avatar-caption mb-0"><strong>+10k</strong> usuarios activos este mes</p>
+                        </div>
                     </div>
                     <div class="col-lg-6">
-                        <div class="hero-preview-shell">
-                            <div class="hero-preview-card hero-preview-card-main">
-                                <p class="preview-label">Balance mensual</p>
-                                <h2>Gs. 0</h2>
-                                <span class="preview-chip preview-chip-positive">Listo para operar</span>
-                            </div>
-                            <div class="hero-preview-grid">
-                                <div class="hero-preview-card">
-                                    <p class="preview-label">Ingresos</p>
-                                    <strong>Monitoreo por período</strong>
+                        <div class="hero-phone-wrapper">
+                            <div class="hero-phone-glow-1"></div>
+                            <div class="hero-phone-glow-2"></div>
+                            <div class="hero-phone-frame">
+                                <div class="hero-phone-inner">
+                                    <div class="hero-phone-topbar">
+                                        <div class="hero-phone-avatar"></div>
+                                        <i class="bi bi-bell" style="color: var(--on-surface-muted); font-size: 0.85rem;"></i>
+                                    </div>
+                                    <div>
+                                        <span class="hero-phone-balance-label">Balance Total</span>
+                                        <span class="hero-phone-balance-amount">Gs. 42.9M</span>
+                                    </div>
+                                    <div class="hero-phone-chart">
+                                        <div class="hero-phone-bar" style="height:40%; background:rgba(173,198,255,0.2);"></div>
+                                        <div class="hero-phone-bar" style="height:65%; background:rgba(173,198,255,0.4);"></div>
+                                        <div class="hero-phone-bar" style="height:100%; background:var(--primary);"></div>
+                                        <div class="hero-phone-bar" style="height:75%; background:rgba(173,198,255,0.55);"></div>
+                                        <div class="hero-phone-bar" style="height:45%; background:rgba(173,198,255,0.3);"></div>
+                                        <div class="hero-phone-bar" style="height:80%; background:rgba(173,198,255,0.6);"></div>
+                                    </div>
+                                    <div class="hero-phone-tx">
+                                        <div class="hero-phone-tx-left">
+                                            <div class="hero-phone-tx-icon hero-phone-tx-icon-expense">💳</div>
+                                            <div>
+                                                <span class="hero-phone-tx-title">Netflix</span>
+                                                <span class="hero-phone-tx-cat">Suscripción</span>
+                                            </div>
+                                        </div>
+                                        <span class="hero-phone-tx-amount" style="color: var(--tertiary);">-Gs. 75k</span>
+                                    </div>
+                                    <div class="hero-phone-tx">
+                                        <div class="hero-phone-tx-left">
+                                            <div class="hero-phone-tx-icon hero-phone-tx-icon-income">💼</div>
+                                            <div>
+                                                <span class="hero-phone-tx-title">Salario</span>
+                                                <span class="hero-phone-tx-cat">Ingreso</span>
+                                            </div>
+                                        </div>
+                                        <span class="hero-phone-tx-amount" style="color: var(--secondary);">+Gs. 4.5M</span>
+                                    </div>
                                 </div>
-                                <div class="hero-preview-card">
-                                    <p class="preview-label">Deudas</p>
-                                    <strong>Seguimiento de cuotas</strong>
-                                </div>
-                            </div>
-                            <div class="hero-preview-panel">
-                                <div class="hero-preview-line">
-                                    <span>Gastos por categoría</span>
-                                    <span>Visualización rápida</span>
-                                </div>
-                                <div class="hero-preview-bar"><span></span></div>
                             </div>
                         </div>
                     </div>
@@ -109,30 +140,48 @@
             </div>
         </header>
 
-        <section class="landing-features py-5">
+        <section class="landing-bento py-5">
             <div class="container">
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="bi bi-activity"></i></div>
-                            <h4 class="fw-bold mb-3">Registro operativo</h4>
-                            <p class="mb-0">Carga gastos e ingresos con contexto, categoría, fecha, hora y método de pago sin cambiar de pantalla.</p>
+                <div class="text-center">
+                    <h2 class="landing-bento-title">Tu observatorio <span style="color: var(--primary);">financiero</span></h2>
+                    <p class="hero-copy landing-bento-subtitle text-muted mb-0">Diseñamos una experiencia donde cada dato cuenta una historia sobre tu capital.</p>
+                </div>
+                <div class="landing-bento-grid">
+                    <div class="landing-bento-main">
+                        <div class="bento-icon bento-icon-primary"><i class="bi bi-grid-1x2-fill"></i></div>
+                        <h3>Dashboard Analítico</h3>
+                        <p class="text-muted mb-0">Una vista panorámica de tu salud financiera. Gráficos interactivos que muestran exactamente a dónde va cada peso, con comparativas mensuales y ranking de categorías.</p>
+                    </div>
+                    <div class="landing-bento-side">
+                        <div>
+                            <div class="bento-icon bento-icon-tertiary"><i class="bi bi-receipt"></i></div>
+                            <h3>Gestión de Deudas</h3>
+                            <p class="text-muted small mb-0">Visualiza tus pasivos como objetivos a conquistar. Sigue cada cuota con claridad total.</p>
+                        </div>
+                        <div class="bento-progress-footer">
+                            <div class="bento-progress-labels">
+                                <span>Progreso de Pago</span>
+                                <span style="color: var(--secondary);">64%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-normal" style="width: 64%"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="bi bi-bar-chart-line"></i></div>
-                            <h4 class="fw-bold mb-3">Lectura financiera</h4>
-                            <p class="mb-0">Sigue el balance, el ranking de categorías y el comportamiento diario con paneles comparativos.</p>
-                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5">
+            <div class="container">
+                <div class="landing-cta-card">
+                    <h2 class="landing-cta-title">Empieza a controlar tu <span style="color: var(--primary);">dinero</span> hoy mismo.</h2>
+                    <p class="landing-cta-sub">Únete a quienes ya tomaron el control de su destino financiero con Vault Cobalt.</p>
+                    <div class="landing-cta-actions d-flex flex-wrap justify-content-center gap-3">
+                        <button type="button" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#modalLogin">Entrar al panel</button>
+                        <a href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-outline-light btn-lg rounded-pill px-4" download>Descargar APK</a>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="bi bi-phone"></i></div>
-                            <h4 class="fw-bold mb-3">Móvil + escritorio</h4>
-                            <p class="mb-0">Misma estructura visual para operar desde navegador o APK con actualización centralizada.</p>
-                        </div>
-                    </div>
+                    <p class="landing-cta-fine">Sin costos, sin compromisos.</p>
                 </div>
             </div>
         </section>
@@ -155,8 +204,37 @@
             </div>
         </section>
         
-        <footer class="landing-footer py-4 text-center mt-auto">
-            <small>&copy; 2026 Vault Cobalt. Finanzas Personales.</small>
+        <footer class="landing-footer py-5 mt-auto">
+            <div class="container">
+                <div class="landing-footer-grid">
+                    <div>
+                        <a class="landing-brand text-decoration-none d-flex align-items-center gap-2 mb-2" href="#">
+                            <span class="brand-mark">
+                                <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="24" height="24">
+                            </span>
+                            <span class="brand-name fs-5">Vault Cobalt</span>
+                        </a>
+                        <p class="landing-footer-brand-desc">Redefiniendo la gestión financiera personal. Transparencia y autonomía para tus finanzas.</p>
+                    </div>
+                    <div class="landing-footer-col">
+                        <h5>Producto</h5>
+                        <ul class="landing-footer-links">
+                            <li><a href="#">Características</a></li>
+                            <li><a href="#">Privacidad</a></li>
+                            <li><a href="#">Descargas</a></li>
+                        </ul>
+                    </div>
+                    <div class="landing-footer-col">
+                        <h5>Soporte</h5>
+                        <ul class="landing-footer-links">
+                            <li><a href="#">Centro de ayuda</a></li>
+                            <li><a href="#">Términos</a></li>
+                            <li><a href="#">Seguridad</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <small class="text-muted">&copy; 2026 Vault Cobalt. Finanzas Personales.</small>
+            </div>
         </footer>
     </div>
 
@@ -570,21 +648,34 @@
             <!-- TAB: COMPARATIVA (Eliminado, movido a dashboard) -->
             <!-- TAB: PLANIFICACIÓN -->
             <div class="tab-pane fade" id="planificacion" role="tabpanel">
+
+                <!-- Summary bar -->
+                <div class="planning-summary-bar mb-4">
+                    <div class="planning-summary-stats">
+                        <div class="planning-stat">
+                            <span class="planning-stat-label">Plantillas activas</span>
+                            <span id="planTotalRec" class="planning-stat-value stat-primary">0</span>
+                        </div>
+                        <div class="planning-stat">
+                            <span class="planning-stat-label">Deudas pendientes</span>
+                            <span id="planTotalDeudas" class="planning-stat-value stat-tertiary">0</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <!-- Columna: Gastos Recurrentes -->
                     <div class="col-md-6 mb-4">
                         <div class="card shadow-sm h-100 section-card">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 <div>
-                                    <p class="section-label mb-1">Planning</p>
+                                    <p class="section-label mb-1">Recurring</p>
                                     <h5 class="mb-0 text-primary">Plantillas / recurrentes</h5>
                                 </div>
                                 <button class="btn btn-sm btn-primary" id="btnAddRecurrente" data-bs-toggle="modal" data-bs-target="#modalRecurrente">+ Nuevo</button>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="list-group list-group-flush" id="listaRecurrentes">
-                                    <!-- Items dinámicos -->
-                                </div>
+                            <div class="card-body p-2">
+                                <div id="listaRecurrentes" class="rec-cards-grid"></div>
                                 <div id="noRecurrentes" class="p-3 text-center text-muted">Sin plantillas configuradas.</div>
                             </div>
                         </div>
@@ -593,17 +684,15 @@
                     <!-- Columna: Gestión de Deudas -->
                     <div class="col-md-6 mb-4">
                         <div class="card shadow-sm h-100 section-card">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 <div>
                                     <p class="section-label mb-1">Liabilities</p>
                                     <h5 class="mb-0 text-danger">Control de deudas</h5>
                                 </div>
                                 <button class="btn btn-sm btn-danger" id="btnAddDeuda" data-bs-toggle="modal" data-bs-target="#modalDeuda">+ Nueva Deuda</button>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="list-group list-group-flush" id="listaDeudas">
-                                    <!-- Items dinámicos -->
-                                </div>
+                            <div class="card-body p-3">
+                                <div id="listaDeudas"></div>
                                 <div id="noDeudas" class="p-3 text-center text-muted">Sin deudas registradas.</div>
                             </div>
                         </div>

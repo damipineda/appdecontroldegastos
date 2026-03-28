@@ -1308,3 +1308,607 @@ thead th {
         max-width: 560px;
     }
 }
+
+/* ========================================
+   VAULT-COBALT DESIGN SYSTEM ADDITIONS
+   ======================================== */
+
+/* --- Bootstrap text-color overrides --- */
+.text-primary { color: var(--primary) !important; }
+.text-success  { color: var(--secondary) !important; }
+.text-danger   { color: var(--tertiary) !important; }
+.text-warning  { color: var(--warning) !important; }
+
+/* --- Dashboard KPI hover states --- */
+.dashboard-side-card {
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.dashboard-side-card:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+/* --- Progress bar glow variants --- */
+.progress-bar-ending {
+    background: linear-gradient(90deg, var(--tertiary-strong), var(--tertiary));
+    box-shadow: 0 0 12px rgba(234, 100, 121, 0.42);
+}
+.progress-bar-normal {
+    background: linear-gradient(90deg, var(--secondary-strong), var(--secondary));
+    box-shadow: 0 0 12px rgba(78, 222, 163, 0.38);
+}
+
+/* --- Planning summary bar --- */
+.planning-summary-bar {
+    border-radius: 28px;
+    border: 1px solid rgba(140, 144, 159, 0.14);
+    box-shadow: var(--shadow-soft);
+    background: linear-gradient(135deg, rgba(19, 27, 46, 0.96), rgba(34, 42, 61, 0.88));
+    padding: 1.75rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.planning-summary-bar::before {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 999px;
+    background: rgba(77, 142, 255, 0.06);
+    filter: blur(40px);
+    pointer-events: none;
+}
+.planning-summary-stats {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.planning-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.planning-stat-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--on-surface-muted);
+}
+.planning-stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--on-surface);
+    line-height: 1;
+}
+.planning-stat-value.stat-primary  { color: var(--primary); }
+.planning-stat-value.stat-tertiary { color: var(--tertiary); }
+
+/* --- Debt cards --- */
+.deuda-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+    background: rgba(11, 19, 38, 0.5);
+    border: 1px solid rgba(140, 144, 159, 0.08);
+    margin-bottom: 0.75rem;
+    transition: border-color 0.2s ease;
+}
+.deuda-card:hover { border-color: rgba(173, 198, 255, 0.22); }
+.deuda-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.deuda-card-info { flex: 1; min-width: 0; }
+.deuda-card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.3rem;
+}
+.deuda-card-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--on-surface);
+    margin: 0;
+}
+.deuda-badge {
+    padding: 0.22rem 0.6rem;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+.deuda-badge-ending {
+    background: rgba(234, 100, 121, 0.16);
+    color: var(--tertiary);
+    border: 1px solid rgba(234, 100, 121, 0.2);
+}
+.deuda-badge-active {
+    background: rgba(45, 52, 73, 0.7);
+    color: var(--on-surface-muted);
+    border: 1px solid rgba(140, 144, 159, 0.12);
+}
+.deuda-card-sub {
+    font-size: 0.83rem;
+    color: var(--on-surface-muted);
+    margin: 0;
+}
+.deuda-card-amount-col {
+    text-align: right;
+    flex-shrink: 0;
+}
+.deuda-card-amount-label {
+    display: block;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 800;
+    color: var(--on-surface-muted);
+    margin-bottom: 0.2rem;
+}
+.deuda-card-amount {
+    display: block;
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+}
+.deuda-card-amount.amount-ending  { color: var(--tertiary); }
+.deuda-card-amount.amount-active  { color: var(--secondary); }
+.deuda-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--on-surface-muted);
+    margin-bottom: 0.55rem;
+}
+.deuda-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.deuda-resumen {
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    background: rgba(45, 52, 73, 0.28);
+    margin-bottom: 0.75rem;
+    font-size: 0.82rem;
+    color: var(--on-surface-muted);
+}
+
+/* --- Recurring item cards --- */
+.rec-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.75rem;
+    padding: 1rem;
+}
+.rec-card {
+    border-radius: 20px;
+    padding: 1.25rem;
+    background: rgba(34, 42, 61, 0.5);
+    border: 1px solid rgba(140, 144, 159, 0.1);
+    transition: border-color 0.2s ease, background 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+.rec-card:hover {
+    border-color: rgba(173, 198, 255, 0.25);
+    background: rgba(49, 57, 77, 0.5);
+}
+.rec-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.85rem;
+}
+.rec-card-icon {
+    width: 2.7rem;
+    height: 2.7rem;
+    border-radius: 14px;
+    background: rgba(173, 198, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+.rec-card-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--on-surface-muted);
+}
+.rec-card-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--on-surface);
+    margin: 0 0 0.25rem;
+}
+.rec-card-sub {
+    font-size: 0.78rem;
+    color: var(--on-surface-muted);
+    margin: 0 0 0.85rem;
+}
+.rec-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+.rec-card-amount {
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--on-surface);
+}
+
+/* --- Landing: hero kicker badge --- */
+.hero-kicker-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    background: rgba(78, 222, 163, 0.13);
+    color: var(--secondary);
+    border: 1px solid rgba(78, 222, 163, 0.22);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 1.25rem;
+}
+
+/* --- Landing: hero avatar stack --- */
+.hero-avatar-stack {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+}
+.hero-avatar-faces { display: flex; }
+.hero-avatar-faces .avatar-face {
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 999px;
+    border: 2.5px solid var(--surface);
+    margin-left: -0.6rem;
+    background: var(--surface-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    overflow: hidden;
+}
+.hero-avatar-faces .avatar-face:first-child { margin-left: 0; }
+.hero-avatar-caption {
+    font-size: 0.83rem;
+    color: var(--on-surface-muted);
+    font-weight: 500;
+}
+.hero-avatar-caption strong { color: var(--secondary); }
+
+/* --- Landing: phone frame mockup --- */
+.hero-phone-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+.hero-phone-glow-1 {
+    position: absolute;
+    top: -4rem; right: -4rem;
+    width: 14rem; height: 14rem;
+    border-radius: 999px;
+    background: rgba(77, 142, 255, 0.18);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 1;
+}
+.hero-phone-glow-2 {
+    position: absolute;
+    bottom: -4rem; left: -4rem;
+    width: 14rem; height: 14rem;
+    border-radius: 999px;
+    background: rgba(78, 222, 163, 0.1);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 1;
+}
+.hero-phone-frame {
+    position: relative;
+    z-index: 2;
+    border-radius: 40px;
+    border: 8px solid rgba(34, 42, 61, 0.9);
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5), 0 20px 40px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    width: 100%;
+    aspect-ratio: 9 / 19;
+    display: flex;
+    flex-direction: column;
+}
+.hero-phone-inner {
+    padding: 1.4rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    height: 100%;
+    overflow: hidden;
+}
+.hero-phone-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.hero-phone-avatar {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    background: var(--surface-highest);
+}
+.hero-phone-balance-label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--on-surface-muted);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+.hero-phone-balance-amount {
+    font-size: 1.55rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--on-surface);
+    line-height: 1;
+    display: block;
+}
+.hero-phone-chart {
+    width: 100%;
+    height: 4.5rem;
+    border-radius: 14px;
+    background: var(--surface-low);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0.7rem;
+    gap: 0.3rem;
+}
+.hero-phone-bar {
+    flex: 1;
+    border-radius: 4px 4px 2px 2px;
+}
+.hero-phone-tx {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0.75rem;
+    border-radius: 12px;
+    background: var(--surface-high);
+}
+.hero-phone-tx-left {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+.hero-phone-tx-icon {
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+}
+.hero-phone-tx-icon-expense { background: rgba(234, 100, 121, 0.18); }
+.hero-phone-tx-icon-income  { background: rgba(78, 222, 163, 0.18); }
+.hero-phone-tx-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--on-surface);
+    display: block;
+}
+.hero-phone-tx-cat {
+    font-size: 0.6rem;
+    color: var(--on-surface-muted);
+    display: block;
+}
+.hero-phone-tx-amount {
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+/* --- Landing: bento grid section --- */
+.landing-bento {
+    background: rgba(6, 14, 32, 0.5);
+}
+.landing-bento-title {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+}
+.landing-bento-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+.landing-bento-main {
+    border-radius: 28px;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(19, 27, 46, 0.96), rgba(34, 42, 61, 0.82));
+    border: 1px solid rgba(140, 144, 159, 0.12);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+}
+.landing-bento-side {
+    border-radius: 28px;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(34, 42, 61, 0.9), rgba(19, 27, 46, 0.95));
+    border: 1px solid rgba(140, 144, 159, 0.12);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.bento-icon {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    font-size: 1.35rem;
+    margin-bottom: 1.25rem;
+}
+.bento-icon-primary  { background: rgba(173, 198, 255, 0.12); color: var(--primary); }
+.bento-icon-tertiary { background: rgba(234, 100, 121, 0.12); color: var(--tertiary); }
+.landing-bento-main h3,
+.landing-bento-side h3 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--on-surface);
+    margin-bottom: 0.65rem;
+}
+.landing-bento-side h3 { font-size: 1.3rem; }
+.bento-progress-footer {
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(140, 144, 159, 0.12);
+    margin-top: 1rem;
+}
+.bento-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--on-surface-muted);
+    margin-bottom: 0.55rem;
+}
+
+/* --- Landing: CTA section --- */
+.landing-cta-card {
+    border-radius: 32px;
+    padding: 3.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(34, 42, 61, 0.96), rgba(19, 27, 46, 0.98));
+    border: 1px solid rgba(140, 144, 159, 0.14);
+    box-shadow: var(--shadow-large);
+    text-align: center;
+}
+.landing-cta-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(77, 142, 255, 0.08), transparent 50%, rgba(234, 100, 121, 0.04));
+    pointer-events: none;
+}
+.landing-cta-title {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    letter-spacing: -0.06em;
+    line-height: 1.0;
+    color: var(--on-surface);
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+.landing-cta-sub {
+    font-size: 1.05rem;
+    color: var(--on-surface-muted);
+    max-width: 48ch;
+    margin: 0 auto 2rem;
+    position: relative;
+    z-index: 1;
+}
+.landing-cta-fine {
+    font-size: 0.85rem;
+    color: var(--on-surface-muted);
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+.landing-cta-actions {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- Landing: footer multi-column --- */
+.landing-footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(140, 144, 159, 0.1);
+}
+.landing-footer-brand-desc {
+    font-size: 0.87rem;
+    color: var(--on-surface-muted);
+    line-height: 1.7;
+    margin-top: 0.75rem;
+    max-width: 26ch;
+}
+.landing-footer-col h5 {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--on-surface);
+    margin-bottom: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+.landing-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+.landing-footer-links a {
+    font-size: 0.87rem;
+    color: var(--on-surface-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+.landing-footer-links a:hover { color: var(--primary); }
+
+/* --- Responsive additions --- */
+@media (max-width: 991.98px) {
+    .hero-phone-frame { max-width: 260px; }
+}
+
+@media (max-width: 767.98px) {
+    .landing-bento-grid { grid-template-columns: 1fr; }
+    .landing-footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .hero-phone-wrapper { margin-top: 2rem; }
+    .rec-cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
+
+@media (max-width: 575.98px) {
+    .landing-footer-grid { grid-template-columns: 1fr; }
+    .planning-summary-stats { flex-direction: column; gap: 1rem; }
+}

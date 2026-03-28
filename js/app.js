@@ -1029,6 +1029,9 @@ class UI {
         // 1. Recurrentes
         const listaRec = document.querySelector('#listaRecurrentes');
         listaRec.innerHTML = '';
+        const elTotalRec = document.getElementById('planTotalRec');
+        if (elTotalRec) elTotalRec.textContent = recurrentes.length;
+
         if (recurrentes.length === 0) {
             document.querySelector('#noRecurrentes').style.display = 'block';
         } else {
@@ -1036,18 +1039,20 @@ class UI {
             for (const r of recurrentes) {
                 const cat = await Store.obtenerCategoriaPorId(r.category_id);
                 const div = document.createElement('div');
-                div.className = 'list-group-item d-flex justify-content-between align-items-center';
+                div.className = 'rec-card';
                 div.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <span class="me-3 fs-4">${r.emoji || '📝'}</span>
-                        <div>
-                            <div class="fw-bold">${r.concepto}</div>
-                            <small class="text-muted">${cat.nombre} • ${r.monto ? UI.formatearMoneda(r.monto) : 'Variable'} • Día ${r.dia_vencimiento || '?'}</small>
-                        </div>
+                    <div class="rec-card-top">
+                        <div class="rec-card-icon">${r.emoji || '📝'}</div>
+                        <span class="rec-card-badge">Mensual</span>
                     </div>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary btn-edit-rec" data-id="${r.id}" aria-label="Editar plantilla">✏️</button>
-                        <button class="btn btn-outline-danger btn-del-rec" data-id="${r.id}" aria-label="Eliminar plantilla">&times;</button>
+                    <h4 class="rec-card-title">${r.concepto}</h4>
+                    <p class="rec-card-sub">${cat.nombre} · Día ${r.dia_vencimiento || '?'}</p>
+                    <div class="rec-card-footer">
+                        <span class="rec-card-amount">${r.monto ? UI.formatearMoneda(r.monto) : 'Variable'}</span>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary btn-edit-rec" data-id="${r.id}" aria-label="Editar plantilla">✏️</button>
+                            <button class="btn btn-outline-danger btn-del-rec" data-id="${r.id}" aria-label="Eliminar plantilla">&times;</button>
+                        </div>
                     </div>
                 `;
                 listaRec.appendChild(div);
@@ -1100,6 +1105,9 @@ class UI {
         const deudasPendientes = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) < (d.total_cuotas || 0));
         const deudasPagadas = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) >= (d.total_cuotas || 0));
 
+        const elTotalDeudas = document.getElementById('planTotalDeudas');
+        if (elTotalDeudas) elTotalDeudas.textContent = deudasPendientes.length;
+
         if (deudasPendientes.length === 0) {
             document.querySelector('#noDeudas').style.display = 'block';
             document.querySelector('#noDeudas').textContent = deudasPagadas.length > 0
@@ -1109,8 +1117,8 @@ class UI {
             document.querySelector('#noDeudas').style.display = 'none';
 
             const resumen = document.createElement('div');
-            resumen.className = 'list-group-item bg-light';
-            resumen.innerHTML = `<small class="text-muted">Mostrando deudas pendientes: <strong>${deudasPendientes.length}</strong> · Pagadas/ocultas: <strong>${deudasPagadas.length}</strong></small>`;
+            resumen.className = 'deuda-resumen';
+            resumen.innerHTML = `Pendientes: <strong>${deudasPendientes.length}</strong> · Pagadas/ocultas: <strong>${deudasPagadas.length}</strong>`;
             listaDeudas.appendChild(resumen);
 
             deudasPendientes.forEach(d => {
@@ -1118,6 +1126,7 @@ class UI {
                 const cuotasPagadas = Math.min(Number(d.cuotas_pagadas || 0), totalCuotas);
                 const cuotasRestantes = Math.max(totalCuotas - cuotasPagadas, 0);
                 const progreso = Math.min((cuotasPagadas / totalCuotas) * 100, 100);
+                const isEndingSoon = cuotasRestantes <= 3 && cuotasRestantes > 0;
 
                 // Cálculos de fechas
                 let fechaFin = '-';
@@ -1129,34 +1138,32 @@ class UI {
                 }
 
                 const div = document.createElement('div');
-                div.className = 'list-group-item';
+                div.className = 'deuda-card';
                 div.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="d-flex align-items-center">
-                             <span class="me-2 fs-4">${d.emoji || '💳'}</span>
-                             <div>
-                                <span class="fw-bold d-block">${d.concepto}</span>
-                                <small class="text-muted">${d.cuota_monto ? 'Cuota: ' + UI.formatearMoneda(d.cuota_monto) : 'Cuota variable'}</small>
-                             </div>
+                    <div class="deuda-card-header">
+                        <div class="deuda-card-info">
+                            <div class="deuda-card-title-row">
+                                <h4 class="deuda-card-title">${d.emoji || '💳'} ${d.concepto}</h4>
+                                <span class="deuda-badge ${isEndingSoon ? 'deuda-badge-ending' : 'deuda-badge-active'}">
+                                    ${isEndingSoon ? 'Por terminar' : 'Activa'}
+                                </span>
+                            </div>
+                            <p class="deuda-card-sub">${d.cuota_monto ? UI.formatearMoneda(d.cuota_monto) + '/mes' : 'Cuota variable'} · ${cuotasPagadas}/${totalCuotas} cuotas · Fin: ${fechaFin}</p>
                         </div>
-                        <span class="badge bg-danger">${UI.formatearMoneda(d.monto_total)}</span>
+                        <div class="deuda-card-amount-col">
+                            <span class="deuda-card-amount-label">Total</span>
+                            <span class="deuda-card-amount ${isEndingSoon ? 'amount-ending' : 'amount-active'}">${UI.formatearMoneda(d.monto_total)}</span>
+                        </div>
                     </div>
-
-                    <div class="d-flex justify-content-between align-items-center small mb-1">
-                        <span class="text-success fw-semibold">Pagadas: ${cuotasPagadas}</span>
-                        <span class="text-warning fw-semibold">Restan: ${cuotasRestantes}</span>
+                    <div class="deuda-progress-labels">
+                        <span>Progreso (${Math.round(progreso)}%)</span>
+                        <span>Restan: ${cuotasRestantes} cuotas</span>
                     </div>
-                    <div class="d-flex justify-content-between text-muted small mb-2">
-                        <span>Progreso: ${cuotasPagadas}/${totalCuotas} cuotas</span>
-                        <span>Fin: ${fechaFin}${d.fecha_inicio ? ` (Inicio: ${UI.formatearFecha(d.fecha_inicio)})` : ''}</span>
+                    <div class="progress">
+                        <div class="progress-bar ${isEndingSoon ? 'progress-bar-ending' : 'progress-bar-normal'}" style="width: ${progreso}%"></div>
                     </div>
-
-                    <div class="progress mb-2" style="height: 10px;">
-                        <div class="progress-bar bg-success" style="width: ${progreso}%"></div>
-                    </div>
-
-                    <div class="text-end">
-                        <button class="btn btn-sm btn-outline-secondary btn-edit-deuda me-1" data-id="${d.id}">Editar</button>
+                    <div class="deuda-card-actions">
+                        <button class="btn btn-sm btn-outline-secondary btn-edit-deuda" data-id="${d.id}">Editar</button>
                         <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}">Eliminar</button>
                     </div>
                 `;
