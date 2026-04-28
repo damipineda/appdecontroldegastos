@@ -61,6 +61,8 @@ www/
 Thumbs.db
 *.log
 *.tmp
+*.bak
+nul
 
 # ============================================
 # IDEs y editores

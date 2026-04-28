@@ -547,6 +547,9 @@ html.mobile-app-mode #landingPage { display: none !important; }
 }
 .landing-footer-links a:hover { color: var(--text-primary); }
 
+/* =========================
+   APP NAVBAR
+   ========================= */
 .app-navbar-fixed {
   position: sticky;
   top: 0;
@@ -587,6 +590,9 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 .app-shell { padding: 1.25rem 0 5rem; }
 
+/* =========================
+   PANEL TOOLBAR
+   ========================= */
 .panel-toolbar {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -623,6 +629,9 @@ html.mobile-app-mode #landingPage { display: none !important; }
   padding: 0.4rem 0.75rem !important; min-height: auto !important; font-size: 0.875rem !important;
 }
 
+/* =========================
+   TABS
+   ========================= */
 .tabs-shell {
   background: transparent !important; border: none !important;
   box-shadow: none !important; padding: 0;
@@ -642,6 +651,9 @@ html.mobile-app-mode #landingPage { display: none !important; }
 .app-tabs .nav-link:hover { color: var(--text-secondary) !important; background: var(--surface-hover); }
 .app-tabs .nav-link.active { color: #fff !important; background: var(--accent) !important; }
 
+/* =========================
+   DASHBOARD - MODERN & INTERACTIVE
+   ========================= */
 .dashboard-overview-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -650,13 +662,29 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 .dashboard-hero-card, .dashboard-side-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-xl); padding: 1.5rem; transition: border-color 0.15s;
+  border-radius: var(--radius-xl); padding: 1.5rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
-.dashboard-hero-card:hover, .dashboard-side-card:hover { border-color: var(--border-hover); }
+.dashboard-hero-card:hover, .dashboard-side-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+.dashboard-hero-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  opacity: 0.6;
+}
 
 .dashboard-card-label {
-  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em;
-  font-weight: 600; color: var(--text-tertiary); margin-bottom: 0.5rem;
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em;
+  font-weight: 700; color: var(--text-tertiary); margin-bottom: 0.5rem;
 }
 
 .dashboard-hero-amount {
@@ -668,7 +696,8 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 .dashboard-chip {
   display: inline-flex; align-items: center; font-size: 0.6875rem; font-weight: 600;
-  padding: 0.2rem 0.6rem; border-radius: var(--radius-full); margin-bottom: 0.35rem;
+  padding: 0.25rem 0.7rem; border-radius: var(--radius-full); margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
 }
 .dashboard-chip-positive { background: var(--green-muted); color: var(--green); }
 
@@ -683,7 +712,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 .kpi-label {
   font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em;
-  font-weight: 600; color: var(--text-tertiary) !important;
+  font-weight: 700; color: var(--text-tertiary) !important;
 }
 
 .dashboard-side-card .card-title {
@@ -695,6 +724,11 @@ html.mobile-app-mode #landingPage { display: none !important; }
 .dashboard-panel {
   background: var(--surface) !important; border: 1px solid var(--border) !important;
   border-radius: var(--radius-xl) !important; box-shadow: none !important;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.dashboard-panel:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
 }
 .dashboard-panel .card-header {
   background: transparent !important; border-bottom: 1px solid var(--border) !important;
@@ -715,6 +749,11 @@ html.mobile-app-mode #landingPage { display: none !important; }
 .section-card {
   background: var(--surface) !important; border: 1px solid var(--border) !important;
   border-radius: var(--radius-xl) !important; box-shadow: none !important;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.section-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
 }
 .section-card .card-header {
   background: transparent !important; border-bottom: 1px solid var(--border) !important;
@@ -724,7 +763,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 .section-label {
   font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em;
-  font-weight: 600; color: var(--text-tertiary) !important;
+  font-weight: 700; color: var(--text-tertiary) !important;
 }
 .section-card .card-header h5 { font-size: 1rem; font-weight: 700; color: var(--text-primary) !important; }
 
@@ -738,6 +777,11 @@ html.mobile-app-mode #landingPage { display: none !important; }
 .activity-list .activity-item {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0.75rem 0; border-bottom: 1px solid var(--border); font-size: 0.875rem;
+  transition: background 0.1s ease, padding-left 0.15s ease;
+}
+.activity-item:hover {
+  background: rgba(255,255,255,0.02);
+  padding-left: 0.25rem;
 }
 .activity-item:last-child { border-bottom: none; }
 .activity-item .delete, .activity-item .edit {
@@ -750,82 +794,227 @@ html.mobile-app-mode #landingPage { display: none !important; }
   padding: 2rem; font-size: 0.875rem; color: var(--text-tertiary) !important;
 }
 
+/* =========================
+   PLANNING SECTION - FULLY STYLED
+   ========================= */
 .planning-summary-bar {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-xl); padding: 1rem 1.5rem;
+  border-radius: var(--radius-xl); padding: 1.25rem 1.5rem;
+  transition: border-color 0.2s ease;
 }
-.planning-summary-stats { display: flex; gap: 2rem; }
+.planning-summary-bar:hover { border-color: var(--border-hover); }
+
+.planning-summary-stats { display: flex; gap: 2.5rem; }
+
+.planning-stat { display: flex; flex-direction: column; gap: 0.25rem; }
+
 .planning-stat-label {
-  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em;
-  font-weight: 600; color: var(--text-tertiary); display: block;
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em;
+  font-weight: 700; color: var(--text-tertiary); display: block;
 }
-.planning-stat-value { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; display: block; }
+.planning-stat-value {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; display: block;
+  line-height: 1;
+}
 .stat-primary { color: var(--accent); }
 .stat-tertiary { color: var(--red); }
 
-.rec-cards-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+/* Recurrente Cards */
+.rec-cards-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
 
 .rec-card {
   background: var(--surface-inset); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 0.85rem 1rem;
-  display: flex; align-items: center; justify-content: space-between; font-size: 0.875rem;
+  border-radius: var(--radius-lg); padding: 1rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative; overflow: hidden;
 }
-.rec-card:hover { border-color: var(--border-hover); }
+.rec-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.rec-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.rec-card-icon {
+  width: 2.25rem; height: 2.25rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--accent-muted);
+  font-size: 1.125rem;
+}
+
+.rec-card-badge {
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em;
+  font-weight: 700; color: var(--accent);
+  background: var(--accent-muted); border: 1px solid var(--accent-border);
+  padding: 0.2rem 0.5rem; border-radius: var(--radius-full);
+}
+
+.rec-card-title {
+  font-size: 0.9375rem; font-weight: 700; color: var(--text-primary);
+  margin: 0; line-height: 1.3;
+}
+
+.rec-card-sub {
+  font-size: 0.75rem; color: var(--text-tertiary); margin: 0;
+}
+
+.rec-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 0.25rem; padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.rec-card-amount {
+  font-size: 0.875rem; font-weight: 700; color: var(--text-primary);
+}
 
 .btn-del-rec, .btn-edit-rec, .btn-del-deuda, .btn-edit-deuda, .btn-edit-cat, .btn-del-cat {
-  background: none; border: none; cursor: pointer; padding: 0.25rem;
-  font-size: 0.8125rem; color: var(--text-tertiary); transition: color 0.15s;
+  background: none; border: none; cursor: pointer; padding: 0.35rem;
+  font-size: 0.8125rem; color: var(--text-tertiary); transition: all 0.15s;
+  border-radius: var(--radius-sm);
+  min-width: 1.75rem; min-height: 1.75rem;
+  display: inline-flex; align-items: center; justify-content: center;
 }
-.btn-del-rec:hover, .btn-del-deuda:hover, .btn-del-cat:hover { color: var(--red); }
-.btn-edit-rec:hover, .btn-edit-deuda:hover, .btn-edit-cat:hover { color: var(--accent); }
+.btn-del-rec:hover, .btn-del-deuda:hover, .btn-del-cat:hover { color: var(--red); background: var(--red-muted); }
+.btn-edit-rec:hover, .btn-edit-deuda:hover, .btn-edit-cat:hover { color: var(--accent); background: var(--accent-muted); }
 
+/* Deuda Cards */
 .deuda-card {
   background: var(--surface-inset); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 0.5rem;
+  border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 0.75rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
-.deuda-resumen { font-size: 0.8125rem; color: var(--text-secondary); }
-
-.category-manager-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem;
-}
-.category-manager-card {
-  background: var(--surface-inset); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 0.85rem 1rem;
-  display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem;
+.deuda-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
+.deuda-card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.deuda-card-info { flex: 1; min-width: 0; }
+
+.deuda-card-title-row {
+  display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.deuda-card-title {
+  font-size: 0.9375rem; font-weight: 700; color: var(--text-primary);
+  margin: 0; line-height: 1.3;
+}
+
+.deuda-badge {
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em;
+  font-weight: 700; padding: 0.2rem 0.5rem; border-radius: var(--radius-full);
+}
+.deuda-badge-active {
+  background: var(--green-muted); color: var(--green); border: 1px solid var(--green-border);
+}
+.deuda-badge-ending {
+  background: var(--amber-muted); color: var(--amber); border: 1px solid rgba(245,158,11,0.25);
+}
+
+.deuda-card-sub {
+  font-size: 0.75rem; color: var(--text-tertiary); margin: 0;
+}
+
+.deuda-card-amount-col {
+  text-align: right; flex-shrink: 0; margin-left: 1rem;
+}
+
+.deuda-card-amount-label {
+  display: block; font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.06em; font-weight: 700; color: var(--text-tertiary);
+}
+
+.deuda-card-amount {
+  font-size: 1rem; font-weight: 700; color: var(--text-primary);
+}
+.amount-ending { color: var(--amber) !important; }
+.amount-active { color: var(--green) !important; }
+
+.deuda-progress-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.6875rem; color: var(--text-tertiary);
+  margin-bottom: 0.4rem; font-weight: 600;
+}
+
+.progress-bar-ending {
+  background: var(--amber) !important;
+}
+
+.deuda-card-actions {
+  display: flex; gap: 0.5rem; margin-top: 0.75rem;
+}
+.deuda-card-actions .btn {
+  font-size: 0.75rem; padding: 0.35rem 0.75rem;
+}
+
+.deuda-resumen {
+  font-size: 0.8125rem; color: var(--text-secondary);
+  margin-bottom: 1rem; padding: 0.5rem 0.75rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* =========================
+   MOBILE TAB BAR
+   ========================= */
 .mobile-tabbar {
   position: fixed; bottom: 0; left: 0; right: 0;
   display: flex; justify-content: space-around;
-  background: var(--surface) !important; border-top: 1px solid var(--border) !important;
-  border-radius: 0 !important; box-shadow: none !important;
-  padding: 0.35rem 0 calc(0.35rem + var(--safe-area-bottom)); z-index: 1050;
+  background: rgba(24,24,27,0.92) !important;
+  border-top: 1px solid var(--border) !important;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4) !important;
+  padding: 0.5rem 0 calc(0.5rem + var(--safe-area-bottom)); z-index: 1050;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
 }
 .mobile-tab-link {
-  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
   background: none !important; border: none; color: var(--text-tertiary) !important;
-  font-size: 0.625rem; font-weight: 600; padding: 0.35rem 0.5rem;
-  border-radius: var(--radius-md); box-shadow: none !important; transition: color 0.15s;
+  font-size: 0.625rem; font-weight: 600; padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-md); box-shadow: none !important;
+  transition: all 0.2s ease; position: relative; min-width: 3.5rem;
 }
-.mobile-tab-link i { font-size: 1.125rem; }
-.mobile-tab-link.is-active { color: var(--accent) !important; background: none !important; box-shadow: none !important; }
+.mobile-tab-link i {
+  font-size: 1.25rem; transition: transform 0.2s ease;
+}
+.mobile-tab-link:hover i { transform: scale(1.1); }
+.mobile-tab-link.is-active {
+  color: var(--accent) !important; background: none !important; box-shadow: none !important;
+}
+.mobile-tab-link.is-active i { transform: scale(1.15); }
+.mobile-tab-link.is-active::after {
+  content: "";
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 1.25rem; height: 3px;
+  background: var(--accent); border-radius: var(--radius-full);
+}
 
+/* =========================
+   MODALS
+   ========================= */
 .modal-backdrop {
   background: rgba(0,0,0,0.7) !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
 
-#mainContent {
-  position: relative;
-}
+#mainContent { position: relative; }
 
 .modal {
   position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   z-index: 1060 !important;
   display: block !important;
   visibility: hidden;
@@ -834,13 +1023,19 @@ html.mobile-app-mode #landingPage { display: none !important; }
   outline: 0;
 }
 
-.modal.show {
-  visibility: visible !important;
-}
+.modal.show { visibility: visible !important; }
 
 .modal-dialog {
   z-index: 1061 !important;
   margin: 1.75rem auto;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.modal.show .modal-dialog {
+  transform: translateY(0) scale(1);
+  opacity: 1;
 }
 
 .modal-content {
@@ -885,11 +1080,22 @@ html.mobile-app-mode #landingPage { display: none !important; }
 }
 .update-highlight-card strong { font-size: 1.5rem; font-weight: 800; color: var(--accent-hover); }
 
+/* =========================
+   PRESUPUESTOS
+   ========================= */
 #listaPresupuestos .list-group-item {
   background: var(--surface-inset); border: 1px solid var(--border);
   border-radius: var(--radius-lg); margin-bottom: 0.5rem; padding: 1rem;
 }
 
+#listaPresupuestos > div {
+  background: var(--surface-inset); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 0.75rem;
+}
+
+/* =========================
+   ALERTS
+   ========================= */
 .alert-danger {
   background: var(--red-muted) !important; border: 1px solid var(--red-border) !important;
   color: var(--red) !important; border-radius: var(--radius-md);
@@ -903,6 +1109,9 @@ html.mobile-app-mode #landingPage { display: none !important; }
   color: var(--amber) !important; border-radius: var(--radius-md);
 }
 
+/* =========================
+   DROPDOWN & LISTS
+   ========================= */
 .dropdown-menu {
   background: var(--surface-elevated); border: 1px solid var(--border-hover);
   border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
@@ -915,10 +1124,16 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 .list-group-item { background: transparent; border-color: var(--border) !important; color: var(--text-primary); }
 
+/* =========================
+   CHARTS
+   ========================= */
 .js-plotly-plot .plotly .modebar { background: transparent !important; }
 .js-plotly-plot .plotly .modebar-btn path { fill: var(--text-tertiary) !important; }
 .js-plotly-plot .plotly .modebar-btn:hover path { fill: var(--accent) !important; }
 
+/* =========================
+   EMOJI & COLOR PICKERS
+   ========================= */
 #emojiPickerContainer .picmo__picker {
   background: var(--surface-elevated) !important; border: 1px solid var(--border-hover) !important;
   border-radius: var(--radius-lg) !important;
@@ -928,11 +1143,100 @@ html.mobile-app-mode #landingPage { display: none !important; }
   border-radius: var(--radius-lg) !important;
 }
 
+/* =========================
+   SCROLLBAR
+   ========================= */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: var(--radius-full); }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+/* =========================
+   ANIMATIONS
+   ========================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.tab-pane.show { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.dashboard-hero-card, .dashboard-side-card {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.dashboard-hero-card { animation-delay: 0s; }
+.dashboard-side-card:nth-child(2) { animation-delay: 0.08s; }
+.dashboard-side-card:nth-child(3) { animation-delay: 0.16s; }
+
+.rec-card, .deuda-card {
+  animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* =========================
+   RANKING CATEGORIAS
+   ========================= */
+#rankingCategorias .list-group-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.65rem 0; border: none !important; border-bottom: 1px solid var(--border) !important;
+  font-size: 0.875rem;
+}
+#rankingCategorias .list-group-item:last-child { border-bottom: none !important; }
+
+/* =========================
+   DIA MAYOR GASTO
+   ========================= */
+#diaMayorGasto {
+  background: var(--red-muted) !important; color: var(--red) !important;
+  border: 1px solid var(--red-border); font-size: 0.8125rem !important;
+}
+
+/* =========================
+   CATEGORY MANAGER
+   ========================= */
+.category-manager-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem;
+}
+.category-manager-card {
+  background: var(--surface-inset); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 0.85rem 1rem;
+  display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.category-manager-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   UTILITIES & OVERRIDES
+   ========================= */
+.shadow-sm { box-shadow: none !important; }
+.shadow-lg { box-shadow: none !important; }
+.rounded-pill { border-radius: var(--radius-md) !important; }
+.card { border: 1px solid var(--border) !important; }
+.app-tab-content { padding-top: 0.5rem; }
+.app-tab-content .tab-pane { padding: 0; }
+.form-duo { gap: 0.75rem; }
+
+#infoPresupuestoGasto { font-size: 0.8125rem; color: var(--text-tertiary) !important; padding: 0.5rem 0; }
+#infoDeuda { color: var(--accent) !important; }
+#listaPresupuestos .progress { height: 8px; }
+
+.navbar-toggler { border: 1px solid var(--border); padding: 0.35rem 0.6rem; border-radius: var(--radius-md); }
+.navbar-toggler-icon { filter: invert(1); }
+.section-card .card-header.d-flex { gap: 0.75rem; }
+
+/* =========================
+   RESPONSIVE
+   ========================= */
 @media (max-width: 991.98px) {
   .hero-grid { flex-direction: column; }
   .hero-phone-wrapper { margin-top: 2rem; }
@@ -941,7 +1245,23 @@ html.mobile-app-mode #landingPage { display: none !important; }
   .download-apk-card { flex-direction: column; text-align: center; }
   .dashboard-overview-grid { grid-template-columns: 1fr; }
   .app-section-grid { grid-template-columns: 1fr; }
-  .app-shell { padding-bottom: 5rem; }
+  .app-shell { padding-bottom: 6rem; }
+}
+
+@media (max-width: 767.98px) {
+  .app-shell { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .panel-toolbar-inner { padding: 1rem; }
+  .panel-title { font-size: 1.05rem !important; }
+  .dashboard-hero-amount { font-size: 1.5rem; }
+  .dashboard-side-card .card-title { font-size: 1.25rem; }
+  .section-card .card-body { padding: 1rem; }
+  .form-control, .form-select { min-height: 2.5rem; padding: 0.5rem 0.65rem; }
+  .mobile-tab-link { min-width: 3rem; font-size: 0.6rem; }
+  .mobile-tab-link i { font-size: 1.1rem; }
+  .deuda-card { padding: 1rem; }
+  .rec-card { padding: 0.85rem; }
+  .modal-dialog { margin: 1rem; }
+  .modal-body { padding: 1.25rem; }
 }
 
 @media (max-width: 575.98px) {
@@ -950,42 +1270,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
   .panel-title { font-size: 1rem !important; }
   .planning-summary-stats { flex-direction: column; gap: 0.75rem; }
   .landing-cta-card { padding: 1.5rem; }
-}
-
-.shadow-sm { box-shadow: none !important; }
-.shadow-lg { box-shadow: none !important; }
-.rounded-pill { border-radius: var(--radius-md) !important; }
-.card { border: 1px solid var(--border) !important; }
-.app-tab-content .tab-pane { padding: 0; }
-.form-duo { gap: 0.75rem; }
-
-#infoPresupuestoGasto { font-size: 0.8125rem; color: var(--text-tertiary) !important; padding: 0.5rem 0; }
-#infoDeuda { color: var(--accent) !important; }
-#listaPresupuestos .progress { height: 8px; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.tab-pane.show { animation: fadeIn 0.2s ease; }
-
-.navbar-toggler { border: 1px solid var(--border); padding: 0.35rem 0.6rem; border-radius: var(--radius-md); }
-.navbar-toggler-icon { filter: invert(1); }
-.section-card .card-header.d-flex { gap: 0.75rem; }
-
-#listaPresupuestos > div {
-  background: var(--surface-inset); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 0.75rem;
-}
-
-#rankingCategorias .list-group-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0.65rem 0; border: none !important; border-bottom: 1px solid var(--border) !important;
-  font-size: 0.875rem;
-}
-#rankingCategorias .list-group-item:last-child { border-bottom: none !important; }
-
-#diaMayorGasto {
-  background: var(--red-muted) !important; color: var(--red) !important;
-  border: 1px solid var(--red-border); font-size: 0.8125rem !important;
+  .dashboard-hero-amount { font-size: 1.35rem; }
+  .planning-stat-value { font-size: 1.5rem; }
+  .mobile-tabbar { padding-top: 0.35rem; }
 }
