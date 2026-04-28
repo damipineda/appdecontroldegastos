@@ -1,982 +1,922 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-web-client-id" content="912531826696-1te3udh3il323qvadsrh7sjq7chch7sj.apps.googleusercontent.com">
-    <script>
-        window.__IS_MOBILE_APP_MODE = new URLSearchParams(window.location.search).get('mobile_app') === '1';
-        if (window.__IS_MOBILE_APP_MODE) {
-            document.documentElement.classList.add('mobile-app-mode');
-        }
-    </script>
-    <title>Finanzas Personales | Vault Cobalt</title>
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="asset/media/favicon/favicon.ico" type="image/x-icon">
-    <link rel="icon" type="image/png" sizes="32x32" href="asset/media/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="asset/media/favicon/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="asset/media/favicon/apple-icon-180x180.png">
-    <link rel="manifest" href="asset/media/favicon/manifest.json">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-web-client-id" content="912531826696-1te3udh3il323qvadsrh7sjq7chch7sj.apps.googleusercontent.com">
+<script>
+window.__IS_MOBILE_APP_MODE = new URLSearchParams(window.location.search).get('mobile_app') === '1';
+if (window.__IS_MOBILE_APP_MODE) {
+document.documentElement.classList.add('mobile-app-mode');
+}
+</script>
+<title>Finanzas Personales | Vault Cobalt</title>
+<link rel="shortcut icon" href="asset/media/favicon/favicon.ico" type="image/x-icon">
+<link rel="icon" type="image/png" sizes="32x32" href="asset/media/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="asset/media/favicon/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="asset/media/favicon/apple-icon-180x180.png">
+<link rel="manifest" href="asset/media/favicon/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <a class="skip-link" href="#mainContent">Saltar al contenido principal</a>
-    <main id="mainContent" tabindex="-1">
+<a class="skip-link" href="#mainContent">Saltar al contenido principal</a>
+<main id="mainContent" tabindex="-1">
 
-    <!-- Global Loader -->
-    <div id="globalLoader" class="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center" style="z-index: 2000;">
-        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-        <p class="mt-3 text-muted fw-bold">Cargando tus finanzas...</p>
-    </div>
+<div id="globalLoader" class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="z-index: 2000;">
+<div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
+<span class="visually-hidden">Cargando...</span>
+</div>
+<p class="mt-3 fw-semibold">Cargando tus finanzas...</p>
+</div>
 
-    <!-- LANDING PAGE -->
-    <div id="landingPage">
-        <nav class="navbar navbar-expand-lg landing-navbar">
-            <div class="container">
-                <a class="navbar-brand fw-bold d-flex align-items-center gap-3 landing-brand" href="#">
-                    <span class="brand-mark">
-                        <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="36" height="36">
-                    </span>
-                    <span>
-                        <span class="brand-name d-block">Vault Cobalt</span>
-                        <small class="brand-caption">Finanzas personales con foco operativo</small>
-                    </span>
-                </a>
-                <button type="button" class="btn btn-primary px-4 rounded-pill landing-login-btn" id="btnOpenLogin" aria-controls="modalLogin">Ingresar</button>
-            </div>
-        </nav>
+<!-- ═══════════════════════════════════════════ -->
+<!-- LANDING PAGE                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="landingPage">
+<nav class="navbar navbar-expand-lg landing-navbar">
+<div class="container">
+<a class="navbar-brand fw-bold d-flex align-items-center gap-3 landing-brand" href="#">
+<span class="brand-mark">
+<img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="36" height="36">
+</span>
+<span>
+<span class="brand-name d-block">Vault Cobalt</span>
+<small class="brand-caption">Finanzas personales con foco operativo</small>
+</span>
+</a>
+<a href="login.html" class="btn landing-login-btn px-4" id="btnOpenLogin">Ingresar</a>
+</div>
+</nav>
 
-        <header class="hero-section">
-            <div class="container">
-                <div class="row align-items-center hero-grid g-5">
-                    <div class="col-lg-6">
-                        <div class="hero-kicker-badge">
-                            <i class="bi bi-shield-check"></i>
-                            Finanzas de Nueva Generación
-                        </div>
-                        <h1 class="hero-title">Domina tu <span style="color: var(--primary); font-style: italic;">Dinero</span>.</h1>
-                        <p class="hero-copy mb-4">Controla gastos, liquida deudas y visualiza el crecimiento de tu patrimonio en un entorno diseñado para la claridad absoluta.</p>
-                        <div class="hero-actions d-flex flex-wrap gap-3">
-                            <button type="button" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg" id="btnStartFree" aria-controls="modalLogin">Entrar al panel</button>
-                            <a id="landingDownloadApk" href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-outline-light btn-lg rounded-pill px-4" download>Descargar APK</a>
-                        </div>
-                        <div class="hero-metrics mt-4">
-                            <div class="hero-metric-card">
-                                <span class="hero-metric-label">Vista unificada</span>
-                                <strong>Dashboard, registros y deudas</strong>
-                            </div>
-                            <div class="hero-metric-card">
-                                <span class="hero-metric-label">Sincronización</span>
-                                <strong>Sesión y datos en la nube</strong>
-                            </div>
-                        </div>
-                        <div class="hero-avatar-stack">
-                            <div class="hero-avatar-faces">
-                                <div class="avatar-face">👨</div>
-                                <div class="avatar-face">👩</div>
-                                <div class="avatar-face">🧑</div>
-                            </div>
-                            <p class="hero-avatar-caption mb-0"><strong>+10k</strong> usuarios activos este mes</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="hero-phone-wrapper">
-                            <div class="hero-phone-glow-1"></div>
-                            <div class="hero-phone-glow-2"></div>
-                            <div class="hero-phone-frame">
-                                <div class="hero-phone-inner">
-                                    <div class="hero-phone-topbar">
-                                        <div class="hero-phone-avatar"></div>
-                                        <i class="bi bi-bell" style="color: var(--on-surface-muted); font-size: 0.85rem;"></i>
-                                    </div>
-                                    <div>
-                                        <span class="hero-phone-balance-label">Balance Total</span>
-                                        <span class="hero-phone-balance-amount">Gs. 42.9M</span>
-                                    </div>
-                                    <div class="hero-phone-chart">
-                                        <div class="hero-phone-bar" style="height:40%; background:rgba(173,198,255,0.2);"></div>
-                                        <div class="hero-phone-bar" style="height:65%; background:rgba(173,198,255,0.4);"></div>
-                                        <div class="hero-phone-bar" style="height:100%; background:var(--primary);"></div>
-                                        <div class="hero-phone-bar" style="height:75%; background:rgba(173,198,255,0.55);"></div>
-                                        <div class="hero-phone-bar" style="height:45%; background:rgba(173,198,255,0.3);"></div>
-                                        <div class="hero-phone-bar" style="height:80%; background:rgba(173,198,255,0.6);"></div>
-                                    </div>
-                                    <div class="hero-phone-tx">
-                                        <div class="hero-phone-tx-left">
-                                            <div class="hero-phone-tx-icon hero-phone-tx-icon-expense">💳</div>
-                                            <div>
-                                                <span class="hero-phone-tx-title">Netflix</span>
-                                                <span class="hero-phone-tx-cat">Suscripción</span>
-                                            </div>
-                                        </div>
-                                        <span class="hero-phone-tx-amount" style="color: var(--tertiary);">-Gs. 75k</span>
-                                    </div>
-                                    <div class="hero-phone-tx">
-                                        <div class="hero-phone-tx-left">
-                                            <div class="hero-phone-tx-icon hero-phone-tx-icon-income">💼</div>
-                                            <div>
-                                                <span class="hero-phone-tx-title">Salario</span>
-                                                <span class="hero-phone-tx-cat">Ingreso</span>
-                                            </div>
-                                        </div>
-                                        <span class="hero-phone-tx-amount" style="color: var(--secondary);">+Gs. 4.5M</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+<header class="hero-section">
+<div class="container">
+<div class="row align-items-center hero-grid g-5">
+<div class="col-lg-6">
+<div class="hero-kicker-badge">
+<i class="bi bi-shield-check"></i>
+Finanzas de Nueva Generación
+</div>
+<h1 class="hero-title">Domina tu<br><span>Dinero</span>.</h1>
+<p class="hero-copy mb-5">Controla gastos, liquida deudas y visualiza el crecimiento de tu patrimonio en un entorno diseñado para la claridad absoluta.</p>
+<div class="hero-actions d-flex flex-wrap gap-3">
+<a href="login.html" class="btn btn-primary btn-lg px-5" id="btnStartFree">Entrar al panel</a>
+<a id="landingDownloadApk" href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-outline-light btn-lg px-4" download>Descargar APK</a>
+</div>
+<div class="hero-metrics mt-5">
+<div class="hero-metric-card">
+<span class="hero-metric-label">Vista unificada</span>
+<strong>Dashboard, registros y deudas</strong>
+</div>
+<div class="hero-metric-card">
+<span class="hero-metric-label">Sincronización</span>
+<strong>Sesión y datos en la nube</strong>
+</div>
+</div>
+<div class="hero-avatar-stack">
+<div class="hero-avatar-faces">
+<div class="avatar-face">👨</div>
+<div class="avatar-face">👩</div>
+<div class="avatar-face">🧑</div>
+</div>
+<p class="hero-avatar-caption mb-0"><strong>+10k</strong> usuarios activos este mes</p>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="hero-phone-wrapper">
+<div class="hero-phone-glow-1"></div>
+<div class="hero-phone-glow-2"></div>
+<div class="hero-phone-frame">
+<div class="hero-phone-inner">
+<div class="hero-phone-topbar">
+<div class="hero-phone-avatar"></div>
+<i class="bi bi-bell" style="color: var(--on-surface-muted); font-size: 0.85rem;"></i>
+</div>
+<div>
+<span class="hero-phone-balance-label">Balance Total</span>
+<span class="hero-phone-balance-amount">Gs. 42.9M</span>
+</div>
+<div class="hero-phone-chart">
+<div class="hero-phone-bar" style="height:40%; background:rgba(173,198,255,0.2);"></div>
+<div class="hero-phone-bar" style="height:65%; background:rgba(173,198,255,0.4);"></div>
+<div class="hero-phone-bar" style="height:100%; background:var(--primary);"></div>
+<div class="hero-phone-bar" style="height:75%; background:rgba(173,198,255,0.55);"></div>
+<div class="hero-phone-bar" style="height:45%; background:rgba(173,198,255,0.3);"></div>
+<div class="hero-phone-bar" style="height:80%; background:rgba(173,198,255,0.6);"></div>
+</div>
+<div class="hero-phone-tx">
+<div class="hero-phone-tx-left">
+<div class="hero-phone-tx-icon hero-phone-tx-icon-expense">💳</div>
+<div>
+<span class="hero-phone-tx-title">Netflix</span>
+<span class="hero-phone-tx-cat">Suscripción</span>
+</div>
+</div>
+<span class="hero-phone-tx-amount" style="color: var(--tertiary);">-Gs. 75k</span>
+</div>
+<div class="hero-phone-tx">
+<div class="hero-phone-tx-left">
+<div class="hero-phone-tx-icon hero-phone-tx-icon-income">💼</div>
+<div>
+<span class="hero-phone-tx-title">Salario</span>
+<span class="hero-phone-tx-cat">Ingreso</span>
+</div>
+</div>
+<span class="hero-phone-tx-amount" style="color: var(--secondary);">+Gs. 4.5M</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
 
-        <section class="landing-bento py-5">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="landing-bento-title">Tu observatorio <span style="color: var(--primary);">financiero</span></h2>
-                    <p class="hero-copy landing-bento-subtitle text-muted mb-0">Diseñamos una experiencia donde cada dato cuenta una historia sobre tu capital.</p>
-                </div>
-                <div class="landing-bento-grid">
-                    <div class="landing-bento-main">
-                        <div class="bento-icon bento-icon-primary"><i class="bi bi-grid-1x2-fill"></i></div>
-                        <h3>Dashboard Analítico</h3>
-                        <p class="text-muted mb-0">Una vista panorámica de tu salud financiera. Gráficos interactivos que muestran exactamente a dónde va cada peso, con comparativas mensuales y ranking de categorías.</p>
-                    </div>
-                    <div class="landing-bento-side">
-                        <div>
-                            <div class="bento-icon bento-icon-tertiary"><i class="bi bi-receipt"></i></div>
-                            <h3>Gestión de Deudas</h3>
-                            <p class="text-muted small mb-0">Visualiza tus pasivos como objetivos a conquistar. Sigue cada cuota con claridad total.</p>
-                        </div>
-                        <div class="bento-progress-footer">
-                            <div class="bento-progress-labels">
-                                <span>Progreso de Pago</span>
-                                <span style="color: var(--secondary);">64%</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-normal" style="width: 64%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<section class="landing-bento py-5">
+<div class="container">
+<div class="text-center">
+<h2 class="landing-bento-title">Tu observatorio <span>financiero</span></h2>
+<p class="hero-copy landing-bento-subtitle mb-0">Diseñamos una experiencia donde cada dato cuenta una historia sobre tu capital.</p>
+</div>
+<div class="landing-bento-grid">
+<div class="landing-bento-main">
+<div class="bento-icon bento-icon-primary"><i class="bi bi-grid-1x2-fill"></i></div>
+<h3>Dashboard Analítico</h3>
+<p class="mb-0">Una vista panorámica de tu salud financiera. Gráficos interactivos que muestran exactamente a dónde va cada peso, con comparativas mensuales y ranking de categorías.</p>
+</div>
+<div class="landing-bento-side">
+<div>
+<div class="bento-icon bento-icon-tertiary"><i class="bi bi-receipt"></i></div>
+<h3>Gestión de Deudas</h3>
+<p class="small mb-0">Visualiza tus pasivos como objetivos a conquistar. Sigue cada cuota con claridad total.</p>
+</div>
+<div class="bento-progress-footer">
+<div class="bento-progress-labels">
+<span>Progreso de Pago</span>
+<span style="color: var(--secondary);">64%</span>
+</div>
+<div class="progress">
+<div class="progress-bar progress-bar-normal" style="width: 64%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
 
-        <section class="py-5">
-            <div class="container">
-                <div class="landing-cta-card">
-                    <h2 class="landing-cta-title">Empieza a controlar tu <span style="color: var(--primary);">dinero</span> hoy mismo.</h2>
-                    <p class="landing-cta-sub">Únete a quienes ya tomaron el control de su destino financiero con Vault Cobalt.</p>
-                    <div class="landing-cta-actions d-flex flex-wrap justify-content-center gap-3">
-                        <button type="button" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#modalLogin">Entrar al panel</button>
-                        <a href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-outline-light btn-lg rounded-pill px-4" download>Descargar APK</a>
-                    </div>
-                    <p class="landing-cta-fine">Sin costos, sin compromisos.</p>
-                </div>
-            </div>
-        </section>
+<section class="py-5">
+<div class="container">
+<div class="landing-cta-card">
+<h2 class="landing-cta-title">Empieza a controlar tu <span>dinero</span> hoy mismo.</h2>
+<p class="landing-cta-sub">Únete a quienes ya tomaron el control de su destino financiero con Vault Cobalt.</p>
+<div class="landing-cta-actions d-flex flex-wrap justify-content-center gap-3">
+<a href="login.html" class="btn btn-primary btn-lg px-5">Entrar al panel</a>
+<a href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-outline-light btn-lg px-4" download>Descargar APK</a>
+</div>
+<p class="landing-cta-fine">Sin costos, sin compromisos.</p>
+</div>
+</div>
+</section>
 
-        <section class="download-apk-section py-5">
-            <div class="container">
-                <div class="download-apk-card">
-                    <div class="download-apk-copy">
-                        <p class="download-kicker mb-1 text-uppercase">App Android</p>
-                        <h2 class="h4 mb-2">Descarga la versión móvil</h2>
-                        <p class="text-muted mb-0">Instala la APK para usar tus finanzas desde tu teléfono, incluso con pantalla pequeña.</p>
-                    </div>
-                    <div class="download-apk-actions">
-                        <a id="btnDownloadApk" href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-primary btn-lg" download>
-                            <i class="bi bi-android2 me-2"></i>Descargar APK
-                        </a>
-                        <small class="text-muted d-block mt-2">Archivo: <span id="apkFilenameLabel">finanzas-mobile-debug.apk</span></small>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <footer class="landing-footer py-5 mt-auto">
-            <div class="container">
-                <div class="landing-footer-grid">
-                    <div>
-                        <a class="landing-brand text-decoration-none d-flex align-items-center gap-2 mb-2" href="#">
-                            <span class="brand-mark">
-                                <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="24" height="24">
-                            </span>
-                            <span class="brand-name fs-5">Vault Cobalt</span>
-                        </a>
-                        <p class="landing-footer-brand-desc">Redefiniendo la gestión financiera personal. Transparencia y autonomía para tus finanzas.</p>
-                    </div>
-                    <div class="landing-footer-col">
-                        <h5>Producto</h5>
-                        <ul class="landing-footer-links">
-                            <li><a href="#">Características</a></li>
-                            <li><a href="#">Privacidad</a></li>
-                            <li><a href="#">Descargas</a></li>
-                        </ul>
-                    </div>
-                    <div class="landing-footer-col">
-                        <h5>Soporte</h5>
-                        <ul class="landing-footer-links">
-                            <li><a href="#">Centro de ayuda</a></li>
-                            <li><a href="#">Términos</a></li>
-                            <li><a href="#">Seguridad</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <small class="text-muted">&copy; 2026 Vault Cobalt. Finanzas Personales.</small>
-            </div>
-        </footer>
-    </div>
+<section class="download-apk-section py-5">
+<div class="container">
+<div class="download-apk-card">
+<div class="download-apk-copy">
+<p class="download-kicker mb-1 text-uppercase">App Android</p>
+<h2 class="h4 mb-2">Descarga la versión móvil</h2>
+<p class="mb-0">Instala la APK para usar tus finanzas desde tu teléfono, incluso con pantalla pequeña.</p>
+</div>
+<div class="download-apk-actions">
+<a id="btnDownloadApk" href="asset/downloads/finanzas-mobile-debug.apk" class="btn btn-primary btn-lg" download>
+<i class="bi bi-android2 me-2"></i>Descargar APK
+</a>
+<small class="d-block mt-2">Archivo: <span id="apkFilenameLabel">finanzas-mobile-debug.apk</span></small>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- APP CONTAINER -->
-    <div id="appContainer" style="display: none;">
-        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm app-navbar-fixed">
-            <div class="container">
-                <a class="navbar-brand fw-bold d-flex align-items-center gap-2 app-brand" href="#">
-                    <span class="brand-mark app-brand-mark">
-                        <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="40" height="40" class="rounded-circle p-1">
-                    </span>
-                    <span class="app-brand-copy">
-                        <small class="app-brand-subtitle d-block">Periodo activo</small>
-                        <span class="fs-4 app-brand-title d-block" id="topPeriodTitle">Panel financiero</span>
-                    </span>
-                </a>
-                <div class="d-flex align-items-center gap-2 app-userbox">
-                    <button id="btnOpenUpdateModal" class="btn btn-outline-light btn-sm px-3 d-none" type="button" aria-label="Abrir actualización de app">
-                        <i class="bi bi-arrow-repeat me-1"></i><span id="updateBadgeText">Actualizar</span>
-                    </button>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-light btn-icon" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú de usuario">
-                            <i class="bi bi-person-circle"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end app-user-menu" aria-labelledby="userMenuBtn">
-                            <li><h6 class="dropdown-header">Sesión activa</h6></li>
-                            <li><span id="userEmail" class="dropdown-item-text app-user-email-item">-</span></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <button id="btnLogout" class="dropdown-item text-danger app-logout-item" type="button">
-                                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </nav>
+<footer class="landing-footer py-5 mt-auto">
+<div class="container">
+<div class="landing-footer-grid">
+<div>
+<a class="landing-brand text-decoration-none d-flex align-items-center gap-2 mb-2" href="#">
+<span class="brand-mark">
+<img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="24" height="24">
+</span>
+<span class="brand-name fs-5">Vault Cobalt</span>
+</a>
+<p class="landing-footer-brand-desc">Redefiniendo la gestión financiera personal. Transparencia y autonomía para tus finanzas.</p>
+</div>
+<div class="landing-footer-col">
+<h5>Producto</h5>
+<ul class="landing-footer-links">
+<li><a href="#">Características</a></li>
+<li><a href="#">Privacidad</a></li>
+<li><a href="#">Descargas</a></li>
+</ul>
+</div>
+<div class="landing-footer-col">
+<h5>Soporte</h5>
+<ul class="landing-footer-links">
+<li><a href="#">Centro de ayuda</a></li>
+<li><a href="#">Términos</a></li>
+<li><a href="#">Seguridad</a></li>
+</ul>
+</div>
+</div>
+<small>&copy; 2026 Vault Cobalt. Finanzas Personales.</small>
+</div>
+</footer>
+</div>
 
-    <div class="container app-shell">
-        <section class="panel-toolbar card border-0 shadow-sm mb-4">
-            <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
-                <div>
-                    <p class="panel-kicker mb-1 text-uppercase">Centro de mando</p>
-                    <h2 class="panel-title h4 mb-1">Resumen financiero operativo</h2>
-                    <p class="panel-subtitle mb-0">Consulta movimientos, presupuestos, comparativas y deudas con un lenguaje visual unificado.</p>
-                </div>
-                <div class="period-selector d-flex align-items-center gap-2">
-                    <label for="filtroMes" class="fw-semibold mb-0 text-nowrap">Periodo:</label>
-                    <input type="month" id="filtroMes" name="filtro_mes" class="form-control period-input">
-                </div>
-            </div>
-        </section>
+<!-- ═══════════════════════════════════════════ -->
+<!-- APP CONTAINER                              -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="appContainer" style="display: none;">
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar-fixed">
+<div class="container">
+<a class="navbar-brand fw-bold d-flex align-items-center gap-2 app-brand" href="#">
+<span class="brand-mark app-brand-mark">
+<img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="40" height="40">
+</span>
+<span class="app-brand-copy">
+<small class="app-brand-subtitle d-block">Periodo activo</small>
+<span class="fs-4 app-brand-title d-block" id="topPeriodTitle">Panel financiero</span>
+</span>
+</a>
+<div class="d-flex align-items-center gap-2 app-userbox">
+<button id="btnOpenUpdateModal" class="btn btn-outline-light btn-sm px-3 d-none" type="button" aria-label="Abrir actualización de app">
+<i class="bi bi-arrow-repeat me-1"></i><span id="updateBadgeText">Actualizar</span>
+</button>
+<div class="dropdown">
+<button class="btn btn-icon" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú de usuario">
+<i class="bi bi-person-circle"></i>
+</button>
+<ul class="dropdown-menu dropdown-menu-end app-user-menu" aria-labelledby="userMenuBtn">
+<li><h6 class="dropdown-header">Sesión activa</h6></li>
+<li><span id="userEmail" class="dropdown-item-text app-user-email-item">-</span></li>
+<li><hr class="dropdown-divider"></li>
+<li>
+<button id="btnLogout" class="dropdown-item app-logout-item" type="button">
+<i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+</button>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</nav>
 
-        <!-- Navegación por Pestañas -->
-        <div class="tabs-shell mb-4">
-            <ul class="nav nav-tabs app-tabs" id="myTab" role="tablist" aria-label="Secciones de la aplicación">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">Dashboard</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="gastos-tab" data-bs-toggle="tab" data-bs-target="#gastos" type="button" role="tab">Gastos</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="ingresos-tab" data-bs-toggle="tab" data-bs-target="#ingresos" type="button" role="tab">Ingresos</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" role="tab">Presupuestos</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="planificacion-tab" data-bs-toggle="tab" data-bs-target="#planificacion" type="button" role="tab">Planificación</button>
-                </li>
-            </ul>
-        </div>
+<div class="container app-shell">
 
-        <div class="tab-content app-tab-content" id="myTabContent">
-            
-            <!-- TAB: DASHBOARD -->
-            <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-                <div class="dashboard-overview-grid mb-4">
-                    <article class="dashboard-hero-card">
-                        <p class="dashboard-card-label">Balance actual</p>
-                        <h3 class="dashboard-hero-amount" id="dashBalance">0 Gs.</h3>
-                        <div class="dashboard-hero-insight">
-                            <span class="dashboard-chip dashboard-chip-positive">Vista central del periodo</span>
-                            <p class="mb-0">Lectura consolidada entre ingresos y gastos del mes seleccionado.</p>
-                        </div>
-                    </article>
-                    <article class="dashboard-side-card dashboard-income-card">
-                        <div class="kpi-head">
-                            <span class="kpi-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
-                            <span class="kpi-label">Ingresos</span>
-                        </div>
-                        <h3 class="card-title fw-bold" id="dashIngresos">0 Gs.</h3>
-                        <p class="kpi-caption mb-0">Entradas acumuladas del periodo</p>
-                    </article>
-                    <article class="dashboard-side-card dashboard-expense-card">
-                        <div class="kpi-head">
-                            <span class="kpi-icon" aria-hidden="true"><i class="bi bi-cash-stack"></i></span>
-                            <span class="kpi-label">Gastos</span>
-                        </div>
-                        <h3 class="card-title fw-bold" id="dashGastos">0 Gs.</h3>
-                        <p class="kpi-caption mb-0">Salidas registradas en el mes</p>
-                    </article>
-                </div>
+<!-- Panel Toolbar -->
+<section class="panel-toolbar mb-4">
+<div class="panel-toolbar-inner">
+<div>
+<p class="panel-kicker mb-1">Centro de mando</p>
+<h2 class="panel-title mb-1">Resumen financiero operativo</h2>
+<p class="panel-subtitle mb-0">Consulta movimientos, presupuestos, comparativas y deudas con un lenguaje visual unificado.</p>
+</div>
+<div class="period-selector">
+<label for="filtroMes" class="fw-semibold mb-0 text-nowrap">Periodo:</label>
+<input type="month" id="filtroMes" name="filtro_mes" class="form-control period-input">
+</div>
+</div>
+</section>
 
-                <!-- Gráficos Principales -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <div class="card dashboard-panel shadow-sm h-100 border-0">
-                            <div class="card-header bg-white border-bottom-0 pt-3">
-                                <h5 class="mb-0 text-primary fw-bold d-flex align-items-center gap-2"><i class="bi bi-pie-chart-fill"></i>Distribución de Gastos</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="chartGastos"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card dashboard-panel shadow-sm h-100 border-0">
-                            <div class="card-header bg-white border-bottom-0 pt-3">
-                                <h5 class="mb-0 text-primary fw-bold d-flex align-items-center gap-2"><i class="bi bi-bar-chart-line-fill"></i>Ingresos vs Gastos</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="chartBalance"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- Tabs -->
+<div class="tabs-shell mb-4">
+<ul class="nav nav-tabs app-tabs" id="myTab" role="tablist" aria-label="Secciones de la aplicación">
+<li class="nav-item" role="presentation">
+<button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">Dashboard</button>
+</li>
+<li class="nav-item" role="presentation">
+<button class="nav-link" id="gastos-tab" data-bs-toggle="tab" data-bs-target="#gastos" type="button" role="tab">Gastos</button>
+</li>
+<li class="nav-item" role="presentation">
+<button class="nav-link" id="ingresos-tab" data-bs-toggle="tab" data-bs-target="#ingresos" type="button" role="tab">Ingresos</button>
+</li>
+<li class="nav-item" role="presentation">
+<button class="nav-link" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" role="tab">Presupuestos</button>
+</li>
+<li class="nav-item" role="presentation">
+<button class="nav-link" id="planificacion-tab" data-bs-toggle="tab" data-bs-target="#planificacion" type="button" role="tab">Planificación</button>
+</li>
+</ul>
+</div>
 
-                <!-- Nuevas Estadísticas Avanzadas -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-4">
-                        <div class="card dashboard-panel shadow-sm h-100 border-0">
-                            <div class="card-header bg-white border-bottom-0 pt-3">
-                                <h5 class="mb-0 text-primary fw-bold">Ranking de Categorías (Gastos)</h5>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="list-group list-group-flush" id="rankingCategorias">
-                                    <!-- Se llena dinámicamente -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card dashboard-panel shadow-sm h-100 border-0">
-                            <div class="card-header bg-white border-bottom-0 pt-3">
-                                <h5 class="mb-0 text-primary fw-bold">Análisis de Gastos Diarios</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="chartGastosDiarios"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="tab-content app-tab-content" id="myTabContent">
 
-                <div class="row mb-4">
-                    <div class="col-md-12">
-                         <div class="card dashboard-panel shadow-sm h-100 border-0">
-                            <div class="card-header bg-white border-bottom-0 pt-3 d-flex justify-content-between">
-                                <h5 class="mb-0 text-primary fw-bold">Día con Mayor Gasto</h5>
-                                <span class="badge bg-danger fs-6" id="diaMayorGasto">-</span>
-                            </div>
-                         </div>
-                    </div>
-                </div>
+<!-- ═══ TAB: DASHBOARD ═══ -->
+<div class="tab-pane fade show active" id="dashboard" role="tabpanel">
 
-                <!-- Sección Comparativa (Movida aquí) -->
-                <div class="card dashboard-panel shadow-sm mb-4 border-0">
-                    <div class="card-header bg-white border-bottom-0 pt-3">
-                        <h5 class="mb-0 text-primary fw-bold">Comparar Periodos</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row align-items-end bg-light p-3 rounded compare-controls">
-                            <div class="col-md-4 mb-3">
-                                <label for="compMesA" class="form-label fw-bold text-muted">Periodo A (Base)</label>
-                                <input type="month" id="compMesA" class="form-control border-0 shadow-sm">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="compMesB" class="form-label fw-bold text-muted">Periodo B (Comparar)</label>
-                                <input type="month" id="compMesB" class="form-control border-0 shadow-sm">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <button class="btn btn-primary w-100 shadow-sm" id="btnComparar">Generar Comparativa</button>
-                            </div>
-                        </div>
+<!-- KPI Overview -->
+<div class="dashboard-overview-grid mb-4">
+<article class="dashboard-hero-card">
+<p class="dashboard-card-label">Balance actual</p>
+<h3 class="dashboard-hero-amount" id="dashBalance">0 Gs.</h3>
+<div class="dashboard-hero-insight">
+<span class="dashboard-chip dashboard-chip-positive">Vista central del periodo</span>
+<p class="mb-0">Lectura consolidada entre ingresos y gastos del mes seleccionado.</p>
+</div>
+</article>
+<article class="dashboard-side-card dashboard-income-card">
+<div class="kpi-head">
+<span class="kpi-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
+<span class="kpi-label">Ingresos</span>
+</div>
+<h3 class="card-title fw-bold" id="dashIngresos">0 Gs.</h3>
+<p class="kpi-caption mb-0">Entradas acumuladas del periodo</p>
+</article>
+<article class="dashboard-side-card dashboard-expense-card">
+<div class="kpi-head">
+<span class="kpi-icon" aria-hidden="true"><i class="bi bi-cash-stack"></i></span>
+<span class="kpi-label">Gastos</span>
+</div>
+<h3 class="card-title fw-bold" id="dashGastos">0 Gs.</h3>
+<p class="kpi-caption mb-0">Salidas registradas en el mes</p>
+</article>
+</div>
 
-                        <div class="row mt-4" id="resultadosComparativa" style="display: none;">
-                            <div class="col-md-6 mb-4">
-                                <h6 class="text-center text-muted mb-3">Balance Comparativo</h6>
-                                <div id="chartCompBalance"></div>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <h6 class="text-center text-muted mb-3">Evolución de Gastos</h6>
-                                <div id="chartCompGastos"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Charts Row 1 -->
+<div class="row g-3 mb-4">
+<div class="col-md-6">
+<div class="card dashboard-panel h-100">
+<div class="card-header">
+<h5 class="mb-0 d-flex align-items-center gap-2"><i class="bi bi-pie-chart-fill"></i>Distribución de Gastos</h5>
+</div>
+<div class="card-body">
+<div id="chartGastos"></div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card dashboard-panel h-100">
+<div class="card-header">
+<h5 class="mb-0 d-flex align-items-center gap-2"><i class="bi bi-bar-chart-line-fill"></i>Ingresos vs Gastos</h5>
+</div>
+<div class="card-body">
+<div id="chartBalance"></div>
+</div>
+</div>
+</div>
+</div>
 
-            <!-- TAB: GASTOS -->
-            <div class="tab-pane fade" id="gastos" role="tabpanel">
-                <div class="app-section-grid">
-                    <div class="app-section-form">
-                        <div class="card shadow-sm mb-4 section-card">
-                            <div class="card-header bg-white">
-                                <p class="section-label mb-1">Expenses</p>
-                                <h5 class="mb-0">Registrar gasto</h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="gastoForm">
-                                    <input type="hidden" id="gastoIdEdit"> <!-- ID oculto para edición -->
-                                    
-                                    <!-- Selección Rápida de Recurrentes -->
-                                    <div class="mb-3">
-                                        <label class="form-label text-primary fw-bold" for="gastoPlantilla">Cargar Recurrente / Plantilla</label>
-                                        <select class="form-select border-primary" id="gastoPlantilla" name="gasto_plantilla">
-                                            <option value="" selected>-- Seleccionar (Opcional) --</option>
-                                        </select>
-                                    </div>
+<!-- Charts Row 2 -->
+<div class="row g-3 mb-4">
+<div class="col-md-4">
+<div class="card dashboard-panel h-100">
+<div class="card-header">
+<h5 class="mb-0">Ranking de Categorías (Gastos)</h5>
+</div>
+<div class="card-body p-0">
+<div class="list-group list-group-flush" id="rankingCategorias"></div>
+</div>
+</div>
+</div>
+<div class="col-md-8">
+<div class="card dashboard-panel h-100">
+<div class="card-header">
+<h5 class="mb-0">Análisis de Gastos Diarios</h5>
+</div>
+<div class="card-body">
+<div id="chartGastosDiarios"></div>
+</div>
+</div>
+</div>
+</div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label" for="gastoConcepto">Concepto</label>
-                                        <input type="text" class="form-control" id="gastoConcepto" name="gasto_concepto" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" for="gastoMonto">Monto (Gs.)</label>
-                                        <input type="number" class="form-control" id="gastoMonto" name="gasto_monto" min="1" required>
-                                    </div>
-                                    <div class="row mb-3 form-duo">
-                                        <div class="col">
-                                            <label class="form-label" for="gastoFecha">Fecha</label>
-                                            <input type="date" class="form-control" id="gastoFecha" name="gasto_fecha" required>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label" for="gastoHora">Hora</label>
-                                            <input type="time" class="form-control" id="gastoHora" name="gasto_hora" required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" for="gastoCategoria">Categoría</label>
-                                        <div class="input-group">
-                                            <select class="form-select" id="gastoCategoria" name="gasto_categoria" required></select>
-                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaGasto" aria-label="Crear nueva categoría de gasto">+</button>
-                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaGasto" aria-label="Gestionar categorías de gasto">⚙️</button>
-                                        </div>
-                                        <!-- Visualizador de Presupuesto -->
-                                        <div id="infoPresupuestoGasto" class="form-text mt-1 text-muted" style="font-size: 0.9em;" role="status" aria-live="polite">
-                                            <!-- Se llena dinámicamente -->
-                                        </div>
-                                    </div>
+<!-- Día Mayor Gasto -->
+<div class="row mb-4">
+<div class="col-md-12">
+<div class="card dashboard-panel h-100">
+<div class="card-header d-flex justify-content-between">
+<h5 class="mb-0">Día con Mayor Gasto</h5>
+<span class="badge bg-danger fs-6" id="diaMayorGasto">-</span>
+</div>
+</div>
+</div>
+</div>
 
-                                    <!-- Vincular Deuda -->
-                                    <div class="mb-3 p-2 bg-light rounded border">
-                                        <label class="form-label small fw-bold" for="gastoDeuda">Vincular a Deuda (Opcional)</label>
-                                        <select class="form-select form-select-sm" id="gastoDeuda" name="gasto_deuda">
-                                            <option value="" selected>-- Ninguna --</option>
-                                        </select>
-                                        <div id="infoDeuda" class="form-text mt-1 text-primary" role="status" aria-live="polite"></div>
-                                    </div>
+<!-- Comparar Periodos -->
+<div class="card dashboard-panel mb-4">
+<div class="card-header">
+<h5 class="mb-0">Comparar Periodos</h5>
+</div>
+<div class="card-body">
+<div class="row align-items-end compare-controls p-3 rounded">
+<div class="col-md-4 mb-3">
+<label for="compMesA" class="form-label fw-bold">Periodo A (Base)</label>
+<input type="month" id="compMesA" class="form-control">
+</div>
+<div class="col-md-4 mb-3">
+<label for="compMesB" class="form-label fw-bold">Periodo B (Comparar)</label>
+<input type="month" id="compMesB" class="form-control">
+</div>
+<div class="col-md-4 mb-3">
+<button class="btn btn-primary w-100" id="btnComparar">Generar Comparativa</button>
+</div>
+</div>
+<div class="row mt-4" id="resultadosComparativa" style="display: none;">
+<div class="col-md-6 mb-4">
+<h6 class="text-center mb-3">Balance Comparativo</h6>
+<div id="chartCompBalance"></div>
+</div>
+<div class="col-md-6 mb-4">
+<h6 class="text-center mb-3">Evolución de Gastos</h6>
+<div id="chartCompGastos"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label" for="gastoMetodo">Método de Pago</label>
-                                        <select class="form-select" id="gastoMetodo" name="gasto_metodo" required>
-                                            <option value="Efectivo">Efectivo</option>
-                                            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-                                            <option value="Tarjeta Débito">Tarjeta Débito</option>
-                                            <option value="Transferencia">Transferencia</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="gastoRecurrente">
-                                        <label class="form-check-label" for="gastoRecurrente">Es Recurrente (Mensual)</label>
-                                    </div>
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-danger" id="btnGastoSubmit">Guardar Gasto</button>
-                                        <button type="button" class="btn btn-secondary mt-2" id="btnGastoCancel" style="display: none;">Cancelar Edición</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="app-section-content">
-                        <div class="card shadow-sm section-card">
-                            <div class="card-header bg-white">
-                                <p class="section-label mb-1">Transactions</p>
-                                <h5 class="mb-0">Historial de gastos</h5>
-                            </div>
-                            <div class="card-body p-3">
-                                <div id="listaGastos" class="activity-list"></div>
-                                <div id="noGastos" class="text-center p-4 text-muted">Sin registros.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- ═══ TAB: GASTOS ═══ -->
+<div class="tab-pane fade" id="gastos" role="tabpanel">
+<div class="app-section-grid">
+<div class="app-section-form">
+<div class="card section-card">
+<div class="card-header">
+<p class="section-label mb-1">Expenses</p>
+<h5 class="mb-0">Registrar gasto</h5>
+</div>
+<div class="card-body">
+<form id="gastoForm">
+<input type="hidden" id="gastoIdEdit">
 
-            <!-- TAB: INGRESOS -->
-            <div class="tab-pane fade" id="ingresos" role="tabpanel">
-                <div class="app-section-grid">
-                    <div class="app-section-form">
-                        <div class="card shadow-sm mb-4 section-card">
-                            <div class="card-header bg-white">
-                                <p class="section-label mb-1">Income</p>
-                                <h5 class="mb-0">Registrar ingreso</h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="ingresoForm">
-                                    <input type="hidden" id="ingresoIdEdit"> <!-- ID oculto para edición -->
-                                    <div class="mb-3">
-                                        <label class="form-label" for="ingresoConcepto">Fuente/Concepto</label>
-                                        <input type="text" class="form-control" id="ingresoConcepto" name="ingreso_concepto" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" for="ingresoMonto">Monto (Gs.)</label>
-                                        <input type="number" class="form-control" id="ingresoMonto" name="ingreso_monto" min="1" required>
-                                    </div>
-                                    <div class="row mb-3 form-duo">
-                                        <div class="col">
-                                            <label class="form-label" for="ingresoFecha">Fecha</label>
-                                            <input type="date" class="form-control" id="ingresoFecha" name="ingreso_fecha" required>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label" for="ingresoHora">Hora</label>
-                                            <input type="time" class="form-control" id="ingresoHora" name="ingreso_hora" required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" for="ingresoCategoria">Categoría</label>
-                                        <div class="input-group">
-                                            <select class="form-select" id="ingresoCategoria" name="ingreso_categoria" required></select>
-                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaIngreso" aria-label="Crear nueva categoría de ingreso">+</button>
-                                            <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaIngreso" aria-label="Gestionar categorías de ingreso">⚙️</button>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="ingresoRecurrente">
-                                        <label class="form-check-label" for="ingresoRecurrente">Es Recurrente (Mensual)</label>
-                                    </div>
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-success" id="btnIngresoSubmit">Guardar Ingreso</button>
-                                        <button type="button" class="btn btn-secondary mt-2" id="btnIngresoCancel" style="display: none;">Cancelar Edición</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="app-section-content">
-                        <div class="card shadow-sm section-card">
-                            <div class="card-header bg-white">
-                                <p class="section-label mb-1">Transactions</p>
-                                <h5 class="mb-0">Historial de ingresos</h5>
-                            </div>
-                            <div class="card-body p-3">
-                                <div id="listaIngresos" class="activity-list"></div>
-                                <div id="noIngresos" class="text-center p-4 text-muted">Sin registros.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="mb-3">
+<label class="form-label fw-bold" for="gastoPlantilla">Cargar Recurrente / Plantilla</label>
+<select class="form-select" id="gastoPlantilla" name="gasto_plantilla">
+<option value="" selected>-- Seleccionar (Opcional) --</option>
+</select>
+</div>
 
-            <!-- TAB: PRESUPUESTOS -->
-            <div class="tab-pane fade" id="presupuesto" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card shadow-sm section-card">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p class="section-label mb-1">Budgets</p>
-                                    <h5 class="mb-0">Presupuestos mensuales</h5>
-                                </div>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalPresupuesto">Configurar Presupuesto</button>
-                            </div>
-                            <div class="card-body" id="listaPresupuestos">
-                                <!-- Se llena dinámicamente -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="mb-3">
+<label class="form-label" for="gastoConcepto">Concepto</label>
+<input type="text" class="form-control" id="gastoConcepto" name="gasto_concepto" required>
+</div>
+<div class="mb-3">
+<label class="form-label" for="gastoMonto">Monto (Gs.)</label>
+<input type="number" class="form-control" id="gastoMonto" name="gasto_monto" min="1" required>
+</div>
+<div class="row mb-3 form-duo">
+<div class="col">
+<label class="form-label" for="gastoFecha">Fecha</label>
+<input type="date" class="form-control" id="gastoFecha" name="gasto_fecha" required>
+</div>
+<div class="col">
+<label class="form-label" for="gastoHora">Hora</label>
+<input type="time" class="form-control" id="gastoHora" name="gasto_hora" required>
+</div>
+</div>
+<div class="mb-3">
+<label class="form-label" for="gastoCategoria">Categoría</label>
+<div class="input-group">
+<select class="form-select" id="gastoCategoria" name="gasto_categoria" required></select>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaGasto" aria-label="Crear nueva categoría de gasto">+</button>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaGasto" aria-label="Gestionar categorías de gasto">⚙️</button>
+</div>
+<div id="infoPresupuestoGasto" class="form-text mt-1" style="font-size: 0.9em;" role="status" aria-live="polite"></div>
+</div>
 
-            <!-- TAB: COMPARATIVA (Eliminado, movido a dashboard) -->
-            <!-- TAB: PLANIFICACIÓN -->
-            <div class="tab-pane fade" id="planificacion" role="tabpanel">
+<div class="mb-3 p-2 bg-light rounded border">
+<label class="form-label small fw-bold" for="gastoDeuda">Vincular a Deuda (Opcional)</label>
+<select class="form-select form-select-sm" id="gastoDeuda" name="gasto_deuda">
+<option value="" selected>-- Ninguna --</option>
+</select>
+<div id="infoDeuda" class="form-text mt-1" role="status" aria-live="polite"></div>
+</div>
 
-                <!-- Summary bar -->
-                <div class="planning-summary-bar mb-4">
-                    <div class="planning-summary-stats">
-                        <div class="planning-stat">
-                            <span class="planning-stat-label">Plantillas activas</span>
-                            <span id="planTotalRec" class="planning-stat-value stat-primary">0</span>
-                        </div>
-                        <div class="planning-stat">
-                            <span class="planning-stat-label">Deudas pendientes</span>
-                            <span id="planTotalDeudas" class="planning-stat-value stat-tertiary">0</span>
-                        </div>
-                    </div>
-                </div>
+<div class="mb-3">
+<label class="form-label" for="gastoMetodo">Método de Pago</label>
+<select class="form-select" id="gastoMetodo" name="gasto_metodo" required>
+<option value="Efectivo">Efectivo</option>
+<option value="Tarjeta Crédito">Tarjeta Crédito</option>
+<option value="Tarjeta Débito">Tarjeta Débito</option>
+<option value="Transferencia">Transferencia</option>
+</select>
+</div>
+<div class="mb-3 form-check">
+<input type="checkbox" class="form-check-input" id="gastoRecurrente">
+<label class="form-check-label" for="gastoRecurrente">Es Recurrente (Mensual)</label>
+</div>
+<div class="d-grid">
+<button type="submit" class="btn btn-danger" id="btnGastoSubmit">Guardar Gasto</button>
+<button type="button" class="btn btn-secondary mt-2" id="btnGastoCancel" style="display: none;">Cancelar Edición</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="app-section-content">
+<div class="card section-card">
+<div class="card-header">
+<p class="section-label mb-1">Transactions</p>
+<h5 class="mb-0">Historial de gastos</h5>
+</div>
+<div class="card-body p-3">
+<div id="listaGastos" class="activity-list"></div>
+<div id="noGastos" class="text-center p-4">Sin registros.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-                <div class="row">
-                    <!-- Columna: Gastos Recurrentes -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm h-100 section-card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p class="section-label mb-1">Recurring</p>
-                                    <h5 class="mb-0 text-primary">Plantillas / recurrentes</h5>
-                                </div>
-                                <button class="btn btn-sm btn-primary" id="btnAddRecurrente" data-bs-toggle="modal" data-bs-target="#modalRecurrente">+ Nuevo</button>
-                            </div>
-                            <div class="card-body p-2">
-                                <div id="listaRecurrentes" class="rec-cards-grid"></div>
-                                <div id="noRecurrentes" class="p-3 text-center text-muted">Sin plantillas configuradas.</div>
-                            </div>
-                        </div>
-                    </div>
+<!-- ═══ TAB: INGRESOS ═══ -->
+<div class="tab-pane fade" id="ingresos" role="tabpanel">
+<div class="app-section-grid">
+<div class="app-section-form">
+<div class="card section-card">
+<div class="card-header">
+<p class="section-label mb-1">Income</p>
+<h5 class="mb-0">Registrar ingreso</h5>
+</div>
+<div class="card-body">
+<form id="ingresoForm">
+<input type="hidden" id="ingresoIdEdit">
+<div class="mb-3">
+<label class="form-label" for="ingresoConcepto">Fuente/Concepto</label>
+<input type="text" class="form-control" id="ingresoConcepto" name="ingreso_concepto" required>
+</div>
+<div class="mb-3">
+<label class="form-label" for="ingresoMonto">Monto (Gs.)</label>
+<input type="number" class="form-control" id="ingresoMonto" name="ingreso_monto" min="1" required>
+</div>
+<div class="row mb-3 form-duo">
+<div class="col">
+<label class="form-label" for="ingresoFecha">Fecha</label>
+<input type="date" class="form-control" id="ingresoFecha" name="ingreso_fecha" required>
+</div>
+<div class="col">
+<label class="form-label" for="ingresoHora">Hora</label>
+<input type="time" class="form-control" id="ingresoHora" name="ingreso_hora" required>
+</div>
+</div>
+<div class="mb-3">
+<label class="form-label" for="ingresoCategoria">Categoría</label>
+<div class="input-group">
+<select class="form-select" id="ingresoCategoria" name="ingreso_categoria" required></select>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaIngreso" aria-label="Crear nueva categoría de ingreso">+</button>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaIngreso" aria-label="Gestionar categorías de ingreso">⚙️</button>
+</div>
+</div>
+<div class="mb-3 form-check">
+<input type="checkbox" class="form-check-input" id="ingresoRecurrente">
+<label class="form-check-label" for="ingresoRecurrente">Es Recurrente (Mensual)</label>
+</div>
+<div class="d-grid">
+<button type="submit" class="btn btn-success" id="btnIngresoSubmit">Guardar Ingreso</button>
+<button type="button" class="btn btn-secondary mt-2" id="btnIngresoCancel" style="display: none;">Cancelar Edición</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="app-section-content">
+<div class="card section-card">
+<div class="card-header">
+<p class="section-label mb-1">Transactions</p>
+<h5 class="mb-0">Historial de ingresos</h5>
+</div>
+<div class="card-body p-3">
+<div id="listaIngresos" class="activity-list"></div>
+<div id="noIngresos" class="text-center p-4">Sin registros.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-                    <!-- Columna: Gestión de Deudas -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm h-100 section-card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p class="section-label mb-1">Liabilities</p>
-                                    <h5 class="mb-0 text-danger">Control de deudas</h5>
-                                </div>
-                                <button class="btn btn-sm btn-danger" id="btnAddDeuda" data-bs-toggle="modal" data-bs-target="#modalDeuda">+ Nueva Deuda</button>
-                            </div>
-                            <div class="card-body p-3">
-                                <div id="listaDeudas"></div>
-                                <div id="noDeudas" class="p-3 text-center text-muted">Sin deudas registradas.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- ═══ TAB: PRESUPUESTOS ═══ -->
+<div class="tab-pane fade" id="presupuesto" role="tabpanel">
+<div class="row">
+<div class="col-md-12">
+<div class="card section-card">
+<div class="card-header d-flex justify-content-between align-items-center">
+<div>
+<p class="section-label mb-1">Budgets</p>
+<h5 class="mb-0">Presupuestos mensuales</h5>
+</div>
+<button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalPresupuesto">Configurar Presupuesto</button>
+</div>
+<div class="card-body" id="listaPresupuestos"></div>
+</div>
+</div>
+</div>
+</div>
 
-        </div>
-    </div>
-    <nav class="mobile-tabbar d-md-none" aria-label="Navegación móvil principal">
-        <button type="button" class="mobile-tab-link is-active" data-tab-trigger="dashboard-tab" aria-controls="dashboard">
-            <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i><span>Inicio</span>
-        </button>
-        <button type="button" class="mobile-tab-link" data-tab-trigger="gastos-tab" aria-controls="gastos">
-            <i class="bi bi-wallet2" aria-hidden="true"></i><span>Gastos</span>
-        </button>
-        <button type="button" class="mobile-tab-link" data-tab-trigger="ingresos-tab" aria-controls="ingresos">
-            <i class="bi bi-cash-coin" aria-hidden="true"></i><span>Ingresos</span>
-        </button>
-        <button type="button" class="mobile-tab-link" data-tab-trigger="presupuesto-tab" aria-controls="presupuesto">
-            <i class="bi bi-pie-chart-fill" aria-hidden="true"></i><span>Presupuesto</span>
-        </button>
-        <button type="button" class="mobile-tab-link" data-tab-trigger="planificacion-tab" aria-controls="planificacion">
-            <i class="bi bi-calendar2-check-fill" aria-hidden="true"></i><span>Plan</span>
-        </button>
-    </nav>
-    </div>
+<!-- ═══ TAB: PLANIFICACIÓN ═══ -->
+<div class="tab-pane fade" id="planificacion" role="tabpanel">
 
-    <!-- Modal Nuevo Recurrente -->
-    <div class="modal fade" id="modalRecurrente" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalRecurrenteTitle">Nueva Plantilla</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formRecurrente">
-                        <input type="hidden" id="recIdEdit">
-                        <div class="mb-3">
-                            <label class="form-label" for="recConcepto">Concepto</label>
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiRec" aria-label="Elegir emoji para plantilla">📝</button>
-                                <input type="text" class="form-control" id="recConcepto" name="recurrente_concepto" placeholder="Ej: Netflix" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="recMonto">Monto Aproximado (Gs.)</label>
-                            <input type="number" class="form-control" id="recMonto" name="recurrente_monto">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="recCategoria">Categoría</label>
-                            <select class="form-select" id="recCategoria" name="recurrente_categoria" required></select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="recDia">Día de Vencimiento</label>
-                            <input type="number" class="form-control" id="recDia" name="recurrente_dia" min="1" max="31">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnGuardarRecurrente">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="planning-summary-bar mb-4">
+<div class="planning-summary-stats">
+<div class="planning-stat">
+<span class="planning-stat-label">Plantillas activas</span>
+<span id="planTotalRec" class="planning-stat-value stat-primary">0</span>
+</div>
+<div class="planning-stat">
+<span class="planning-stat-label">Deudas pendientes</span>
+<span id="planTotalDeudas" class="planning-stat-value stat-tertiary">0</span>
+</div>
+</div>
+</div>
 
-    <!-- Modal Nueva Deuda -->
-    <div class="modal fade" id="modalDeuda" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalDeudaTitle">Registrar Deuda</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formDeuda">
-                        <input type="hidden" id="deudaIdEdit">
-                        <div class="mb-3">
-                            <label class="form-label" for="deudaConcepto">Concepto</label>
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiDeuda" aria-label="Elegir emoji para deuda">💳</button>
-                                <input type="text" class="form-control" id="deudaConcepto" name="deuda_concepto" placeholder="Ej: Visa Itaú" required>
-                            </div>
-                        </div>
-                        <div class="row form-duo">
-                            <div class="col mb-3">
-                                <label class="form-label" for="deudaMonto">Monto Total (Gs.)</label>
-                                <input type="number" class="form-control" id="deudaMonto" name="deuda_monto_total" required>
-                            </div>
-                            <div class="col mb-3">
-                                <label class="form-label" for="deudaCuotaMonto">Cuota Mensual (Gs.)</label>
-                                <input type="number" class="form-control" id="deudaCuotaMonto" name="deuda_cuota_monto" placeholder="Aprox">
-                            </div>
-                        </div>
-                        <div class="row form-duo">
-                            <div class="col mb-3">
-                                <label class="form-label" for="deudaCuotas">Total Cuotas</label>
-                                <input type="number" class="form-control" id="deudaCuotas" name="deuda_cuotas" min="1" value="1" required>
-                            </div>
-                            <div class="col mb-3">
-                                <label class="form-label" for="deudaPagadas">Pagadas</label>
-                                <input type="number" class="form-control" id="deudaPagadas" name="deuda_pagadas" min="0" value="0" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="deudaFechaInicio">Fecha Inicio</label>
-                            <input type="date" class="form-control" id="deudaFechaInicio" name="deuda_fecha_inicio">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="btnGuardarDeuda">Guardar Deuda</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="row">
+<div class="col-md-6 mb-4">
+<div class="card section-card h-100">
+<div class="card-header d-flex justify-content-between align-items-center">
+<div>
+<p class="section-label mb-1">Recurring</p>
+<h5 class="mb-0 text-primary">Plantillas / recurrentes</h5>
+</div>
+<button class="btn btn-sm btn-primary" id="btnAddRecurrente" data-bs-toggle="modal" data-bs-target="#modalRecurrente">+ Nuevo</button>
+</div>
+<div class="card-body p-2">
+<div id="listaRecurrentes" class="rec-cards-grid"></div>
+<div id="noRecurrentes" class="p-3 text-center">Sin plantillas configuradas.</div>
+</div>
+</div>
+</div>
+<div class="col-md-6 mb-4">
+<div class="card section-card h-100">
+<div class="card-header d-flex justify-content-between align-items-center">
+<div>
+<p class="section-label mb-1">Liabilities</p>
+<h5 class="mb-0 text-danger">Control de deudas</h5>
+</div>
+<button class="btn btn-sm btn-danger" id="btnAddDeuda" data-bs-toggle="modal" data-bs-target="#modalDeuda">+ Nueva Deuda</button>
+</div>
+<div class="card-body p-3">
+<div id="listaDeudas"></div>
+<div id="noDeudas" class="p-3 text-center">Sin deudas registradas.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- Modal Nueva Categoría -->
-    <div class="modal fade" id="modalCategoria" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalCategoriaTitle">Nueva Categoría</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formCategoria">
-                        <input type="hidden" id="catIdEdit"> <!-- ID para edición -->
-                        <input type="hidden" id="catTipo">
-                        <div class="mb-3">
-                            <label class="form-label" for="catNombre">Nombre</label>
-                            <input type="text" class="form-control" id="catNombre" name="categoria_nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="catEmoji">Emoji</label>
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiPicker" aria-label="Elegir emoji para categoría">😊</button>
-                                <input type="text" class="form-control" id="catEmoji" name="categoria_emoji" placeholder="Selecciona un emoji" readonly required>
-                            </div>
-                            <div id="emojiPickerContainer" class="mt-2"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Color</label>
-                            <div class="input-group">
-                                <div id="colorPreview" class="form-control" style="background-color: #059669; cursor: pointer;" role="button" tabindex="0" aria-label="Seleccionar color de categoría"></div>
-                                <input type="hidden" id="catColor" value="#059669">
-                            </div>
-                            <small class="text-muted">Click en la barra para cambiar color</small>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnGuardarCategoria">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <!-- Modal Gestionar Categorías -->
-    <div class="modal fade" id="modalGestorCategorias" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Gestionar Categorías</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="listaGestorCategorias" class="category-manager-grid">
-                        <!-- Items dinámicos -->
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Mobile Tab Bar -->
+<nav class="mobile-tabbar d-md-none" aria-label="Navegación móvil principal">
+<button type="button" class="mobile-tab-link is-active" data-tab-trigger="dashboard-tab" aria-controls="dashboard">
+<i class="bi bi-grid-1x2-fill" aria-hidden="true"></i><span>Inicio</span>
+</button>
+<button type="button" class="mobile-tab-link" data-tab-trigger="gastos-tab" aria-controls="gastos">
+<i class="bi bi-wallet2" aria-hidden="true"></i><span>Gastos</span>
+</button>
+<button type="button" class="mobile-tab-link" data-tab-trigger="ingresos-tab" aria-controls="ingresos">
+<i class="bi bi-cash-coin" aria-hidden="true"></i><span>Ingresos</span>
+</button>
+<button type="button" class="mobile-tab-link" data-tab-trigger="presupuesto-tab" aria-controls="presupuesto">
+<i class="bi bi-pie-chart-fill" aria-hidden="true"></i><span>Presupuesto</span>
+</button>
+<button type="button" class="mobile-tab-link" data-tab-trigger="planificacion-tab" aria-controls="planificacion">
+<i class="bi bi-calendar2-check-fill" aria-hidden="true"></i><span>Plan</span>
+</button>
+</nav>
+</div>
 
-    <!-- Modal Presupuesto -->
-    <div class="modal fade" id="modalPresupuesto" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Configurar Presupuesto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formPresupuesto">
-                        <div class="mb-3">
-                            <label class="form-label" for="presupuestoCategoria">Categoría de Gasto</label>
-                            <select class="form-select" id="presupuestoCategoria" name="presupuesto_categoria" required></select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="presupuestoMonto">Límite Mensual (Gs.)</label>
-                            <input type="number" class="form-control" id="presupuestoMonto" name="presupuesto_monto" min="1" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnGuardarPresupuesto">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- ═══════════════════════════════════════════ -->
+<!-- MODALS                                     -->
+<!-- ═══════════════════════════════════════════ -->
 
-    <!-- Login Modal (Bloqueante) -->
-    <div class="modal fade" id="modalLogin" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-auth-shell">
-                <div class="modal-body p-4 p-lg-5">
-                    <div class="auth-branding text-center mb-4">
-                        <span class="auth-brand-mark">
-                            <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="36" height="36">
-                        </span>
-                        <h5 class="modal-title mt-3 mb-1">Vault Cobalt</h5>
-                        <p class="auth-caption mb-0">Accede a tu observatorio financiero personal.</p>
-                    </div>
-                    <form id="formLogin">
-                        <div class="mb-3">
-                            <label class="form-label" for="loginEmail">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="loginEmail" name="login_email" autocomplete="email" required placeholder="tu@email.com">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="loginPassword">Contraseña</label>
-                            <input type="password" class="form-control" id="loginPassword" name="login_password" autocomplete="current-password" required placeholder="********">
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary" id="btnLogin">Iniciar Sesión</button>
-                            <button type="button" class="btn btn-outline-secondary" id="btnRegister">Registrarse</button>
-                        </div>
-                        
-                        <div class="text-center my-4 position-relative">
-                            <hr class="position-absolute w-100 m-0" style="top: 50%; z-index: 0;">
-                            <span class="auth-divider-text px-2 small position-relative" style="z-index: 1;">o continúa con</span>
-                        </div>
+<!-- Modal Nuevo Recurrente -->
+<div class="modal fade" id="modalRecurrente" tabindex="-1" data-bs-backdrop="static">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="modalRecurrenteTitle">Nueva Plantilla</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<form id="formRecurrente">
+<input type="hidden" id="recIdEdit">
+<div class="mb-3">
+<label class="form-label" for="recConcepto">Concepto</label>
+<div class="input-group">
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiRec" aria-label="Elegir emoji para plantilla">📝</button>
+<input type="text" class="form-control" id="recConcepto" name="recurrente_concepto" placeholder="Ej: Netflix" required>
+</div>
+</div>
+<div class="mb-3">
+<label class="form-label" for="recMonto">Monto Aproximado (Gs.)</label>
+<input type="number" class="form-control" id="recMonto" name="recurrente_monto">
+</div>
+<div class="mb-3">
+<label class="form-label" for="recCategoria">Categoría</label>
+<select class="form-select" id="recCategoria" name="recurrente_categoria" required></select>
+</div>
+<div class="mb-3">
+<label class="form-label" for="recDia">Día de Vencimiento</label>
+<input type="number" class="form-control" id="recDia" name="recurrente_dia" min="1" max="31">
+</div>
+</form>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-primary" id="btnGuardarRecurrente">Guardar</button>
+</div>
+</div>
+</div>
+</div>
 
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-auth-google" id="btnLoginGoogle">
-                                <i class="bi bi-google me-2"></i>Google
-                            </button>
-                            <button type="button" class="btn btn-auth-secondary" id="btnLoginFacebook">
-                                <i class="bi bi-facebook me-2"></i>Facebook
-                            </button>
-                        </div>
-                        <p id="socialLoginHint" class="small text-muted text-center mt-2 mb-0 d-none">
-                            En la app móvil usa correo y contraseña.
-                        </p>
-                    </form>
-                    <div id="loginError" class="alert alert-danger mt-3 d-none" role="alert" aria-live="assertive"></div>
-                    <div id="loginSuccess" class="alert alert-success mt-3 d-none" role="status" aria-live="polite">Registro exitoso. ¡Revisa tu correo!</div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Modal Nueva Deuda -->
+<div class="modal fade" id="modalDeuda" tabindex="-1" data-bs-backdrop="static">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="modalDeudaTitle">Registrar Deuda</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<form id="formDeuda">
+<input type="hidden" id="deudaIdEdit">
+<div class="mb-3">
+<label class="form-label" for="deudaConcepto">Concepto</label>
+<div class="input-group">
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiDeuda" aria-label="Elegir emoji para deuda">💳</button>
+<input type="text" class="form-control" id="deudaConcepto" name="deuda_concepto" placeholder="Ej: Visa Itaú" required>
+</div>
+</div>
+<div class="row form-duo">
+<div class="col mb-3">
+<label class="form-label" for="deudaMonto">Monto Total (Gs.)</label>
+<input type="number" class="form-control" id="deudaMonto" name="deuda_monto_total" required>
+</div>
+<div class="col mb-3">
+<label class="form-label" for="deudaCuotaMonto">Cuota Mensual (Gs.)</label>
+<input type="number" class="form-control" id="deudaCuotaMonto" name="deuda_cuota_monto" placeholder="Aprox">
+</div>
+</div>
+<div class="row form-duo">
+<div class="col mb-3">
+<label class="form-label" for="deudaCuotas">Total Cuotas</label>
+<input type="number" class="form-control" id="deudaCuotas" name="deuda_cuotas" min="1" value="1" required>
+</div>
+<div class="col mb-3">
+<label class="form-label" for="deudaPagadas">Pagadas</label>
+<input type="number" class="form-control" id="deudaPagadas" name="deuda_pagadas" min="0" value="0" required>
+</div>
+</div>
+<div class="mb-3">
+<label class="form-label" for="deudaFechaInicio">Fecha Inicio</label>
+<input type="date" class="form-control" id="deudaFechaInicio" name="deuda_fecha_inicio">
+</div>
+</form>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-danger" id="btnGuardarDeuda">Guardar Deuda</button>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- Modal Actualización App -->
-    <div class="modal fade" id="modalAppUpdate" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-update-shell">
-                <div class="modal-header">
-                    <div>
-                        <p class="modal-update-kicker mb-1">Versión disponible</p>
-                        <h5 class="modal-title mb-0"><i class="bi bi-phone me-2"></i>Actualización de la app</h5>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="update-highlight-card">
-                        <span class="update-highlight-label">Nueva versión</span>
-                        <strong id="updateVersionLabel">-</strong>
-                    </div>
-                    <p class="mb-2 mt-3">Puedes instalar encima de la versión actual, sin desinstalar.</p>
-                    <p class="text-muted small mb-0">La descarga se hace desde la fuente oficial configurada para la APK.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Después</button>
-                    <button type="button" class="btn btn-primary" id="btnDownloadUpdate">
-                        <i class="bi bi-download me-1"></i>Descargar e instalar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    </main>
+<!-- Modal Nueva Categoría -->
+<div class="modal fade" id="modalCategoria" tabindex="-1" data-bs-backdrop="static">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="modalCategoriaTitle">Nueva Categoría</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<form id="formCategoria">
+<input type="hidden" id="catIdEdit">
+<input type="hidden" id="catTipo">
+<div class="mb-3">
+<label class="form-label" for="catNombre">Nombre</label>
+<input type="text" class="form-control" id="catNombre" name="categoria_nombre" required>
+</div>
+<div class="mb-3">
+<label class="form-label" for="catEmoji">Emoji</label>
+<div class="input-group">
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiPicker" aria-label="Elegir emoji para categoría">😊</button>
+<input type="text" class="form-control" id="catEmoji" name="categoria_emoji" placeholder="Selecciona un emoji" readonly required>
+</div>
+<div id="emojiPickerContainer" class="mt-2"></div>
+</div>
+<div class="mb-3">
+<label class="form-label">Color</label>
+<div class="input-group">
+<div id="colorPreview" class="form-control" style="background-color: #059669; cursor: pointer;" role="button" tabindex="0" aria-label="Seleccionar color de categoría"></div>
+<input type="hidden" id="catColor" value="#059669">
+</div>
+<small>Click en la barra para cambiar color</small>
+</div>
+</form>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-primary" id="btnGuardarCategoria">Guardar</button>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- Bootstrap & Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
-    <script src="https://unpkg.com/vanilla-picker@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // Watchdog de arranque: evita loader infinito si app.js no llega a ejecutarse.
-        window.__appBootstrapped = false;
-        setTimeout(() => {
-            if (window.__appBootstrapped) return;
-            const loader = document.getElementById('globalLoader');
-            if (loader) loader.style.display = 'none';
-            const landing = document.getElementById('landingPage');
-            if (landing && !window.__IS_MOBILE_APP_MODE) landing.style.display = 'block';
+<!-- Modal Gestionar Categorías -->
+<div class="modal fade" id="modalGestorCategorias" tabindex="-1" data-bs-backdrop="static">
+<div class="modal-dialog modal-dialog-scrollable modal-xl">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Gestionar Categorías</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<div id="listaGestorCategorias" class="category-manager-grid"></div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+</div>
+</div>
+</div>
+</div>
 
-            if (!document.getElementById('startupFatalAlert')) {
-                const alert = document.createElement('div');
-                alert.id = 'startupFatalAlert';
-                alert.className = 'alert alert-danger text-center m-3';
-                alert.textContent = 'No se pudo iniciar la aplicación correctamente. Recarga la página.';
-                document.body.prepend(alert);
-            }
-        }, 8000);
-    </script>
-    <script src="js/app.js"></script>
+<!-- Modal Presupuesto -->
+<div class="modal fade" id="modalPresupuesto" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Configurar Presupuesto</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<form id="formPresupuesto">
+<div class="mb-3">
+<label class="form-label" for="presupuestoCategoria">Categoría de Gasto</label>
+<select class="form-select" id="presupuestoCategoria" name="presupuesto_categoria" required></select>
+</div>
+<div class="mb-3">
+<label class="form-label" for="presupuestoMonto">Límite Mensual (Gs.)</label>
+<input type="number" class="form-control" id="presupuestoMonto" name="presupuesto_monto" min="1" required>
+</div>
+</form>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-primary" id="btnGuardarPresupuesto">Guardar</button>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Modal Actualización App -->
+<div class="modal fade" id="modalAppUpdate" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content modal-update-shell">
+<div class="modal-header">
+<div>
+<p class="modal-update-kicker mb-1">Versión disponible</p>
+<h5 class="modal-title mb-0"><i class="bi bi-phone me-2"></i>Actualización de la app</h5>
+</div>
+<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<div class="update-highlight-card">
+<span class="update-highlight-label">Nueva versión</span>
+<strong id="updateVersionLabel">-</strong>
+</div>
+<p class="mb-2 mt-3">Puedes instalar encima de la versión actual, sin desinstalar.</p>
+<p class="small mb-0">La descarga se hace desde la fuente oficial configurada para la APK.</p>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Después</button>
+<button type="button" class="btn btn-primary" id="btnDownloadUpdate">
+<i class="bi bi-download me-1"></i>Descargar e instalar
+</button>
+</div>
+</div>
+</div>
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
+<script src="https://unpkg.com/vanilla-picker@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.__appBootstrapped = false;
+setTimeout(() => {
+if (window.__appBootstrapped) return;
+const loader = document.getElementById('globalLoader');
+if (loader) loader.style.display = 'none';
+const landing = document.getElementById('landingPage');
+if (landing && !window.__IS_MOBILE_APP_MODE) landing.style.display = 'block';
+
+if (!document.getElementById('startupFatalAlert')) {
+const alert = document.createElement('div');
+alert.id = 'startupFatalAlert';
+alert.className = 'alert alert-danger text-center m-3';
+alert.textContent = 'No se pudo iniciar la aplicación correctamente. Recarga la página.';
+document.body.prepend(alert);
+}
+}, 8000);
+</script>
+<script src="js/app.js"></script>
 </body>
 </html>

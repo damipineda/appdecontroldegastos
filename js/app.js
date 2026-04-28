@@ -79,12 +79,6 @@ let modalAppUpdate = null;
 let ultimaVersionNotificada = null;
 let ultimaVersionModalMostrada = null;
 
-function setLoginAlert(mensaje) {
-    const alert = document.getElementById('loginError');
-    if (!alert) return;
-    alert.textContent = mensaje;
-    alert.classList.remove('d-none');
-}
 
 function obtenerIdTokenGoogleNativo(respuesta) {
     const candidatos = [
@@ -307,7 +301,7 @@ function abrirModalActualizacion() {
 async function iniciarActualizacionApp() {
     const url = releaseInfoActual?.downloadUrl;
     if (!url) {
-        setLoginAlert('No se encontró enlace de actualización disponible.');
+        mostrarErrorInicio('No se encontró enlace de actualización disponible.');
         return;
     }
 
@@ -345,22 +339,6 @@ async function verificarActualizacionMovil() {
     abrirModalActualizacion();
 }
 
-function configurarLoginParaAppMovil() {
-    if (!IS_MOBILE_APP_MODE) return;
-
-    const facebookButton = document.getElementById('btnLoginFacebook');
-    if (facebookButton) {
-        facebookButton.disabled = true;
-        facebookButton.classList.add('disabled');
-        facebookButton.setAttribute('aria-disabled', 'true');
-    }
-
-    const hint = document.getElementById('socialLoginHint');
-    if (hint) {
-        hint.textContent = 'Google funciona dentro de la app. Facebook no está habilitado en móvil.';
-        hint.classList.remove('d-none');
-    }
-}
 
 async function cargarInfoVersionApk() {
     const btnDownload = document.getElementById('btnDownloadApk');
@@ -1663,17 +1641,10 @@ class UI {
 }
 
 // --- INIT & AUTH HANDLER ---
-const modalLogin = new bootstrap.Modal(document.getElementById('modalLogin'));
 const modalUpdateEl = document.getElementById('modalAppUpdate');
 if (modalUpdateEl) {
     modalAppUpdate = new bootstrap.Modal(modalUpdateEl);
 }
-
-['btnOpenLogin', 'btnStartFree'].forEach((buttonId) => {
-    const button = document.getElementById(buttonId);
-    if (!button) return;
-    button.addEventListener('click', () => modalLogin.show());
-});
 
 const categoryActionButtons = [
     { id: 'btnNuevaCategoriaGasto', action: () => UI.abrirModalCategoria('gasto') },
@@ -1745,11 +1716,8 @@ function toggleView(isLoggedIn) {
         if(app) app.style.display = 'block';
     } else {
         if (IS_MOBILE_APP_MODE) {
-            if (landing) landing.style.display = 'none';
-            const modalEl = document.getElementById('modalLogin');
-            if (modalEl && !modalEl.classList.contains('show')) {
-                modalLogin.show();
-            }
+            window.location.replace('login.html?mobile_app=1');
+            return;
         } else if (landing) {
             landing.style.display = 'block';
         }
@@ -1801,7 +1769,6 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    configurarLoginParaAppMovil();
     try {
         await inicializarGoogleNativoMovil();
     } catch (error) {
@@ -1829,7 +1796,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Auth Listener
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_IN') {
-                modalLogin.hide();
                 await arrancarAppSesionActiva(session, { mostrarLoader: true });
             } else if (event === 'SIGNED_OUT') {
                 UI.toggleLoader(false);
@@ -1864,93 +1830,6 @@ async function initApp() {
     
     // Ocultar loader una vez todo cargado
     UI.toggleLoader(false);
-}
-
-// --- LOGIN EVENTS ---
-document.getElementById('btnLogin').addEventListener('click', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPassword').value.trim();
-    
-    const alert = document.getElementById('loginError');
-    alert.classList.add('d-none');
-
-    if (!email || !pass) {
-        alert.textContent = 'Por favor completa el correo y la contraseña.';
-        alert.classList.remove('d-none');
-        return;
-    }
-    
-    try {
-        await Store.iniciarSesion(email, pass);
-    } catch (err) {
-        console.error(err);
-        alert.textContent = traducirError(err.message);
-        alert.classList.remove('d-none');
-    }
-});
-
-document.getElementById('btnRegister').addEventListener('click', async () => {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPassword').value.trim();
-    
-    const alert = document.getElementById('loginError');
-    alert.classList.add('d-none');
-
-    if (!email || !pass) {
-        alert.textContent = 'Por favor completa el correo y la contraseña.';
-        alert.classList.remove('d-none');
-        return;
-    }
-
-    if (pass.length < 6) {
-        alert.textContent = 'La contraseña debe tener al menos 6 caracteres.';
-        alert.classList.remove('d-none');
-        return;
-    }
-    
-    try {
-        await Store.registrarse(email, pass);
-        const success = document.getElementById('loginSuccess');
-        success.classList.remove('d-none');
-        alert.classList.add('d-none');
-    } catch (err) {
-        console.error(err);
-        alert.textContent = traducirError(err.message);
-        alert.classList.remove('d-none');
-    }
-});
-
-// --- SOCIAL LOGIN ---
-document.getElementById('btnLoginGoogle').addEventListener('click', async () => {
-    try {
-        await Store.iniciarSesionProvider('google');
-    } catch (err) {
-        console.error(err);
-        setLoginAlert(traducirErrorLoginGoogle(err));
-    }
-});
-
-document.getElementById('btnLoginFacebook').addEventListener('click', async () => {
-    if (IS_MOBILE_APP_MODE) {
-        setLoginAlert('Facebook no está habilitado en la app móvil.');
-        return;
-    }
-
-    try {
-        await Store.iniciarSesionProvider('facebook');
-    } catch (err) {
-        console.error(err);
-        setLoginAlert('Error al iniciar con Facebook. Verifica la configuración en Supabase.');
-    }
-});
-
-function traducirError(msg) {
-    if (msg.includes('Anonymous sign-ins are disabled')) return 'Por favor ingresa un correo y contraseña válidos.';
-    if (msg.includes('Invalid login credentials')) return 'Correo o contraseña incorrectos.';
-    if (msg.includes('User already registered')) return 'Este correo ya está registrado.';
-    if (msg.includes('Password should be at least')) return 'La contraseña es muy corta.';
-    return msg; // Retornar mensaje original si no hay traducción
 }
 
 document.getElementById('btnLogout').addEventListener('click', async () => {
