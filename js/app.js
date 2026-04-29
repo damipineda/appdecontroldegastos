@@ -1661,6 +1661,7 @@ categoryActionButtons.forEach(({ id, action }) => {
 
 const desktopTabButtons = Array.from(document.querySelectorAll('#myTab button[data-bs-toggle="tab"]'));
 const mobileTabButtons = Array.from(document.querySelectorAll('.mobile-tab-link'));
+const tabPanes = Array.from(document.querySelectorAll('#myTabContent .tab-pane'));
 
 function sincronizarTabMovil(tabIdActivo) {
     mobileTabButtons.forEach((btn) => {
@@ -1670,7 +1671,44 @@ function sincronizarTabMovil(tabIdActivo) {
     });
 }
 
+function activarTab(tabBtn, options = {}) {
+    const targetSelector = tabBtn.getAttribute('data-bs-target');
+    const targetPane = targetSelector ? document.querySelector(targetSelector) : null;
+    if (!targetPane) return;
+
+    try {
+        if (window.bootstrap?.Tab) {
+            bootstrap.Tab.getOrCreateInstance(tabBtn).show();
+        }
+    } catch (error) {
+        console.warn('No se pudo activar el tab con Bootstrap, usando fallback.', error);
+    }
+
+    desktopTabButtons.forEach((btn) => {
+        const isActive = btn === tabBtn;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    tabPanes.forEach((pane) => {
+        const isActive = pane === targetPane;
+        pane.classList.toggle('show', isActive);
+        pane.classList.toggle('active', isActive);
+    });
+
+    sincronizarTabMovil(tabBtn.id);
+
+    if (options.scrollTop) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
 desktopTabButtons.forEach((tabBtn) => {
+    tabBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        activarTab(tabBtn);
+    });
+
     tabBtn.addEventListener('shown.bs.tab', () => {
         sincronizarTabMovil(tabBtn.id);
     });
@@ -1681,8 +1719,7 @@ mobileTabButtons.forEach((mobileBtn) => {
         const targetTabId = mobileBtn.getAttribute('data-tab-trigger');
         const desktopBtn = document.getElementById(targetTabId);
         if (!desktopBtn) return;
-        desktopBtn.click();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        activarTab(desktopBtn, { scrollTop: true });
     });
 });
 

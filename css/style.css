@@ -635,16 +635,18 @@ html.mobile-app-mode #landingPage { display: none !important; }
 .tabs-shell {
   background: transparent !important; border: none !important;
   box-shadow: none !important; padding: 0;
+  position: relative; z-index: 20;
 }
 
 .app-tabs {
   border: none !important; gap: 0.25rem;
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 0.25rem; display: inline-flex;
+  border-radius: var(--radius-lg); padding: 0.25rem; display: flex;
+  flex-wrap: wrap; width: 100%;
   position: relative; z-index: 10;
 }
 .app-tabs::before, .app-tabs::after { display: none !important; content: none !important; }
-.app-tabs .nav-item { margin: 0; position: relative; z-index: 11; }
+.app-tabs .nav-item { margin: 0; position: relative; z-index: 11; flex: 1 1 auto; }
 .app-tabs .nav-link,
 #myTab .nav-link,
 #myTab button.nav-link {
@@ -653,6 +655,9 @@ html.mobile-app-mode #landingPage { display: none !important; }
   color: var(--text-tertiary) !important; background: transparent !important; transition: all 0.15s !important;
   cursor: pointer !important;
   pointer-events: auto !important;
+  appearance: none !important;
+  min-height: 2.75rem !important;
+  width: 100% !important;
   position: relative !important; z-index: 12 !important;
   outline: none !important;
   box-shadow: none !important;
@@ -671,6 +676,17 @@ html.mobile-app-mode #landingPage { display: none !important; }
 }
 .app-tabs .nav-link:hover, #myTab .nav-link:hover { color: var(--text-secondary) !important; background: var(--surface-hover) !important; cursor: pointer !important; }
 .app-tabs .nav-link.active, #myTab .nav-link.active { color: #fff !important; background: var(--accent) !important; }
+
+@media (min-width: 768px) {
+  .app-tabs {
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .app-tabs .nav-item {
+    flex: 0 0 auto;
+  }
+}
 
 /* =========================
    DASHBOARD - MODERN & INTERACTIVE

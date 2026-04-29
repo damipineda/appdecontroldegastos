@@ -917,35 +917,6 @@ document.body.prepend(alert);
 }
 }, 8000);
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-document.querySelectorAll('#myTab button[data-bs-toggle="tab"]').forEach(function(btn) {
-btn.addEventListener('click', function(e) {
-var targetId = btn.getAttribute('data-bs-target');
-if (!targetId) return;
-try {
-var tab = bootstrap.Tab.getOrCreateInstance(btn);
-tab.show();
-} catch(err) {
-console.warn('Bootstrap Tab show failed, using fallback', err);
-document.querySelectorAll('#myTabContent .tab-pane').forEach(function(pane) {
-pane.classList.remove('show', 'active');
-});
-var targetPane = document.querySelector(targetId);
-if (targetPane) {
-targetPane.classList.add('show', 'active');
-}
-document.querySelectorAll('#myTab button[data-bs-toggle="tab"]').forEach(function(b) {
-b.classList.remove('active');
-b.setAttribute('aria-selected', 'false');
-});
-btn.classList.add('active');
-btn.setAttribute('aria-selected', 'true');
-}
-});
-});
-});
-</script>
 <script src="js/app.js"></script>
 </body>
 </html>
