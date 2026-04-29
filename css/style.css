@@ -649,6 +649,10 @@ html.mobile-app-mode #landingPage { display: none !important; }
   padding: 0.5rem 1rem; font-size: 0.8125rem; font-weight: 600;
   color: var(--text-tertiary) !important; background: transparent; transition: all 0.15s;
   cursor: pointer !important;
+  position: relative; z-index: 2;
+}
+.app-tabs .nav-link::after, .app-tabs .nav-link::before {
+  pointer-events: none !important;
 }
 .app-tabs .nav-link:hover { color: var(--text-secondary) !important; background: var(--surface-hover); cursor: pointer !important; }
 .app-tabs .nav-link.active { color: #fff !important; background: var(--accent) !important; }

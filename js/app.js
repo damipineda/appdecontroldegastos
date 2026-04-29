@@ -1763,7 +1763,7 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
     await verificarActualizacionMovil();
 
     try {
-        await conTimeout(initApp(), 30000, 'Timeout al cargar datos iniciales');
+        await conTimeout(initApp(), 60000, 'Timeout al cargar datos iniciales');
         ocultarErrorInicio();
     } catch (error) {
         console.error('Error al cargar datos iniciales:', error);
@@ -1805,9 +1805,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             await arrancarAppSesionActiva(session, { mostrarLoader: true });
         }
 
-        // Auth Listener
+        // Auth Listener con debounce para evitar llamadas múltiples de Supabase
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            if (authChangeDebouncing) return;
             if (event === 'SIGNED_IN') {
+                authChangeDebouncing = true;
+                clearTimeout(authChangeDebounceTimer);
+                authChangeDebounceTimer = setTimeout(() => { authChangeDebouncing = false; }, 5000);
                 await arrancarAppSesionActiva(session, { mostrarLoader: true });
             } else if (event === 'SIGNED_OUT') {
                 UI.toggleLoader(false);
@@ -2237,6 +2241,8 @@ document.querySelector('#btnComparar').addEventListener('click', async () => {
 let ultimoRefrescoVisibilidad = 0;
 let refrescando = false;
 let appIniciando = false;
+let authChangeDebouncing = false;
+let authChangeDebounceTimer = null;
 
 document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState !== 'visible') return;
