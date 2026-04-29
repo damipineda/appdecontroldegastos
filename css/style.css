@@ -2373,3 +2373,316 @@ html.mobile-app-mode #landingPage { display: none !important; }
 @media (min-width: 768px) {
   .mobile-tabbar { display: none !important; }
 }
+
+/* ================================================================
+   UI REFRESH — Navigation, Deudas, Recurrentes, Formularios
+   ================================================================ */
+
+/* ── 1. Hide top tab bar — sidebar handles all navigation ───── */
+.tabs-shell { display: none !important; }
+.app-tab-content { padding-top: 0 !important; }
+
+/* ── 2. DEUDAS — new structured layout ──────────────────────── */
+.deuda-card {
+  padding: 0 !important;
+  border-radius: 16px !important;
+}
+.deuda-card::before {
+  border-radius: 16px 0 0 16px !important;
+}
+
+.deuda-card-main {
+  padding: 1.125rem 1rem 1rem 1.375rem;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.deuda-card-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.deuda-emoji-box {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  background: var(--red-muted);
+  font-size: 1.375rem;
+  flex-shrink: 0;
+}
+
+.deuda-name-group { min-width: 0; }
+
+.deuda-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deuda-status-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(79,70,229,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(79,70,229,0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.deuda-status-badge.ending {
+  background: var(--amber-muted);
+  color: var(--amber);
+  border-color: rgba(245,158,11,0.25);
+}
+
+.deuda-card-numbers {
+  display: flex;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+.deuda-num-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 70px;
+}
+.deuda-num-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  display: block;
+}
+.deuda-num-val {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.deuda-num-paid .deuda-num-val  { color: var(--green); }
+.deuda-num-pending .deuda-num-val { color: var(--red); }
+.deuda-num-cuotas .deuda-num-val { color: var(--accent); font-size: 1rem; }
+
+.deuda-card-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+.deuda-card-controls .btn-edit-deuda,
+.deuda-card-controls .btn-del-deuda {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+}
+
+.deuda-card-bar-row {
+  padding: 0.625rem 1rem 0.875rem 1.375rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.deuda-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface-inset);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.deuda-bar-fill-new {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #EF4444, #F59E0B);
+  transition: width 0.4s ease;
+}
+.deuda-bar-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.deuda-bar-pct { font-weight: 700; color: var(--accent); }
+.deuda-bar-fin { color: var(--text-tertiary); }
+
+@media (max-width: 767.98px) {
+  .deuda-card-main {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+    padding: 1rem 1rem 0.75rem 1.25rem;
+  }
+  .deuda-card-numbers {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .deuda-num-block { min-width: calc(50% - 0.375rem); }
+  .deuda-card-controls {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .deuda-card-bar-row {
+    padding: 0.5rem 1rem 0.75rem 1.25rem;
+  }
+}
+
+/* ── 3. RECURRENTES — enhanced cards ────────────────────────── */
+.rec-card-top { align-items: flex-start; }
+
+.rec-card-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-end;
+}
+
+.rec-day-chip {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background: var(--accent-muted);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  white-space: nowrap;
+}
+
+.rec-days-chip {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.rec-days-chip.soon { background: var(--amber-muted); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+.rec-days-chip.ok   { background: var(--green-muted);  color: var(--green);  border: 1px solid var(--green-border); }
+.rec-days-chip.past { background: var(--red-muted);    color: var(--red);    border: 1px solid var(--red-border); }
+
+.btn-usar-rec {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 3px 10px rgba(79,70,229,0.3);
+  white-space: nowrap;
+}
+.btn-usar-rec:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 14px rgba(79,70,229,0.4);
+}
+
+.rec-card-footer-v2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.rec-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ── 4. FORMULARIOS — inputs con íconos ─────────────────────── */
+.form-icon-wrap {
+  position: relative;
+}
+.form-icon-wrap .fi-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+  pointer-events: none;
+  z-index: 5;
+  line-height: 1;
+}
+.form-icon-wrap .form-control {
+  padding-left: 2.5rem !important;
+}
+
+.form-label {
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem !important;
+  color: var(--text-tertiary) !important;
+}
+
+/* Highlighted debt-link section in expense form */
+.form-deuda-link-box {
+  background: rgba(79,70,229,0.05);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem;
+}
+.form-deuda-link-box .form-label {
+  color: var(--accent) !important;
+}
+
+/* Highlight recurring template section */
+.form-plantilla-box {
+  background: rgba(34,197,94,0.05);
+  border: 1px solid var(--green-border);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem;
+}
+.form-plantilla-box .form-label {
+  color: var(--green) !important;
+}
+
+/* Better checkbox row */
+.form-check-card {
+  background: var(--surface-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.form-check-card:hover { border-color: var(--border-hover); }
+.form-check-card input { flex-shrink: 0; }
+.form-check-card .form-check-label {
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: var(--text-secondary) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  cursor: pointer;
+  margin: 0;
+}

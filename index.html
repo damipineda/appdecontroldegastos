@@ -640,51 +640,65 @@ Finanzas de Nueva Generación
 <form id="gastoForm">
 <input type="hidden" id="gastoIdEdit">
 
-<div class="mb-3">
-<label class="form-label fw-bold" for="gastoPlantilla">Cargar Recurrente / Plantilla</label>
+<div class="mb-3 form-plantilla-box">
+<label class="form-label" for="gastoPlantilla"><i class="bi bi-arrow-repeat me-1"></i>Cargar plantilla recurrente</label>
 <select class="form-select" id="gastoPlantilla" name="gasto_plantilla">
-<option value="" selected>-- Seleccionar (Opcional) --</option>
+<option value="" selected>— Seleccionar (Opcional) —</option>
 </select>
 </div>
 
 <div class="mb-3">
 <label class="form-label" for="gastoConcepto">Concepto</label>
-<input type="text" class="form-control" id="gastoConcepto" name="gasto_concepto" required>
+<div class="form-icon-wrap">
+<i class="bi bi-tag-fill fi-icon"></i>
+<input type="text" class="form-control" id="gastoConcepto" name="gasto_concepto" placeholder="Ej: Almuerzo, Netflix…" required>
+</div>
 </div>
 <div class="mb-3">
 <label class="form-label" for="gastoMonto">Monto (Gs.)</label>
-<input type="number" class="form-control" id="gastoMonto" name="gasto_monto" min="1" required>
+<div class="form-icon-wrap">
+<i class="bi bi-cash fi-icon"></i>
+<input type="number" class="form-control" id="gastoMonto" name="gasto_monto" placeholder="0" min="1" required>
+</div>
 </div>
 <div class="row mb-3 form-duo">
 <div class="col">
 <label class="form-label" for="gastoFecha">Fecha</label>
+<div class="form-icon-wrap">
+<i class="bi bi-calendar3 fi-icon"></i>
 <input type="date" class="form-control" id="gastoFecha" name="gasto_fecha" required>
+</div>
 </div>
 <div class="col">
 <label class="form-label" for="gastoHora">Hora</label>
+<div class="form-icon-wrap">
+<i class="bi bi-clock fi-icon"></i>
 <input type="time" class="form-control" id="gastoHora" name="gasto_hora" required>
+</div>
 </div>
 </div>
 <div class="mb-3">
 <label class="form-label" for="gastoCategoria">Categoría</label>
 <div class="input-group">
 <select class="form-select" id="gastoCategoria" name="gasto_categoria" required></select>
-<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaGasto" aria-label="Crear nueva categoría de gasto">+</button>
-<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaGasto" aria-label="Gestionar categorías de gasto">⚙️</button>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaGasto" aria-label="Crear nueva categoría de gasto" title="Nueva categoría"><i class="bi bi-plus-lg"></i></button>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaGasto" aria-label="Gestionar categorías de gasto" title="Gestionar"><i class="bi bi-sliders"></i></button>
 </div>
 <div id="infoPresupuestoGasto" class="form-text mt-1" style="font-size: 0.9em;" role="status" aria-live="polite"></div>
 </div>
 
-<div class="mb-3 p-2 bg-light rounded border">
-<label class="form-label small fw-bold" for="gastoDeuda">Vincular a Deuda (Opcional)</label>
-<select class="form-select form-select-sm" id="gastoDeuda" name="gasto_deuda">
-<option value="" selected>-- Ninguna --</option>
+<div class="mb-3 form-deuda-link-box">
+<label class="form-label" for="gastoDeuda"><i class="bi bi-link-45deg me-1"></i>Vincular a deuda (Opcional)</label>
+<select class="form-select" id="gastoDeuda" name="gasto_deuda">
+<option value="" selected>— Ninguna —</option>
 </select>
 <div id="infoDeuda" class="form-text mt-1" role="status" aria-live="polite"></div>
 </div>
 
 <div class="mb-3">
-<label class="form-label" for="gastoMetodo">Método de Pago</label>
+<label class="form-label" for="gastoMetodo">Método de pago</label>
+<div class="form-icon-wrap">
+<i class="bi bi-credit-card fi-icon"></i>
 <select class="form-select" id="gastoMetodo" name="gasto_metodo" required>
 <option value="Efectivo">Efectivo</option>
 <option value="Tarjeta Crédito">Tarjeta Crédito</option>
@@ -692,9 +706,12 @@ Finanzas de Nueva Generación
 <option value="Transferencia">Transferencia</option>
 </select>
 </div>
-<div class="mb-3 form-check">
+</div>
+<div class="mb-3">
+<label class="form-check-card">
 <input type="checkbox" class="form-check-input" id="gastoRecurrente">
-<label class="form-check-label" for="gastoRecurrente">Es Recurrente (Mensual)</label>
+<span class="form-check-label"><i class="bi bi-arrow-repeat me-2"></i>Es recurrente mensual</span>
+</label>
 </div>
 <div class="d-grid">
 <button type="submit" class="btn btn-danger" id="btnGastoSubmit">Guardar Gasto</button>
@@ -732,34 +749,48 @@ Finanzas de Nueva Generación
 <form id="ingresoForm">
 <input type="hidden" id="ingresoIdEdit">
 <div class="mb-3">
-<label class="form-label" for="ingresoConcepto">Fuente/Concepto</label>
-<input type="text" class="form-control" id="ingresoConcepto" name="ingreso_concepto" required>
+<label class="form-label" for="ingresoConcepto">Fuente / Concepto</label>
+<div class="form-icon-wrap">
+<i class="bi bi-tag-fill fi-icon"></i>
+<input type="text" class="form-control" id="ingresoConcepto" name="ingreso_concepto" placeholder="Ej: Salario, Freelance…" required>
+</div>
 </div>
 <div class="mb-3">
 <label class="form-label" for="ingresoMonto">Monto (Gs.)</label>
-<input type="number" class="form-control" id="ingresoMonto" name="ingreso_monto" min="1" required>
+<div class="form-icon-wrap">
+<i class="bi bi-cash fi-icon"></i>
+<input type="number" class="form-control" id="ingresoMonto" name="ingreso_monto" placeholder="0" min="1" required>
+</div>
 </div>
 <div class="row mb-3 form-duo">
 <div class="col">
 <label class="form-label" for="ingresoFecha">Fecha</label>
+<div class="form-icon-wrap">
+<i class="bi bi-calendar3 fi-icon"></i>
 <input type="date" class="form-control" id="ingresoFecha" name="ingreso_fecha" required>
+</div>
 </div>
 <div class="col">
 <label class="form-label" for="ingresoHora">Hora</label>
+<div class="form-icon-wrap">
+<i class="bi bi-clock fi-icon"></i>
 <input type="time" class="form-control" id="ingresoHora" name="ingreso_hora" required>
+</div>
 </div>
 </div>
 <div class="mb-3">
 <label class="form-label" for="ingresoCategoria">Categoría</label>
 <div class="input-group">
 <select class="form-select" id="ingresoCategoria" name="ingreso_categoria" required></select>
-<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaIngreso" aria-label="Crear nueva categoría de ingreso">+</button>
-<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaIngreso" aria-label="Gestionar categorías de ingreso">⚙️</button>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnNuevaCategoriaIngreso" aria-label="Crear nueva categoría de ingreso" title="Nueva categoría"><i class="bi bi-plus-lg"></i></button>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnGestionarCategoriaIngreso" aria-label="Gestionar categorías de ingreso" title="Gestionar"><i class="bi bi-sliders"></i></button>
 </div>
 </div>
-<div class="mb-3 form-check">
+<div class="mb-3">
+<label class="form-check-card">
 <input type="checkbox" class="form-check-input" id="ingresoRecurrente">
-<label class="form-check-label" for="ingresoRecurrente">Es Recurrente (Mensual)</label>
+<span class="form-check-label"><i class="bi bi-arrow-repeat me-2"></i>Es recurrente mensual</span>
+</label>
 </div>
 <div class="d-grid">
 <button type="submit" class="btn btn-success" id="btnIngresoSubmit">Guardar Ingreso</button>
@@ -918,23 +949,29 @@ Finanzas de Nueva Generación
 <form id="formRecurrente">
 <input type="hidden" id="recIdEdit">
 <div class="mb-3">
-<label class="form-label" for="recConcepto">Concepto</label>
+<label class="form-label" for="recConcepto">Nombre del pago</label>
 <div class="input-group">
-<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiRec" aria-label="Elegir emoji para plantilla">📝</button>
-<input type="text" class="form-control" id="recConcepto" name="recurrente_concepto" placeholder="Ej: Netflix" required>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiRec" aria-label="Elegir emoji para plantilla" title="Elegir emoji">📝</button>
+<input type="text" class="form-control" id="recConcepto" name="recurrente_concepto" placeholder="Ej: Netflix, Internet, Gym…" required>
 </div>
 </div>
 <div class="mb-3">
-<label class="form-label" for="recMonto">Monto Aproximado (Gs.)</label>
-<input type="number" class="form-control" id="recMonto" name="recurrente_monto">
+<label class="form-label" for="recMonto">Monto aproximado (Gs.)</label>
+<div class="form-icon-wrap">
+<i class="bi bi-cash fi-icon"></i>
+<input type="number" class="form-control" id="recMonto" name="recurrente_monto" placeholder="Dejar vacío si varía">
+</div>
 </div>
 <div class="mb-3">
 <label class="form-label" for="recCategoria">Categoría</label>
 <select class="form-select" id="recCategoria" name="recurrente_categoria" required></select>
 </div>
 <div class="mb-3">
-<label class="form-label" for="recDia">Día de Vencimiento</label>
-<input type="number" class="form-control" id="recDia" name="recurrente_dia" min="1" max="31">
+<label class="form-label" for="recDia">Día de vencimiento <small style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--text-muted)">(del mes)</small></label>
+<div class="form-icon-wrap">
+<i class="bi bi-calendar-event fi-icon"></i>
+<input type="number" class="form-control" id="recDia" name="recurrente_dia" min="1" max="31" placeholder="1 – 31">
+</div>
 </div>
 </form>
 </div>
@@ -957,35 +994,50 @@ Finanzas de Nueva Generación
 <form id="formDeuda">
 <input type="hidden" id="deudaIdEdit">
 <div class="mb-3">
-<label class="form-label" for="deudaConcepto">Concepto</label>
+<label class="form-label" for="deudaConcepto">Nombre de la deuda</label>
 <div class="input-group">
-<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiDeuda" aria-label="Elegir emoji para deuda">💳</button>
-<input type="text" class="form-control" id="deudaConcepto" name="deuda_concepto" placeholder="Ej: Visa Itaú" required>
+<button class="btn btn-outline-secondary icon-only-btn" type="button" id="btnEmojiDeuda" aria-label="Elegir emoji para deuda" title="Elegir emoji">💳</button>
+<input type="text" class="form-control" id="deudaConcepto" name="deuda_concepto" placeholder="Ej: Visa Itaú, Préstamo…" required>
 </div>
 </div>
 <div class="row form-duo">
 <div class="col mb-3">
-<label class="form-label" for="deudaMonto">Monto Total (Gs.)</label>
-<input type="number" class="form-control" id="deudaMonto" name="deuda_monto_total" required>
+<label class="form-label" for="deudaMonto">Monto total (Gs.)</label>
+<div class="form-icon-wrap">
+<i class="bi bi-cash-stack fi-icon"></i>
+<input type="number" class="form-control" id="deudaMonto" name="deuda_monto_total" placeholder="0" required>
+</div>
 </div>
 <div class="col mb-3">
-<label class="form-label" for="deudaCuotaMonto">Cuota Mensual (Gs.)</label>
-<input type="number" class="form-control" id="deudaCuotaMonto" name="deuda_cuota_monto" placeholder="Aprox">
+<label class="form-label" for="deudaCuotaMonto">Cuota mensual (Gs.)</label>
+<div class="form-icon-wrap">
+<i class="bi bi-calendar-month fi-icon"></i>
+<input type="number" class="form-control" id="deudaCuotaMonto" name="deuda_cuota_monto" placeholder="Aprox.">
+</div>
 </div>
 </div>
 <div class="row form-duo">
 <div class="col mb-3">
-<label class="form-label" for="deudaCuotas">Total Cuotas</label>
+<label class="form-label" for="deudaCuotas">Total cuotas</label>
+<div class="form-icon-wrap">
+<i class="bi bi-list-ol fi-icon"></i>
 <input type="number" class="form-control" id="deudaCuotas" name="deuda_cuotas" min="1" value="1" required>
 </div>
+</div>
 <div class="col mb-3">
-<label class="form-label" for="deudaPagadas">Pagadas</label>
+<label class="form-label" for="deudaPagadas">Ya pagadas</label>
+<div class="form-icon-wrap">
+<i class="bi bi-check2-all fi-icon"></i>
 <input type="number" class="form-control" id="deudaPagadas" name="deuda_pagadas" min="0" value="0" required>
 </div>
 </div>
+</div>
 <div class="mb-3">
-<label class="form-label" for="deudaFechaInicio">Fecha Inicio</label>
+<label class="form-label" for="deudaFechaInicio">Fecha inicio</label>
+<div class="form-icon-wrap">
+<i class="bi bi-calendar3 fi-icon"></i>
 <input type="date" class="form-control" id="deudaFechaInicio" name="deuda_fecha_inicio">
+</div>
 </div>
 </form>
 </div>
