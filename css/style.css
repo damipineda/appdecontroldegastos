@@ -722,11 +722,11 @@ html.mobile-app-mode #landingPage { display: none !important; }
    ========================= */
 .dashboard-overview-grid {
   display: grid;
-  grid-template-columns: 1.35fr 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
   gap: 1rem;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
   .dashboard-overview-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -797,6 +797,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
 }
 .dashboard-hero-card .dashboard-chip { background: rgba(255,255,255,0.2); color: #fff; }
 .dashboard-chip-positive { background: var(--green-muted); color: var(--green); border: 1px solid var(--green-border); }
+.dashboard-chip-negative { background: var(--red-muted); color: var(--red); border: 1px solid var(--red-border); }
 
 .kpi-head { display: flex; align-items: center; gap: 0.625rem; margin-bottom: 0.75rem; }
 
@@ -806,6 +807,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
 }
 .dashboard-income-card .kpi-icon { background: var(--green-muted); color: var(--green); }
 .dashboard-expense-card .kpi-icon { background: var(--red-muted); color: var(--red); }
+.dashboard-savings-card .kpi-icon { background: var(--blue-muted, rgba(59,130,246,0.15)); color: var(--blue, #3B82F6); }
 
 .kpi-label {
   font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em;
@@ -1279,6 +1281,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
 .dashboard-hero-card { animation-delay: 0s; }
 .dashboard-side-card:nth-child(2) { animation-delay: 0.08s; }
 .dashboard-side-card:nth-child(3) { animation-delay: 0.16s; }
+.dashboard-side-card:nth-child(4) { animation-delay: 0.24s; }
 
 .rec-card, .deuda-card {
   animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -1617,44 +1620,341 @@ html.mobile-app-mode #landingPage { display: none !important; }
 }
 
 /* =========================
-   DEBT HISTORY ARCHIVE
+   DEUDAS - MODERN CARDS
    ========================= */
+.deudas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.deudas-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #F1F5F9;
+  margin: 0;
+}
+.deudas-subtitle {
+  font-size: 0.875rem;
+  color: #64748B;
+  margin: 4px 0 0;
+}
+.btn-deuda-add {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+}
+.btn-deuda-add:hover {
+  background: #DC2626;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(239,68,68,0.4);
+}
+
+.deudas-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 767.98px) {
+  .deudas-stats { grid-template-columns: 1fr; }
+}
+
+.deuda-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.2s ease;
+}
+.deuda-stat-card:hover {
+  border-color: var(--border-hover);
+}
+.deuda-stat-icon {
+  width: 48px; height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--amber-muted);
+  color: var(--amber);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.deuda-stat-icon-success {
+  background: var(--green-muted);
+  color: var(--green);
+}
+.deuda-stat-icon-danger {
+  background: var(--red-muted);
+  color: var(--red);
+}
+.deuda-stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.deuda-stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #F1F5F9;
+  line-height: 1.2;
+}
+.deuda-stat-value-success {
+  color: var(--green);
+}
+
+/* Deuda Cards - Modern Style */
+.deudas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.deuda-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.deuda-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--red);
+  opacity: 0.6;
+}
+.deuda-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.deuda-card.saldada::before {
+  background: var(--green);
+}
+
+.deuda-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+.deuda-card-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.deuda-card-emoji {
+  width: 40px; height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--red-muted);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.deuda-card.saldada .deuda-card-emoji {
+  background: var(--green-muted);
+}
+.deuda-card-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #F1F5F9;
+  margin: 0;
+}
+.deuda-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background: var(--red-muted);
+  color: var(--red);
+  border: 1px solid var(--red-border);
+}
+.deuda-card-badge.saldada {
+  background: var(--green-muted);
+  color: var(--green);
+  border-color: var(--green-border);
+}
+.deuda-card-badge.ending {
+  background: var(--amber-muted);
+  color: var(--amber);
+  border-color: rgba(245,158,11,0.25);
+}
+
+.deuda-card-amount {
+  text-align: right;
+  flex-shrink: 0;
+}
+.deuda-card-amount-label {
+  display: block;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--text-tertiary);
+}
+.deuda-card-amount-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--red);
+}
+.deuda-card.saldada .deuda-card-amount-value {
+  color: var(--green);
+}
+
+.deuda-card-progress {
+  margin-bottom: 0.75rem;
+}
+.deuda-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.deuda-progress-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.deuda-progress-percent {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.deuda-progress-bar {
+  height: 8px;
+  background: var(--surface-inset);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.deuda-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--red), var(--amber));
+  transition: width 0.3s ease;
+}
+.deuda-card.saldada .deuda-progress-fill {
+  background: linear-gradient(90deg, var(--green), #10B981);
+}
+
+.deuda-card-details {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+.deuda-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.deuda-detail-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--text-tertiary);
+}
+.deuda-detail-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.deuda-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.deuda-card-actions .btn {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+}
+
+.deudas-empty, .recurrentes-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-tertiary);
+}
+.deudas-empty i, .recurrentes-empty i {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+}
+.deudas-empty p, .recurrentes-empty p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 0.25rem;
+}
+.deudas-empty small, .recurrentes-empty small {
+  font-size: 0.8125rem;
+}
+
+/* Historial toggle */
+.deudas-historial {
+  margin-top: 2rem;
+}
 .deuda-historial-toggle {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1.25rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 14px;
   color: var(--text-secondary);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: all 0.15s ease;
 }
 .deuda-historial-toggle:hover {
   border-color: var(--border-hover);
-  background: var(--surface-hover);
   color: var(--text-primary);
-}
-.deuda-historial-toggle span:first-child {
-  color: var(--secondary);
 }
 .deuda-historial-count {
   background: var(--green-muted);
   color: var(--green);
   border: 1px solid var(--green-border);
-  padding: 0.125rem 0.5rem;
-  border-radius: var(--radius-full);
+  padding: 0.125rem 0.625rem;
+  border-radius: 999px;
   font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
 }
 .deuda-historial-chevron {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--text-tertiary);
   transition: transform 0.25s ease;
 }
@@ -1674,11 +1974,11 @@ html.mobile-app-mode #landingPage { display: none !important; }
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   margin-top: 0.5rem;
   background: var(--surface-inset);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 12px;
   opacity: 0.7;
   transition: opacity 0.2s ease;
 }
@@ -1707,12 +2007,12 @@ html.mobile-app-mode #landingPage { display: none !important; }
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.65rem;
+  font-size: 0.625rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 0.15rem 0.5rem;
-  border-radius: var(--radius-full);
+  border-radius: 999px;
   background: var(--green-muted);
   color: var(--green);
   border: 1px solid var(--green-border);
@@ -1731,6 +2031,195 @@ html.mobile-app-mode #landingPage { display: none !important; }
   gap: 0.25rem;
   flex-shrink: 0;
 }
+
+/* =========================
+   RECURRENTES - MODERN CARDS
+   ========================= */
+.recurrentes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.recurrentes-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #F1F5F9;
+  margin: 0;
+}
+.recurrentes-subtitle {
+  font-size: 0.875rem;
+  color: #64748B;
+  margin: 4px 0 0;
+}
+.btn-recurrente-add {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+}
+.btn-recurrente-add:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79,70,229,0.4);
+}
+
+.recurrentes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.rec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.rec-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+.rec-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.rec-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+.rec-card-icon {
+  width: 40px; height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.rec-card-badge {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-muted);
+  border: 1px solid var(--accent-border);
+  padding: 0.2rem 0.625rem;
+  border-radius: 999px;
+}
+.rec-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #F1F5F9;
+  margin: 0 0 0.25rem;
+}
+.rec-card-sub {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.rec-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.rec-card-amount {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.rec-card-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* =========================
+   DASHBOARD - MODERN STATS
+   ========================= */
+.dashboard-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 991.98px) {
+  .dashboard-stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 575.98px) {
+  .dashboard-stats-row { grid-template-columns: 1fr; }
+}
+
+.stat-mini-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  transition: border-color 0.2s ease;
+}
+.stat-mini-card:hover {
+  border-color: var(--border-hover);
+}
+.stat-mini-icon {
+  width: 40px; height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+  font-size: 1.125rem;
+}
+.stat-mini-icon.income { background: var(--green-muted); color: var(--green); }
+.stat-mini-icon.expense { background: var(--red-muted); color: var(--red); }
+.stat-mini-icon.balance { background: var(--accent-muted); color: var(--accent); }
+.stat-mini-icon.count { background: var(--amber-muted); color: var(--amber); }
+.stat-mini-label {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.stat-mini-value {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #F1F5F9;
+  line-height: 1.2;
+}
+
+/* =========================
+   OLD PLANNING STYLES (DEPRECATED)
+   ========================= */
+.planning-summary-bar { display: none; }
+.planning-stat { display: none; }
 
 /* =========================
    APP DASHBOARD LAYOUT (doc+track style)

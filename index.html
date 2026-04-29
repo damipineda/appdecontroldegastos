@@ -433,8 +433,11 @@ Finanzas de Nueva Generación
       <button type="button" class="app-sidebar-link" data-tab-trigger="presupuesto-tab" title="Presupuestos">
         <i class="bi bi-pie-chart-fill"></i>
       </button>
-      <button type="button" class="app-sidebar-link" data-tab-trigger="planificacion-tab" title="Planificación">
-        <i class="bi bi-calendar2-week-fill"></i>
+      <button type="button" class="app-sidebar-link" data-tab-trigger="deudas-tab" title="Deudas">
+        <i class="bi bi-credit-card-2-front-fill"></i>
+      </button>
+      <button type="button" class="app-sidebar-link" data-tab-trigger="recurrentes-tab" title="Recurrentes">
+        <i class="bi bi-arrow-repeat"></i>
       </button>
     </nav>
     <div class="app-sidebar-footer">
@@ -482,7 +485,10 @@ Finanzas de Nueva Generación
 <button class="nav-link" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" role="tab">Presupuestos</button>
 </li>
 <li class="nav-item" role="presentation">
-<button class="nav-link" id="planificacion-tab" data-bs-toggle="tab" data-bs-target="#planificacion" type="button" role="tab">Planificación</button>
+<button class="nav-link" id="deudas-tab" data-bs-toggle="tab" data-bs-target="#deudas" type="button" role="tab">Deudas</button>
+</li>
+<li class="nav-item" role="presentation">
+<button class="nav-link" id="recurrentes-tab" data-bs-toggle="tab" data-bs-target="#recurrentes" type="button" role="tab">Recurrentes</button>
 </li>
 </ul>
 </div>
@@ -498,7 +504,7 @@ Finanzas de Nueva Generación
 <p class="dashboard-card-label">Balance actual</p>
 <h3 class="dashboard-hero-amount" id="dashBalance">0 Gs.</h3>
 <div class="dashboard-hero-insight">
-<span class="dashboard-chip dashboard-chip-positive">Vista central del periodo</span>
+<span class="dashboard-chip dashboard-chip-positive" id="dashBalanceChip">Periodo actual</span>
 <p class="mb-0">Lectura consolidada entre ingresos y gastos del mes seleccionado.</p>
 </div>
 </article>
@@ -517,6 +523,14 @@ Finanzas de Nueva Generación
 </div>
 <h3 class="card-title fw-bold" id="dashGastos">0 Gs.</h3>
 <p class="kpi-caption mb-0">Salidas registradas en el mes</p>
+</article>
+<article class="dashboard-side-card dashboard-savings-card">
+<div class="kpi-head">
+<span class="kpi-icon" aria-hidden="true"><i class="bi bi-piggy-bank-fill"></i></span>
+<span class="kpi-label">Ahorro</span>
+</div>
+<h3 class="card-title fw-bold" id="dashAhorro">0 Gs.</h3>
+<p class="kpi-caption mb-0" id="dashAhorroPct">0% del ingreso</p>
 </article>
 </div>
 
@@ -788,64 +802,79 @@ Finanzas de Nueva Generación
 </div>
 </div>
 
-<!-- ═══ TAB: PLANIFICACIÓN ═══ -->
-<div class="tab-pane fade" id="planificacion" role="tabpanel">
-
-<div class="planning-summary-bar mb-4">
-<div class="planning-summary-stats">
-<div class="planning-stat">
-<span class="planning-stat-label">Plantillas activas</span>
-<span id="planTotalRec" class="planning-stat-value stat-primary">0</span>
-</div>
-<div class="planning-stat">
-<span class="planning-stat-label">Deudas pendientes</span>
-<span id="planTotalDeudas" class="planning-stat-value stat-tertiary">0</span>
-</div>
-</div>
+<!-- ═══ TAB: DEUDAS ═══ -->
+<div class="tab-pane fade" id="deudas" role="tabpanel">
+<div class="deudas-header mb-4">
+  <div>
+    <p class="section-label mb-1">Liabilities</p>
+    <h3 class="deudas-title">Control de deudas</h3>
+    <p class="deudas-subtitle">Gestiona tus compromisos financieros y sigue el progreso de pago.</p>
+  </div>
+  <button class="btn btn-deuda-add" id="btnAddDeuda" data-bs-toggle="modal" data-bs-target="#modalDeuda">
+    <i class="bi bi-plus-lg me-2"></i>Nueva Deuda
+  </button>
 </div>
 
-<div class="row">
-<div class="col-md-6 mb-4">
-<div class="card section-card h-100">
-<div class="card-header d-flex justify-content-between align-items-center">
-<div>
-<p class="section-label mb-1">Recurring</p>
-<h5 class="mb-0 text-primary">Plantillas / recurrentes</h5>
+<div class="deudas-stats mb-4">
+  <div class="deuda-stat-card">
+    <span class="deuda-stat-icon"><i class="bi bi-clock-history"></i></span>
+    <div>
+      <span class="deuda-stat-label">Pendientes</span>
+      <span class="deuda-stat-value" id="planTotalDeudas">0</span>
+    </div>
+  </div>
+  <div class="deuda-stat-card">
+    <span class="deuda-stat-icon deuda-stat-icon-success"><i class="bi bi-check-circle-fill"></i></span>
+    <div>
+      <span class="deuda-stat-label">Saldadas</span>
+      <span class="deuda-stat-value deuda-stat-value-success" id="deudasSaldadasCount">0</span>
+    </div>
+  </div>
+  <div class="deuda-stat-card">
+    <span class="deuda-stat-icon deuda-stat-icon-danger"><i class="bi bi-currency-dollar"></i></span>
+    <div>
+      <span class="deuda-stat-label">Total pendiente</span>
+      <span class="deuda-stat-value" id="deudasTotalPendiente">0 Gs.</span>
+    </div>
+  </div>
 </div>
-<button class="btn btn-sm btn-primary" id="btnAddRecurrente" data-bs-toggle="modal" data-bs-target="#modalRecurrente">+ Nuevo</button>
+
+<div id="listaDeudas" class="deudas-list"></div>
+<div id="noDeudas" class="deudas-empty" style="display: none;">
+  <i class="bi bi-credit-card-2-front"></i>
+  <p>No tienes deudas registradas</p>
+  <small>Agrega una nueva deuda para comenzar a跟踪 tus compromisos.</small>
 </div>
-<div class="card-body p-2">
-<div id="listaRecurrentes" class="rec-cards-grid"></div>
-<div id="noRecurrentes" class="p-3 text-center" style="display: none;">Sin plantillas configuradas.</div>
-</div>
-</div>
-</div>
-<div class="col-md-6 mb-4">
-<div class="card section-card h-100">
-<div class="card-header d-flex justify-content-between align-items-center">
-<div>
-<p class="section-label mb-1">Liabilities</p>
-<h5 class="mb-0 text-danger">Control de deudas</h5>
-</div>
-<button class="btn btn-sm btn-danger" id="btnAddDeuda" data-bs-toggle="modal" data-bs-target="#modalDeuda">+ Nueva Deuda</button>
-</div>
-<div class="card-body p-3">
-<div id="listaDeudas"></div>
-<div id="noDeudas" class="p-3 text-center" style="display: none;">Sin deudas registradas.</div>
-<div id="deudasHistorial" class="mt-3" style="display: none;">
-<button class="deuda-historial-toggle" id="btnToggleHistorial" type="button" aria-expanded="false">
-<span><i class="bi bi-archive me-1"></i>Deudas saldadas</span>
-<span class="deuda-historial-count" id="deudasHistorialCount">0</span>
-<i class="bi bi-chevron-down deuda-historial-chevron"></i>
-</button>
-<div id="listaDeudasHistorial" class="deuda-historial-list"></div>
-</div>
-</div>
-</div>
-</div>
+
+<div id="deudasHistorial" class="deudas-historial" style="display: none;">
+  <button class="deuda-historial-toggle" id="btnToggleHistorial" type="button" aria-expanded="false">
+    <span><i class="bi bi-archive me-2"></i>Deudas saldadas</span>
+    <span class="deuda-historial-count" id="deudasHistorialCount">0</span>
+    <i class="bi bi-chevron-down deuda-historial-chevron"></i>
+  </button>
+  <div id="listaDeudasHistorial" class="deuda-historial-list"></div>
 </div>
 </div>
 
+<!-- ═══ TAB: RECURRENTES ═══ -->
+<div class="tab-pane fade" id="recurrentes" role="tabpanel">
+<div class="recurrentes-header mb-4">
+  <div>
+    <p class="section-label mb-1">Recurring</p>
+    <h3 class="recurrentes-title">Pagos recurrentes</h3>
+    <p class="recurrentes-subtitle">Configura tus pagos periódicos y aplícalos con un clic.</p>
+  </div>
+  <button class="btn btn-recurrente-add" id="btnAddRecurrente" data-bs-toggle="modal" data-bs-target="#modalRecurrente">
+    <i class="bi bi-plus-lg me-2"></i>Nuevo Recurrente
+  </button>
+</div>
+
+<div id="listaRecurrentes" class="recurrentes-grid"></div>
+<div id="noRecurrentes" class="recurrentes-empty" style="display: none;">
+  <i class="bi bi-arrow-repeat"></i>
+  <p>Sin plantillas configuradas</p>
+  <small>Crea una plantilla para pagos que se repiten mensualmente.</small>
+</div>
 </div>
 
 </div><!-- /.app-dashboard -->
@@ -864,8 +893,11 @@ Finanzas de Nueva Generación
 <button type="button" class="mobile-tab-link" data-tab-trigger="presupuesto-tab" aria-controls="presupuesto">
 <i class="bi bi-pie-chart-fill" aria-hidden="true"></i><span>Presupuesto</span>
 </button>
-<button type="button" class="mobile-tab-link" data-tab-trigger="planificacion-tab" aria-controls="planificacion">
-<i class="bi bi-calendar2-check-fill" aria-hidden="true"></i><span>Plan</span>
+<button type="button" class="mobile-tab-link" data-tab-trigger="deudas-tab" aria-controls="deudas">
+<i class="bi bi-credit-card-2-front-fill" aria-hidden="true"></i><span>Deudas</span>
+</button>
+<button type="button" class="mobile-tab-link" data-tab-trigger="recurrentes-tab" aria-controls="recurrentes">
+<i class="bi bi-arrow-repeat" aria-hidden="true"></i><span>Recurrentes</span>
 </button>
 </nav>
 </div><!-- /#appContainer -->

@@ -893,7 +893,8 @@ class UI {
         // 2. Cargar Datos y Planificación (Paralelo)
         await Promise.all([
             UI.renderizarListas(),
-            UI.renderizarPlanificacion()
+            UI.renderizarDeudas(),
+            UI.renderizarRecurrentes()
         ]);
         
         // 3. Ocultar loader después de cargar todo
@@ -950,6 +951,286 @@ class UI {
         if (!fechaStr) return '';
         const [anio, mes, dia] = fechaStr.split('-');
         return `${dia}/${mes}/${anio}`;
+    }
+
+    static async renderizarDeudas() {
+        const deudas = await Store.obtenerDeudas();
+        const listaDeudas = document.querySelector('#listaDeudas');
+        const noDeudas = document.querySelector('#noDeudas');
+        if (!listaDeudas) return;
+        
+        listaDeudas.innerHTML = '';
+
+        const deudasOrdenadas = [...deudas].sort((a, b) => {
+            const restanteA = (a.total_cuotas || 0) - (a.cuotas_pagadas || 0);
+            const restanteB = (b.total_cuotas || 0) - (b.cuotas_pagadas || 0);
+            return restanteB - restanteA;
+        });
+        const deudasPendientes = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) < (d.total_cuotas || 0));
+        const deudasPagadas = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) >= (d.total_cuotas || 0));
+
+        // Stats
+        const elTotalDeudas = document.getElementById('planTotalDeudas');
+        if (elTotalDeudas) elTotalDeudas.textContent = deudasPendientes.length;
+        
+        const elSaldadas = document.getElementById('deudasSaldadasCount');
+        if (elSaldadas) elSaldadas.textContent = deudasPagadas.length;
+        
+        const totalPendiente = deudasPendientes.reduce((sum, d) => {
+            const restante = (d.total_cuotas || 0) - (d.cuotas_pagadas || 0);
+            return sum + (d.cuota_monto ? d.cuota_monto * restante : 0);
+        }, 0);
+        const elTotalPendiente = document.getElementById('deudasTotalPendiente');
+        if (elTotalPendiente) elTotalPendiente.textContent = UI.formatearMoneda(totalPendiente);
+
+        if (deudasPendientes.length === 0) {
+            noDeudas.style.display = 'block';
+        } else {
+            noDeudas.style.display = 'none';
+
+            deudasPendientes.forEach(d => {
+                const totalCuotas = Math.max(Number(d.total_cuotas || 0), 1);
+                const cuotasPagadas = Math.min(Number(d.cuotas_pagadas || 0), totalCuotas);
+                const cuotasRestantes = Math.max(totalCuotas - cuotasPagadas, 0);
+                const progreso = Math.min((cuotasPagadas / totalCuotas) * 100, 100);
+                const isEndingSoon = cuotasRestantes <= 3 && cuotasRestantes > 0;
+
+                let fechaFin = '-';
+                if (d.fecha_inicio) {
+                    const parts = d.fecha_inicio.split('-');
+                    const fecha = new Date(parts[0], parts[1] - 1, parts[2]);
+                    fecha.setMonth(fecha.getMonth() + totalCuotas);
+                    fechaFin = fecha.toLocaleDateString('es-PY', { month: 'short', year: 'numeric' });
+                }
+
+                const div = document.createElement('div');
+                div.className = 'deuda-card';
+                div.innerHTML = `
+                    <div class="deuda-card-top">
+                        <div class="deuda-card-identity">
+                            <div class="deuda-card-emoji">${d.emoji || '💳'}</div>
+                            <div>
+                                <h4 class="deuda-card-name">${d.concepto}</h4>
+                                <span class="deuda-card-badge ${isEndingSoon ? 'ending' : ''}">
+                                    ${isEndingSoon ? '⏳ Por terminar' : '🔄 Activa'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="deuda-card-amount">
+                            <span class="deuda-card-amount-label">Total</span>
+                            <span class="deuda-card-amount-value">${UI.formatearMoneda(d.monto_total)}</span>
+                        </div>
+                    </div>
+                    <div class="deuda-card-progress">
+                        <div class="deuda-progress-info">
+                            <span class="deuda-progress-text">${cuotasPagadas} de ${totalCuotas} cuotas pagadas</span>
+                            <span class="deuda-progress-percent">${Math.round(progreso)}%</span>
+                        </div>
+                        <div class="deuda-progress-bar">
+                            <div class="deuda-progress-fill" style="width: ${progreso}%"></div>
+                        </div>
+                    </div>
+                    <div class="deuda-card-details">
+                        <div class="deuda-detail">
+                            <span class="deuda-detail-label">Cuota</span>
+                            <span class="deuda-detail-value">${d.cuota_monto ? UI.formatearMoneda(d.cuota_monto) + '/mes' : 'Variable'}</span>
+                        </div>
+                        <div class="deuda-detail">
+                            <span class="deuda-detail-label">Restantes</span>
+                            <span class="deuda-detail-value">${cuotasRestantes} cuotas</span>
+                        </div>
+                        <div class="deuda-detail">
+                            <span class="deuda-detail-label">Fin estimado</span>
+                            <span class="deuda-detail-value">${fechaFin}</span>
+                        </div>
+                    </div>
+                    <div class="deuda-card-actions">
+                        <button class="btn btn-sm btn-outline-secondary btn-edit-deuda" data-id="${d.id}"><i class="bi bi-pencil me-1"></i>Editar</button>
+                        <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                    </div>
+                `;
+                listaDeudas.appendChild(div);
+            });
+
+            listaDeudas.querySelectorAll('.btn-del-deuda').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if(confirm('¿Eliminar registro de deuda?')) {
+                        await Store.eliminarDeuda(btn.dataset.id);
+                        UI.renderizarDeudas();
+                    }
+                });
+            });
+
+            listaDeudas.querySelectorAll('.btn-edit-deuda').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const item = await Store.obtenerDeudaPorId(btn.dataset.id);
+                        if (!item) throw new Error('No se encontró la deuda');
+                        document.querySelector('#deudaIdEdit').value = item.id;
+                        document.querySelector('#deudaConcepto').value = item.concepto;
+                        document.querySelector('#deudaMonto').value = item.monto_total;
+                        document.querySelector('#deudaCuotas').value = item.total_cuotas;
+                        document.querySelector('#deudaPagadas').value = item.cuotas_pagadas;
+                        document.querySelector('#deudaCuotaMonto').value = item.cuota_monto;
+                        document.querySelector('#deudaFechaInicio').value = item.fecha_inicio;
+                        document.querySelector('#btnEmojiDeuda').textContent = item.emoji || '💳';
+                        document.querySelector('#modalDeudaTitle').textContent = 'Editar Deuda';
+                        const modalEl = document.getElementById('modalDeuda');
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error al cargar la deuda.');
+                    }
+                });
+            });
+        }
+
+        // Historial de deudas saldadas
+        const historialContainer = document.getElementById('deudasHistorial');
+        const historialList = document.getElementById('listaDeudasHistorial');
+        const historialCount = document.getElementById('deudasHistorialCount');
+        const btnTogglehistorial = document.getElementById('btnToggleHistorial');
+
+        if (deudasPagadas.length > 0) {
+            historialContainer.style.display = 'block';
+            historialCount.textContent = deudasPagadas.length;
+            historialList.innerHTML = '';
+
+            deudasPagadas.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'deuda-historial-item';
+                item.innerHTML = `
+                    <div class="deuda-historial-item-info">
+                        <span class="deuda-historial-item-emoji">${d.emoji || '💳'}</span>
+                        <span class="deuda-historial-item-name">${d.concepto}</span>
+                        <span class="deuda-historial-item-badge"><i class="bi bi-check-circle-fill me-1"></i>Saldada</span>
+                    </div>
+                    <span class="deuda-historial-item-amount">${UI.formatearMoneda(d.monto_total)}</span>
+                    <div class="deuda-historial-item-actions">
+                        <button class="btn btn-sm btn-outline-secondary btn-edit-deuda" data-id="${d.id}" title="Ver detalle"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}" title="Eliminar"><i class="bi bi-trash"></i></button>
+                    </div>
+                `;
+                historialList.appendChild(item);
+            });
+
+            historialList.querySelectorAll('.btn-del-deuda').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if(confirm('¿Eliminar este registro de deuda saldada?')) {
+                        await Store.eliminarDeuda(btn.dataset.id);
+                        UI.renderizarDeudas();
+                    }
+                });
+            });
+
+            historialList.querySelectorAll('.btn-edit-deuda').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const item = await Store.obtenerDeudaPorId(btn.dataset.id);
+                        if (!item) throw new Error('No se encontró la deuda');
+                        document.querySelector('#deudaIdEdit').value = item.id;
+                        document.querySelector('#deudaConcepto').value = item.concepto;
+                        document.querySelector('#deudaMonto').value = item.monto_total;
+                        document.querySelector('#deudaCuotas').value = item.total_cuotas;
+                        document.querySelector('#deudaPagadas').value = item.cuotas_pagadas;
+                        document.querySelector('#deudaCuotaMonto').value = item.cuota_monto;
+                        document.querySelector('#deudaFechaInicio').value = item.fecha_inicio;
+                        document.querySelector('#btnEmojiDeuda').textContent = item.emoji || '💳';
+                        document.querySelector('#modalDeudaTitle').textContent = 'Editar Deuda';
+                        const modalEl = document.getElementById('modalDeuda');
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error al cargar la deuda.');
+                    }
+                });
+            });
+
+            btnTogglehistorial.onclick = () => {
+                const isOpen = historialList.classList.contains('is-open');
+                if (isOpen) {
+                    historialList.classList.remove('is-open');
+                    btnTogglehistorial.classList.remove('is-open');
+                    btnTogglehistorial.setAttribute('aria-expanded', 'false');
+                } else {
+                    historialList.classList.add('is-open');
+                    btnTogglehistorial.classList.add('is-open');
+                    btnTogglehistorial.setAttribute('aria-expanded', 'true');
+                }
+            };
+        } else {
+            historialContainer.style.display = 'none';
+            historialList.innerHTML = '';
+            historialList.classList.remove('is-open');
+        }
+    }
+
+    static async renderizarRecurrentes() {
+        const recurrentes = await Store.obtenerRecurrentes();
+        const listaRecurrentes = document.querySelector('#listaRecurrentes');
+        const noRecurrentes = document.querySelector('#noRecurrentes');
+        if (!listaRecurrentes) return;
+        
+        listaRecurrentes.innerHTML = '';
+
+        if (recurrentes.length === 0) {
+            noRecurrentes.style.display = 'block';
+        } else {
+            noRecurrentes.style.display = 'none';
+
+            recurrentes.forEach(r => {
+                const div = document.createElement('div');
+                div.className = 'rec-card';
+                div.innerHTML = `
+                    <div class="rec-card-top">
+                        <div class="rec-card-icon">${r.emoji || '🔄'}</div>
+                        <span class="rec-card-badge">Mensual</span>
+                    </div>
+                    <h4 class="rec-card-title">${r.concepto}</h4>
+                    <p class="rec-card-sub">${r.dia_vencimiento ? `Vence el día ${r.dia_vencimiento}` : 'Sin fecha fija'}</p>
+                    <div class="rec-card-footer">
+                        <span class="rec-card-amount">${r.monto ? UI.formatearMoneda(r.monto) : 'Variable'}</span>
+                        <div class="rec-card-actions">
+                            <button class="btn btn-sm btn-outline-secondary btn-edit-rec" data-id="${r.id}" title="Editar"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger btn-del-rec" data-id="${r.id}" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+                listaRecurrentes.appendChild(div);
+            });
+
+            listaRecurrentes.querySelectorAll('.btn-del-rec').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if(confirm('¿Eliminar esta plantilla recurrente?')) {
+                        await Store.eliminarRecurrente(btn.dataset.id);
+                        UI.renderizarRecurrentes();
+                    }
+                });
+            });
+
+            listaRecurrentes.querySelectorAll('.btn-edit-rec').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const item = await Store.obtenerRecurrentePorId(btn.dataset.id);
+                        if (!item) throw new Error('No se encontró el recurrente');
+                        document.querySelector('#recIdEdit').value = item.id;
+                        document.querySelector('#recConcepto').value = item.concepto;
+                        document.querySelector('#recMonto').value = item.monto;
+                        document.querySelector('#recDiaVencimiento').value = item.dia_vencimiento;
+                        document.querySelector('#btnEmojiRec').textContent = item.emoji || '🔄';
+                        document.querySelector('#modalRecurrenteTitle').textContent = 'Editar Plantilla';
+                        const modalEl = document.getElementById('modalRecurrente');
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error al cargar los datos para editar.');
+                    }
+                });
+            });
+        }
     }
 
     static async renderizarListas() {
@@ -1063,278 +1344,10 @@ class UI {
         
         // Actualizar selects de gastos (presupuestos, deudas, recurrentes)
         await UI.renderizarOpcionesGasto();
-    }
-
-    static async renderizarPlanificacion() {
-        // Obtener datos en paralelo
-        const [recurrentes, deudas] = await Promise.all([
-            Store.obtenerRecurrentes(),
-            Store.obtenerDeudas()
-        ]);
-
-        // 1. Recurrentes
-        const listaRec = document.querySelector('#listaRecurrentes');
-        listaRec.innerHTML = '';
-        const elTotalRec = document.getElementById('planTotalRec');
-        if (elTotalRec) elTotalRec.textContent = recurrentes.length;
-
-        if (recurrentes.length === 0) {
-            document.querySelector('#noRecurrentes').style.display = 'block';
-        } else {
-            document.querySelector('#noRecurrentes').style.display = 'none';
-            for (const r of recurrentes) {
-                const cat = await Store.obtenerCategoriaPorId(r.category_id);
-                const div = document.createElement('div');
-                div.className = 'rec-card';
-                div.innerHTML = `
-                    <div class="rec-card-top">
-                        <div class="rec-card-icon">${r.emoji || '📝'}</div>
-                        <span class="rec-card-badge">Mensual</span>
-                    </div>
-                    <h4 class="rec-card-title">${r.concepto}</h4>
-                    <p class="rec-card-sub">${cat.nombre} · Día ${r.dia_vencimiento || '?'}</p>
-                    <div class="rec-card-footer">
-                        <span class="rec-card-amount">${r.monto ? UI.formatearMoneda(r.monto) : 'Variable'}</span>
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary btn-edit-rec" data-id="${r.id}" aria-label="Editar plantilla">✏️</button>
-                            <button class="btn btn-outline-danger btn-del-rec" data-id="${r.id}" aria-label="Eliminar plantilla">&times;</button>
-                        </div>
-                    </div>
-                `;
-                listaRec.appendChild(div);
-            }
-            
-            // Eventos Recurrentes
-            listaRec.querySelectorAll('.btn-del-rec').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    if(confirm('¿Borrar plantilla?')) {
-                        await Store.eliminarRecurrente(btn.dataset.id);
-                        UI.renderizarPlanificacion();
-                    }
-                });
-            });
-            
-            listaRec.querySelectorAll('.btn-edit-rec').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    try {
-                        const item = await Store.obtenerRecurrentePorId(btn.dataset.id);
-                        if (!item) throw new Error('No se encontró el item');
-
-                        document.querySelector('#recIdEdit').value = item.id;
-                        document.querySelector('#recConcepto').value = item.concepto;
-                        document.querySelector('#recMonto').value = item.monto;
-                        document.querySelector('#recCategoria').value = item.category_id;
-                        document.querySelector('#recDia').value = item.dia_vencimiento;
-                        document.querySelector('#btnEmojiRec').textContent = item.emoji || '📝';
-                        document.querySelector('#modalRecurrenteTitle').textContent = 'Editar Plantilla';
-                        
-                        const modalEl = document.getElementById('modalRecurrente');
-                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                        modal.show();
-                    } catch (err) {
-                        console.error(err);
-                        alert('Error al cargar los datos para editar.');
-                    }
-                });
-            });
-        }
-
-        // 2. Deudas
-        const listaDeudas = document.querySelector('#listaDeudas');
-        listaDeudas.innerHTML = '';
-
-        const deudasOrdenadas = [...deudas].sort((a, b) => {
-            const restanteA = (a.total_cuotas || 0) - (a.cuotas_pagadas || 0);
-            const restanteB = (b.total_cuotas || 0) - (b.cuotas_pagadas || 0);
-            return restanteB - restanteA;
-        });
-        const deudasPendientes = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) < (d.total_cuotas || 0));
-        const deudasPagadas = deudasOrdenadas.filter(d => (d.cuotas_pagadas || 0) >= (d.total_cuotas || 0));
-
-        const elTotalDeudas = document.getElementById('planTotalDeudas');
-        if (elTotalDeudas) elTotalDeudas.textContent = deudasPendientes.length;
-
-        if (deudasPendientes.length === 0) {
-            document.querySelector('#noDeudas').style.display = 'block';
-            document.querySelector('#noDeudas').textContent = deudasPagadas.length > 0
-                ? 'No tienes deudas pendientes. ✅'
-                : 'Sin deudas registradas.';
-        } else {
-            document.querySelector('#noDeudas').style.display = 'none';
-
-            const resumen = document.createElement('div');
-            resumen.className = 'deuda-resumen';
-            resumen.innerHTML = `Pendientes: <strong>${deudasPendientes.length}</strong>`;
-            listaDeudas.appendChild(resumen);
-
-            deudasPendientes.forEach(d => {
-                const totalCuotas = Math.max(Number(d.total_cuotas || 0), 1);
-                const cuotasPagadas = Math.min(Number(d.cuotas_pagadas || 0), totalCuotas);
-                const cuotasRestantes = Math.max(totalCuotas - cuotasPagadas, 0);
-                const progreso = Math.min((cuotasPagadas / totalCuotas) * 100, 100);
-                const isEndingSoon = cuotasRestantes <= 3 && cuotasRestantes > 0;
-
-                // Cálculos de fechas
-                let fechaFin = '-';
-                if (d.fecha_inicio) {
-                    const parts = d.fecha_inicio.split('-');
-                    const fecha = new Date(parts[0], parts[1] - 1, parts[2]);
-                    fecha.setMonth(fecha.getMonth() + totalCuotas);
-                    fechaFin = fecha.toLocaleDateString('es-PY', { month: 'short', year: 'numeric' });
-                }
-
-                const div = document.createElement('div');
-                div.className = 'deuda-card';
-                div.innerHTML = `
-                    <div class="deuda-card-header">
-                        <div class="deuda-card-info">
-                            <div class="deuda-card-title-row">
-                                <h4 class="deuda-card-title">${d.emoji || '💳'} ${d.concepto}</h4>
-                                <span class="deuda-badge ${isEndingSoon ? 'deuda-badge-ending' : 'deuda-badge-active'}">
-                                    ${isEndingSoon ? 'Por terminar' : 'Activa'}
-                                </span>
-                            </div>
-                            <p class="deuda-card-sub">${d.cuota_monto ? UI.formatearMoneda(d.cuota_monto) + '/mes' : 'Cuota variable'} · ${cuotasPagadas}/${totalCuotas} cuotas · Fin: ${fechaFin}</p>
-                        </div>
-                        <div class="deuda-card-amount-col">
-                            <span class="deuda-card-amount-label">Total</span>
-                            <span class="deuda-card-amount ${isEndingSoon ? 'amount-ending' : 'amount-active'}">${UI.formatearMoneda(d.monto_total)}</span>
-                        </div>
-                    </div>
-                    <div class="deuda-progress-labels">
-                        <span>Progreso (${Math.round(progreso)}%)</span>
-                        <span>Restan: ${cuotasRestantes} cuotas</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar ${isEndingSoon ? 'progress-bar-ending' : 'progress-bar-normal'}" style="width: ${progreso}%"></div>
-                    </div>
-                    <div class="deuda-card-actions">
-                        <button class="btn btn-sm btn-outline-secondary btn-edit-deuda" data-id="${d.id}">Editar</button>
-                        <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}">Eliminar</button>
-                    </div>
-                `;
-                listaDeudas.appendChild(div);
-            });
-
-            // Eventos Deudas
-            listaDeudas.querySelectorAll('.btn-del-deuda').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    if(confirm('¿Eliminar registro de deuda?')) {
-                        await Store.eliminarDeuda(btn.dataset.id);
-                        UI.renderizarPlanificacion();
-                    }
-                });
-            });
-
-            listaDeudas.querySelectorAll('.btn-edit-deuda').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    try {
-                        const item = await Store.obtenerDeudaPorId(btn.dataset.id);
-                        if (!item) throw new Error('No se encontró la deuda');
-
-                        document.querySelector('#deudaIdEdit').value = item.id;
-                        document.querySelector('#deudaConcepto').value = item.concepto;
-                        document.querySelector('#deudaMonto').value = item.monto_total;
-                        document.querySelector('#deudaCuotas').value = item.total_cuotas;
-                        document.querySelector('#deudaPagadas').value = item.cuotas_pagadas;
-                        document.querySelector('#deudaCuotaMonto').value = item.cuota_monto;
-                        document.querySelector('#deudaFechaInicio').value = item.fecha_inicio;
-                        document.querySelector('#btnEmojiDeuda').textContent = item.emoji || '💳';
-                        document.querySelector('#modalDeudaTitle').textContent = 'Editar Deuda';
-
-                        const modalEl = document.getElementById('modalDeuda');
-                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                        modal.show();
-                    } catch (err) {
-                        console.error(err);
-                        alert('Error al cargar la deuda.');
-                    }
-                });
-            });
-        }
-
-        // 3. Historial de deudas saldadas
-        const historialContainer = document.getElementById('deudasHistorial');
-        const historialList = document.getElementById('listaDeudasHistorial');
-        const historialCount = document.getElementById('deudasHistorialCount');
-        const btnTogglehistorial = document.getElementById('btnToggleHistorial');
-
-        if (deudasPagadas.length > 0) {
-            historialContainer.style.display = 'block';
-            historialCount.textContent = deudasPagadas.length;
-            historialList.innerHTML = '';
-
-            deudasPagadas.forEach(d => {
-                const item = document.createElement('div');
-                item.className = 'deuda-historial-item';
-                item.innerHTML = `
-                    <div class="deuda-historial-item-info">
-                        <span class="deuda-historial-item-emoji">${d.emoji || '💳'}</span>
-                        <span class="deuda-historial-item-name">${d.concepto}</span>
-                        <span class="deuda-historial-item-badge"><i class="bi bi-check-circle-fill me-1"></i>Saldada</span>
-                    </div>
-                    <span class="deuda-historial-item-amount">${UI.formatearMoneda(d.monto_total)}</span>
-                    <div class="deuda-historial-item-actions">
-                        <button class="btn btn-sm btn-outline-secondary btn-edit-deuda" data-id="${d.id}" title="Ver detalle"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}" title="Eliminar"><i class="bi bi-trash"></i></button>
-                    </div>
-                `;
-                historialList.appendChild(item);
-            });
-
-            // Eventos historial - Eliminar
-            historialList.querySelectorAll('.btn-del-deuda').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    if(confirm('¿Eliminar este registro de deuda saldada?')) {
-                        await Store.eliminarDeuda(btn.dataset.id);
-                        UI.renderizarPlanificacion();
-                    }
-                });
-            });
-
-            // Eventos historial - Editar
-            historialList.querySelectorAll('.btn-edit-deuda').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    try {
-                        const item = await Store.obtenerDeudaPorId(btn.dataset.id);
-                        if (!item) throw new Error('No se encontró la deuda');
-                        document.querySelector('#deudaIdEdit').value = item.id;
-                        document.querySelector('#deudaConcepto').value = item.concepto;
-                        document.querySelector('#deudaMonto').value = item.monto_total;
-                        document.querySelector('#deudaCuotas').value = item.total_cuotas;
-                        document.querySelector('#deudaPagadas').value = item.cuotas_pagadas;
-                        document.querySelector('#deudaCuotaMonto').value = item.cuota_monto;
-                        document.querySelector('#deudaFechaInicio').value = item.fecha_inicio;
-                        document.querySelector('#btnEmojiDeuda').textContent = item.emoji || '💳';
-                        document.querySelector('#modalDeudaTitle').textContent = 'Editar Deuda';
-                        const modalEl = document.getElementById('modalDeuda');
-                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                        modal.show();
-                    } catch (err) {
-                        console.error(err);
-                        alert('Error al cargar la deuda.');
-                    }
-                });
-            });
-
-            // Toggle historial
-            btnTogglehistorial.onclick = () => {
-                const isOpen = historialList.classList.contains('is-open');
-                if (isOpen) {
-                    historialList.classList.remove('is-open');
-                    btnTogglehistorial.classList.remove('is-open');
-                    btnTogglehistorial.setAttribute('aria-expanded', 'false');
-                } else {
-                    historialList.classList.add('is-open');
-                    btnTogglehistorial.classList.add('is-open');
-                    btnTogglehistorial.setAttribute('aria-expanded', 'true');
-                }
-            };
-        } else {
-            historialContainer.style.display = 'none';
-            historialList.innerHTML = '';
-            historialList.classList.remove('is-open');
-        }
+        
+        // Renderizar tabs independientes
+        await UI.renderizarDeudas();
+        await UI.renderizarRecurrentes();
     }
 
     static async renderizarOpcionesGasto() {
@@ -1372,6 +1385,23 @@ class UI {
         document.querySelector('#dashGastos').textContent = UI.formatearMoneda(totalGastos);
         const elBalance = document.querySelector('#dashBalance');
         elBalance.textContent = UI.formatearMoneda(balance);
+
+        const pctAhorro = totalIngresos > 0 ? ((balance / totalIngresos) * 100).toFixed(1) : 0;
+        const elAhorro = document.querySelector('#dashAhorro');
+        elAhorro.textContent = UI.formatearMoneda(balance);
+        elAhorro.style.color = balance >= 0 ? '#22C55E' : '#EF4444';
+        const elAhorroPct = document.querySelector('#dashAhorroPct');
+        elAhorroPct.textContent = `${pctAhorro}% del ingreso`;
+        elAhorroPct.style.color = balance >= 0 ? '#22C55E' : '#EF4444';
+
+        const chip = document.querySelector('#dashBalanceChip');
+        if (balance >= 0) {
+            chip.className = 'dashboard-chip dashboard-chip-positive';
+            chip.textContent = 'Balance positivo';
+        } else {
+            chip.className = 'dashboard-chip dashboard-chip-negative';
+            chip.textContent = 'Balance negativo';
+        }
 
         UI.renderizarGraficos(ingresos, gastos);
     }
@@ -2211,7 +2241,8 @@ document.querySelector('#btnGuardarRecurrente').addEventListener('click', async 
 
             document.querySelector('#formRecurrente').reset();
             document.querySelector('#btnEmojiRec').textContent = '📝';
-            await UI.renderizarPlanificacion();
+            await UI.renderizarDeudas();
+            await UI.renderizarRecurrentes();
             await UI.renderizarOpcionesGasto();
         } catch (e) { 
             console.error(e); 
@@ -2245,7 +2276,8 @@ document.querySelector('#btnGuardarDeuda').addEventListener('click', async () =>
             
             document.querySelector('#formDeuda').reset();
             document.querySelector('#btnEmojiDeuda').textContent = '💳';
-            await UI.renderizarPlanificacion();
+            await UI.renderizarDeudas();
+            await UI.renderizarRecurrentes();
             await UI.renderizarOpcionesGasto();
         } catch (e) { 
             console.error(e); 
