@@ -411,60 +411,64 @@ Finanzas de Nueva Generación
 <!-- APP CONTAINER                              -->
 <!-- ═══════════════════════════════════════════ -->
 <div id="appContainer" style="display: none;">
-<nav class="navbar navbar-expand-lg navbar-dark app-navbar-fixed">
-<div class="container">
-<a class="navbar-brand fw-bold d-flex align-items-center gap-2 app-brand" href="#">
-<span class="brand-mark app-brand-mark">
-<img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="40" height="40">
-</span>
-<span class="app-brand-copy">
-<small class="app-brand-subtitle d-block">Periodo activo</small>
-<span class="fs-4 app-brand-title d-block" id="topPeriodTitle">Panel financiero</span>
-</span>
-</a>
-<div class="d-flex align-items-center gap-2 app-userbox">
-<button id="btnOpenUpdateModal" class="btn btn-outline-light btn-sm px-3 d-none" type="button" aria-label="Abrir actualización de app">
-<i class="bi bi-arrow-repeat me-1"></i><span id="updateBadgeText">Actualizar</span>
-</button>
-<div class="dropdown">
-<button class="btn btn-icon" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú de usuario">
-<i class="bi bi-person-circle"></i>
-</button>
-<ul class="dropdown-menu dropdown-menu-end app-user-menu" aria-labelledby="userMenuBtn">
-<li><h6 class="dropdown-header">Sesión activa</h6></li>
-<li><span id="userEmail" class="dropdown-item-text app-user-email-item">-</span></li>
-<li><hr class="dropdown-divider"></li>
-<li>
-<button id="btnLogout" class="dropdown-item app-logout-item" type="button">
-<i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
-</button>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</nav>
+<div class="app-dashboard">
+  <!-- SIDEBAR LEFT -->
+  <aside class="app-sidebar">
+    <div class="app-sidebar-brand">
+      <a class="app-sidebar-logo" href="#">
+        <img src="asset/media/favicon/android-icon-48x48.png" alt="Logo" width="28" height="28">
+      </a>
+      <span class="app-sidebar-name">Vault</span>
+    </div>
+    <nav class="app-sidebar-nav">
+      <button type="button" class="app-sidebar-link is-active" data-tab-trigger="dashboard-tab" title="Dashboard">
+        <i class="bi bi-grid-fill"></i>
+      </button>
+      <button type="button" class="app-sidebar-link" data-tab-trigger="gastos-tab" title="Gastos">
+        <i class="bi bi-wallet2"></i>
+      </button>
+      <button type="button" class="app-sidebar-link" data-tab-trigger="ingresos-tab" title="Ingresos">
+        <i class="bi bi-cash-coin"></i>
+      </button>
+      <button type="button" class="app-sidebar-link" data-tab-trigger="presupuesto-tab" title="Presupuestos">
+        <i class="bi bi-pie-chart-fill"></i>
+      </button>
+      <button type="button" class="app-sidebar-link" data-tab-trigger="planificacion-tab" title="Planificación">
+        <i class="bi bi-calendar2-week-fill"></i>
+      </button>
+    </nav>
+    <div class="app-sidebar-footer">
+      <button class="btn btn-icon app-sidebar-link" type="button" id="userMenuBtnDesktop" data-bs-toggle="dropdown" title="Cuenta">
+        <i class="bi bi-person-circle"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end app-user-menu" aria-labelledby="userMenuBtnDesktop">
+        <li><h6 class="dropdown-header">Sesión activa</h6></li>
+        <li><span id="userEmail" class="dropdown-item-text app-user-email-item">-</span></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><button id="btnLogout" class="dropdown-item app-logout-item" type="button"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</button></li>
+      </ul>
+      <button id="btnOpenUpdateModal" class="btn btn-icon app-sidebar-link d-none" type="button" title="Actualizar app">
+        <i class="bi bi-arrow-repeat"></i><span id="updateBadgeText" style="font-size:8px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);"></span>
+      </button>
+    </div>
+  </aside>
 
-<div class="container app-shell">
+  <!-- MAIN CONTENT -->
+  <div class="app-main">
+    <div class="app-toolbar">
+      <div>
+        <h2 class="app-greeting" id="appGreeting">Panel financiero</h2>
+        <p class="app-period-label"><span id="topPeriodTitle">Periodo activo</span></p>
+      </div>
+      <div class="period-selector">
+        <label for="filtroMes" class="fw-semibold mb-0 text-nowrap">Periodo:</label>
+        <input type="month" id="filtroMes" name="filtro_mes" class="form-control period-input">
+      </div>
+    </div>
 
-<!-- Panel Toolbar -->
-<section class="panel-toolbar mb-4">
-<div class="panel-toolbar-inner">
-<div>
-<p class="panel-kicker mb-1">Centro de mando</p>
-<h2 class="panel-title mb-1">Resumen financiero operativo</h2>
-<p class="panel-subtitle mb-0">Consulta movimientos, presupuestos, comparativas y deudas con un lenguaje visual unificado.</p>
-</div>
-<div class="period-selector">
-<label for="filtroMes" class="fw-semibold mb-0 text-nowrap">Periodo:</label>
-<input type="month" id="filtroMes" name="filtro_mes" class="form-control period-input">
-</div>
-</div>
-</section>
-
-<!-- Tabs -->
-<div class="tabs-shell mb-4">
-<ul class="nav nav-tabs app-tabs" id="myTab" role="tablist" aria-label="Secciones de la aplicación">
+    <!-- Tabs -->
+    <div class="tabs-shell mb-4">
+      <ul class="nav nav-tabs app-tabs" id="myTab" role="tablist" aria-label="Secciones de la aplicación">
 <li class="nav-item" role="presentation">
 <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">Dashboard</button>
 </li>
@@ -843,6 +847,18 @@ Finanzas de Nueva Generación
 </div>
 
 </div>
+
+  <!-- RIGHT PANEL -->
+  <aside class="app-panel">
+    <div class="app-panel-head">
+      <h3 class="app-panel-title">Actividad</h3>
+      <span class="app-panel-sub" id="appPanelCount">---</span>
+    </div>
+    <div class="app-panel-list" id="appPanelList">
+      <div class="app-panel-empty">Cargando actividad...</div>
+    </div>
+  </aside>
+</div><!-- /.app-dashboard -->
 
 <!-- Mobile Tab Bar -->
 <nav class="mobile-tabbar d-md-none" aria-label="Navegación móvil principal">

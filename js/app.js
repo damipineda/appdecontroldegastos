@@ -966,6 +966,16 @@ class UI {
             const fechaTitulo = new Date(Number(anio), Number(mes) - 1, 1);
             topPeriodTitle.textContent = fechaTitulo.toLocaleDateString('es-PY', { month: 'long', year: 'numeric' });
         }
+        
+        // Update greeting
+        const appGreeting = document.getElementById('appGreeting');
+        if (appGreeting) {
+            const hora = new Date().getHours();
+            let saludo = 'Buenas noches';
+            if (hora < 12) saludo = 'Buenos días';
+            else if (hora < 18) saludo = 'Buenas tardes';
+            appGreeting.textContent = saludo;
+        }
 
         // Obtener datos DB ya filtrados por mes (Paralelo)
         const [gastos, ingresos] = await Promise.all([
@@ -1053,6 +1063,9 @@ class UI {
         
         // Actualizar selects de gastos (presupuestos, deudas, recurrentes)
         await UI.renderizarOpcionesGasto();
+        
+        // Panel derecho - Actividad reciente
+        UI.renderizarPanelDerecho(gastos, ingresos);
     }
 
     static async renderizarPlanificacion() {
@@ -1353,6 +1366,42 @@ class UI {
         });
     }
 
+    static renderizarPanelDerecho(gastos, ingresos) {
+        const panelList = document.getElementById('appPanelList');
+        const panelCount = document.getElementById('appPanelCount');
+        if (!panelList) return;
+
+        // Combinar gastos e ingresos, ordenar por fecha descendente, tomar ultimos 15
+        const items = [
+            ...gastos.map(g => ({ ...g, type: 'expense' })),
+            ...ingresos.map(i => ({ ...i, type: 'income' }))
+        ].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.hora?.localeCompare?.(a.hora) || 0).slice(0, 15);
+
+        if (panelCount) panelCount.textContent = `${items.length} movimientos`;
+
+        if (items.length === 0) {
+            panelList.innerHTML = '<div class="app-panel-empty">Sin movimientos este mes</div>';
+            return;
+        }
+
+        panelList.innerHTML = '';
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'app-panel-item';
+            const iconClass = item.type === 'expense' ? 'expense' : 'income';
+            const amountClass = item.type === 'expense' ? 'expense' : 'income';
+            const sign = item.type === 'expense' ? '-' : '+';
+            div.innerHTML = `
+                <div class="app-panel-item-left">
+                    <span class="app-panel-item-icon ${iconClass}"></span>
+                    <span class="app-panel-item-name">${item.concepto || 'Sin concepto'}</span>
+                </div>
+                <span class="app-panel-item-amount ${amountClass}">${sign}${UI.formatearMoneda(item.monto)}</span>
+            `;
+            panelList.appendChild(div);
+        });
+    }
+
     static actualizarDashboard(ingresos, gastos) {
         const totalIngresos = ingresos.reduce((sum, i) => sum + i.monto, 0);
         const totalGastos = gastos.reduce((sum, g) => sum + g.monto, 0);
@@ -1362,7 +1411,6 @@ class UI {
         document.querySelector('#dashGastos').textContent = UI.formatearMoneda(totalGastos);
         const elBalance = document.querySelector('#dashBalance');
         elBalance.textContent = UI.formatearMoneda(balance);
-        elBalance.parentElement.parentElement.className = `card kpi-card kpi-balance text-white border-0 h-100 mb-3 ${balance >= 0 ? 'bg-primary' : 'bg-warning'}`;
 
         UI.renderizarGraficos(ingresos, gastos);
     }
@@ -1793,7 +1841,8 @@ desktopTabButtons.forEach((tabBtn) => {
     });
 
     tabBtn.addEventListener('shown.bs.tab', () => {
-        sincronizarTabMovil(tabBtn.id);
+sincronizarTabMovil(tabBtn.id);
+    sincronizarSidebar(tabBtn.id);
     });
 });
 
@@ -1806,8 +1855,27 @@ mobileTabButtons.forEach((mobileBtn) => {
     });
 });
 
+/* Sidebar links */
+const sidebarLinks = Array.from(document.querySelectorAll('.app-sidebar-link[data-tab-trigger]'));
+
+function sincronizarSidebar(tabIdActivo) {
+    sidebarLinks.forEach((link) => {
+        const isActive = link.getAttribute('data-tab-trigger') === tabIdActivo;
+        link.classList.toggle('is-active', isActive);
+    });
+}
+
+sidebarLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+        const targetTabId = link.getAttribute('data-tab-trigger');
+        const desktopBtn = document.getElementById(targetTabId);
+        if (!desktopBtn) return;
+        activarTab(desktopBtn, { scrollTop: true });
+    });
+});
+
 const tabActivoInicial = document.querySelector('#myTab button.active');
-if (tabActivoInicial) sincronizarTabMovil(tabActivoInicial.id);
+if (tabActivoInicial) { sincronizarTabMovil(tabActivoInicial.id); sincronizarSidebar(tabActivoInicial.id); }
 
 const btnOpenUpdateModal = document.getElementById('btnOpenUpdateModal');
 if (btnOpenUpdateModal) {
