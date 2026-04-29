@@ -1746,9 +1746,13 @@ window.addEventListener('unhandledrejection', (event) => {
 async function arrancarAppSesionActiva(session, opciones = {}) {
     const { mostrarLoader = false } = opciones;
 
+    if (appIniciando) return;
+    appIniciando = true;
+
     if (!session?.user?.email) {
         UI.toggleLoader(false);
         toggleView(false);
+        appIniciando = false;
         return;
     }
 
@@ -1771,6 +1775,8 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
             toggleView(false);
             mostrarErrorInicio('No se pudo conectar con el servidor. Recarga la página.');
         }
+    } finally {
+        appIniciando = false;
     }
 }
 
@@ -2230,17 +2236,19 @@ document.querySelector('#btnComparar').addEventListener('click', async () => {
 // Refresco suave al volver a la pestaña para evitar estados colgados del loader
 let ultimoRefrescoVisibilidad = 0;
 let refrescando = false;
+let appIniciando = false;
 
 document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState !== 'visible') return;
     if (!supabaseClient) return;
-    if (refrescando) return; // Evitar múltiples llamadas simultáneas
+    if (refrescando) return;
+    if (appIniciando) return;
 
     const appVisible = document.getElementById('appContainer')?.style.display !== 'none';
     if (!appVisible) return;
 
     const ahora = Date.now();
-    if (ahora - ultimoRefrescoVisibilidad < 5000) return;
+    if (ahora - ultimoRefrescoVisibilidad < 10000) return;
     
     refrescando = true;
     ultimoRefrescoVisibilidad = ahora;
@@ -2250,9 +2258,6 @@ document.addEventListener('visibilitychange', async () => {
         ocultarErrorInicio();
     } catch (error) {
         console.error('Error al refrescar la app al volver a la pestaña:', error);
-        if (document.getElementById('appContainer')?.style.display !== 'none') {
-            mostrarErrorInicio('No se pudo refrescar los datos. La información puede estar desactualizada.');
-        }
     } finally {
         UI.toggleLoader(false);
         refrescando = false;
