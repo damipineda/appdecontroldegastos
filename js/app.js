@@ -966,7 +966,7 @@ class UI {
             const fechaTitulo = new Date(Number(anio), Number(mes) - 1, 1);
             topPeriodTitle.textContent = fechaTitulo.toLocaleDateString('es-PY', { month: 'long', year: 'numeric' });
         }
-        
+
         // Update greeting
         const appGreeting = document.getElementById('appGreeting');
         if (appGreeting) {
@@ -1063,9 +1063,6 @@ class UI {
         
         // Actualizar selects de gastos (presupuestos, deudas, recurrentes)
         await UI.renderizarOpcionesGasto();
-        
-        // Panel derecho - Actividad reciente
-        UI.renderizarPanelDerecho(gastos, ingresos);
     }
 
     static async renderizarPlanificacion() {
@@ -1363,42 +1360,6 @@ class UI {
                 opt.textContent = `${d.concepto} (Cuota ${d.cuotas_pagadas + 1}/${d.total_cuotas})`;
                 selectDeuda.appendChild(opt);
             }
-        });
-    }
-
-    static renderizarPanelDerecho(gastos, ingresos) {
-        const panelList = document.getElementById('appPanelList');
-        const panelCount = document.getElementById('appPanelCount');
-        if (!panelList) return;
-
-        // Combinar gastos e ingresos, ordenar por fecha descendente, tomar ultimos 15
-        const items = [
-            ...gastos.map(g => ({ ...g, type: 'expense' })),
-            ...ingresos.map(i => ({ ...i, type: 'income' }))
-        ].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.hora?.localeCompare?.(a.hora) || 0).slice(0, 15);
-
-        if (panelCount) panelCount.textContent = `${items.length} movimientos`;
-
-        if (items.length === 0) {
-            panelList.innerHTML = '<div class="app-panel-empty">Sin movimientos este mes</div>';
-            return;
-        }
-
-        panelList.innerHTML = '';
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'app-panel-item';
-            const iconClass = item.type === 'expense' ? 'expense' : 'income';
-            const amountClass = item.type === 'expense' ? 'expense' : 'income';
-            const sign = item.type === 'expense' ? '-' : '+';
-            div.innerHTML = `
-                <div class="app-panel-item-left">
-                    <span class="app-panel-item-icon ${iconClass}"></span>
-                    <span class="app-panel-item-name">${item.concepto || 'Sin concepto'}</span>
-                </div>
-                <span class="app-panel-item-amount ${amountClass}">${sign}${UI.formatearMoneda(item.monto)}</span>
-            `;
-            panelList.appendChild(div);
         });
     }
 

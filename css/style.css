@@ -1739,7 +1739,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 .app-dashboard {
   display: grid;
-  grid-template-columns: 84px 1fr 320px;
+  grid-template-columns: 84px 1fr;
   flex: 1;
   overflow: hidden;
 }
@@ -1853,109 +1853,14 @@ html.mobile-app-mode #landingPage { display: none !important; }
   margin: 4px 0 0;
 }
 
-/* --- Right Panel --- */
-.app-panel {
-  border-left: 1px solid rgba(255,255,255,0.07);
-  background: #0D0F2A;
-  padding: 24px 18px;
-  overflow-y: auto;
-  height: 100vh;
-  height: 100dvh;
-  position: sticky;
-  top: 0;
-}
-
-.app-panel-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 18px;
-}
-.app-panel-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #F1F5F9;
-  margin: 0;
-}
-.app-panel-sub {
-  font-size: 0.75rem;
-  color: #64748B;
-  font-weight: 600;
-}
-
-.app-panel-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.app-panel-empty {
-  text-align: center;
-  padding: 2rem 1rem;
-  font-size: 0.8125rem;
-  color: var(--text-tertiary);
-}
-
-.app-panel-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}
-.app-panel-item:hover {
-  border-color: var(--accent-border);
-  background: rgba(79,70,229,0.05);
-}
-.app-panel-item-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: #E2E8F0;
-  min-width: 0;
-}
-.app-panel-item-icon {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.app-panel-item-icon.expense { background: var(--red); }
-.app-panel-item-icon.income { background: var(--green); }
-.app-panel-item-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.app-panel-item-amount {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  flex-shrink: 0;
-  margin-left: 8px;
-}
-.app-panel-item-amount.expense { color: var(--red); }
-.app-panel-item-amount.income { color: var(--green); }
-
 /* --- Remove old app-navbar styles --- */
 .app-navbar-fixed { display: none; }
+.app-panel { display: none !important; }
 
 /* Restore app-shell for tabs */
 .app-shell { padding: 0; }
 
 /* --- Mobile responsive --- */
-@media (max-width: 1100px) {
-  .app-dashboard {
-    grid-template-columns: 84px 1fr;
-  }
-  .app-panel {
-    display: none;
-  }
-}
-
 @media (max-width: 767.98px) {
   .app-dashboard {
     grid-template-columns: 1fr;
@@ -1965,7 +1870,7 @@ html.mobile-app-mode #landingPage { display: none !important; }
   }
   .app-main {
     padding: 16px;
-    padding-bottom: 80px;
+    padding-bottom: 70px;
     height: 100vh;
     height: 100dvh;
   }
@@ -1973,4 +1878,9 @@ html.mobile-app-mode #landingPage { display: none !important; }
     flex-direction: column;
     gap: 12px;
   }
+}
+
+/* Show mobile tabbar only on mobile */
+@media (min-width: 768px) {
+  .mobile-tabbar { display: none !important; }
 }
