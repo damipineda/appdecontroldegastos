@@ -1052,7 +1052,7 @@ class UI {
                         </div>
                         <div class="deuda-bar-meta">
                             <span class="deuda-bar-pct">${Math.round(progreso)}%</span>
-                            ${fechaFin !== '-' ? `<span class="deuda-bar-fin">· hasta ${fechaFin}</span>` : ''}
+                            ${fechaFin !== '-' ? '<span class="deuda-bar-fin">· hasta ' + fechaFin + '</span>' : ''}
                         </div>
                     </div>
                 `;
@@ -1188,7 +1188,6 @@ class UI {
             noRecurrentes.style.display = 'none';
 
             recurrentes.forEach(r => {
-            recurrentes.forEach(r => {
                 // Calculate days until due this month
                 let daysLabel = '';
                 let daysClass = 'ok';
@@ -1212,8 +1211,8 @@ class UI {
                     <div class="rec-card-top">
                         <div class="rec-card-icon">${r.emoji || '🔄'}</div>
                         <div class="rec-card-badges">
-                            ${r.dia_vencimiento ? `<span class="rec-day-chip"><i class="bi bi-calendar2 me-1"></i>Día ${r.dia_vencimiento}</span>` : '<span class="rec-day-chip">Sin fecha</span>'}
-                            ${daysLabel ? `<span class="rec-days-chip ${daysClass}">${daysLabel}</span>` : ''}
+                            ${r.dia_vencimiento ? '<span class="rec-day-chip"><i class="bi bi-calendar2 me-1"></i>Día ' + r.dia_vencimiento + '</span>' : '<span class="rec-day-chip">Sin fecha</span>'}
+                            ${daysLabel ? '<span class="rec-days-chip ' + daysClass + '">'+daysLabel+'</span>' : ''}
                         </div>
                     </div>
                     <h4 class="rec-card-title">${r.concepto}</h4>
