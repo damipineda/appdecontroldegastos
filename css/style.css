@@ -641,12 +641,14 @@ html.mobile-app-mode #landingPage { display: none !important; }
   border: none; gap: 0.25rem;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-lg); padding: 0.25rem; display: inline-flex;
+  position: relative; z-index: 1;
 }
 .app-tabs .nav-item { margin: 0; }
 .app-tabs .nav-link {
   border: none !important; border-radius: var(--radius-md) !important;
   padding: 0.5rem 1rem; font-size: 0.8125rem; font-weight: 600;
   color: var(--text-tertiary) !important; background: transparent; transition: all 0.15s;
+  cursor: pointer;
 }
 .app-tabs .nav-link:hover { color: var(--text-secondary) !important; background: var(--surface-hover); }
 .app-tabs .nav-link.active { color: #fff !important; background: var(--accent) !important; }
