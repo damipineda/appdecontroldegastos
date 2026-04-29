@@ -679,12 +679,26 @@ html.mobile-app-mode #landingPage { display: none !important; }
 
 @media (min-width: 768px) {
   .app-tabs {
-    width: max-content;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    width: fit-content;
     max-width: 100%;
+    overflow: visible;
   }
 
   .app-tabs .nav-item {
     flex: 0 0 auto;
+  }
+
+  .app-tabs .nav-link,
+  #myTab .nav-link,
+  #myTab button.nav-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: max-content !important;
+    white-space: nowrap !important;
   }
 }
 
