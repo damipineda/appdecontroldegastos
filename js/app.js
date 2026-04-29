@@ -1759,12 +1759,18 @@ async function arrancarAppSesionActiva(session, opciones = {}) {
     await verificarActualizacionMovil();
 
     try {
-        await conTimeout(initApp(), 15000, 'Timeout al cargar datos iniciales');
+        await conTimeout(initApp(), 30000, 'Timeout al cargar datos iniciales');
         ocultarErrorInicio();
     } catch (error) {
         console.error('Error al cargar datos iniciales:', error);
         UI.toggleLoader(false);
-        mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
+        const appContainer = document.getElementById('appContainer');
+        if (appContainer && appContainer.style.display === 'block') {
+            mostrarErrorInicio('No se pudieron cargar tus datos. Intenta recargar en unos segundos.');
+        } else {
+            toggleView(false);
+            mostrarErrorInicio('No se pudo conectar con el servidor. Recarga la página.');
+        }
     }
 }
 
@@ -2240,11 +2246,13 @@ document.addEventListener('visibilitychange', async () => {
     ultimoRefrescoVisibilidad = ahora;
 
     try {
-        await conTimeout(UI.cargarTodo(), 12000, 'Timeout al refrescar al volver a la pestaña');
+        await conTimeout(UI.cargarTodo(), 20000, 'Timeout al refrescar al volver a la pestaña');
         ocultarErrorInicio();
     } catch (error) {
         console.error('Error al refrescar la app al volver a la pestaña:', error);
-        mostrarErrorInicio('No se pudo refrescar automáticamente al volver a la app. Recarga la página si persiste.');
+        if (document.getElementById('appContainer')?.style.display !== 'none') {
+            mostrarErrorInicio('No se pudo refrescar los datos. La información puede estar desactualizada.');
+        }
     } finally {
         UI.toggleLoader(false);
         refrescando = false;
