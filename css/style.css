@@ -711,6 +711,13 @@ html.mobile-app-mode #landingPage { display: none !important; }
   gap: 1rem;
 }
 
+@media (max-width: 575.98px) {
+  .dashboard-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
 .dashboard-hero-card, .dashboard-side-card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-xl); padding: 1.5rem;
@@ -1561,5 +1568,143 @@ html.mobile-app-mode #landingPage { display: none !important; }
 @media (max-width: 575.98px) {
   .features-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   DEBT HISTORY ARCHIVE
+   ========================= */
+.deuda-historial-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.deuda-historial-toggle:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+.deuda-historial-toggle span:first-child {
+  color: var(--secondary);
+}
+.deuda-historial-count {
+  background: var(--green-muted);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.deuda-historial-chevron {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  transition: transform 0.25s ease;
+}
+.deuda-historial-toggle.is-open .deuda-historial-chevron {
+  transform: rotate(180deg);
+}
+.deuda-historial-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.deuda-historial-list.is-open {
+  max-height: 2000px;
+}
+.deuda-historial-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  background: var(--surface-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+.deuda-historial-item:hover {
+  opacity: 1;
+}
+.deuda-historial-item-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.deuda-historial-item-emoji {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.deuda-historial-item-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.deuda-historial-item-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--green-muted);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.deuda-historial-item-amount {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--green);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.deuda-historial-item-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+/* Enhanced deuda card for mobile */
+@media (max-width: 767.98px) {
+  .deuda-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .deuda-card-amount-col {
+    text-align: left;
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+  .deuda-historial-item {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .deuda-historial-item-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

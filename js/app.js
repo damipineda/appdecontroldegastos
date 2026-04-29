@@ -1154,7 +1154,7 @@ class UI {
 
             const resumen = document.createElement('div');
             resumen.className = 'deuda-resumen';
-            resumen.innerHTML = `Pendientes: <strong>${deudasPendientes.length}</strong> · Pagadas/ocultas: <strong>${deudasPagadas.length}</strong>`;
+            resumen.innerHTML = `Pendientes: <strong>${deudasPendientes.length}</strong>`;
             listaDeudas.appendChild(resumen);
 
             deudasPendientes.forEach(d => {
@@ -1241,6 +1241,89 @@ class UI {
                     }
                 });
             });
+        }
+
+        // 3. Historial de deudas saldadas
+        const historialContainer = document.getElementById('deudasHistorial');
+        const historialList = document.getElementById('listaDeudasHistorial');
+        const historialCount = document.getElementById('deudasHistorialCount');
+        const btnTogglehistorial = document.getElementById('btnToggleHistorial');
+
+        if (deudasPagadas.length > 0) {
+            historialContainer.style.display = 'block';
+            historialCount.textContent = deudasPagadas.length;
+            historialList.innerHTML = '';
+
+            deudasPagadas.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'deuda-historial-item';
+                item.innerHTML = `
+                    <div class="deuda-historial-item-info">
+                        <span class="deuda-historial-item-emoji">${d.emoji || '💳'}</span>
+                        <span class="deuda-historial-item-name">${d.concepto}</span>
+                        <span class="deuda-historial-item-badge"><i class="bi bi-check-circle-fill me-1"></i>Saldada</span>
+                    </div>
+                    <span class="deuda-historial-item-amount">${UI.formatearMoneda(d.monto_total)}</span>
+                    <div class="deuda-historial-item-actions">
+                        <button class="btn btn-sm btn-outline-secondary btn-edit-deuda" data-id="${d.id}" title="Ver detalle"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}" title="Eliminar"><i class="bi bi-trash"></i></button>
+                    </div>
+                `;
+                historialList.appendChild(item);
+            });
+
+            // Eventos historial - Eliminar
+            historialList.querySelectorAll('.btn-del-deuda').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if(confirm('¿Eliminar este registro de deuda saldada?')) {
+                        await Store.eliminarDeuda(btn.dataset.id);
+                        UI.renderizarPlanificacion();
+                    }
+                });
+            });
+
+            // Eventos historial - Editar
+            historialList.querySelectorAll('.btn-edit-deuda').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const item = await Store.obtenerDeudaPorId(btn.dataset.id);
+                        if (!item) throw new Error('No se encontró la deuda');
+                        document.querySelector('#deudaIdEdit').value = item.id;
+                        document.querySelector('#deudaConcepto').value = item.concepto;
+                        document.querySelector('#deudaMonto').value = item.monto_total;
+                        document.querySelector('#deudaCuotas').value = item.total_cuotas;
+                        document.querySelector('#deudaPagadas').value = item.cuotas_pagadas;
+                        document.querySelector('#deudaCuotaMonto').value = item.cuota_monto;
+                        document.querySelector('#deudaFechaInicio').value = item.fecha_inicio;
+                        document.querySelector('#btnEmojiDeuda').textContent = item.emoji || '💳';
+                        document.querySelector('#modalDeudaTitle').textContent = 'Editar Deuda';
+                        const modalEl = document.getElementById('modalDeuda');
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error al cargar la deuda.');
+                    }
+                });
+            });
+
+            // Toggle historial
+            btnTogglehistorial.onclick = () => {
+                const isOpen = historialList.classList.contains('is-open');
+                if (isOpen) {
+                    historialList.classList.remove('is-open');
+                    btnTogglehistorial.classList.remove('is-open');
+                    btnTogglehistorial.setAttribute('aria-expanded', 'false');
+                } else {
+                    historialList.classList.add('is-open');
+                    btnTogglehistorial.classList.add('is-open');
+                    btnTogglehistorial.setAttribute('aria-expanded', 'true');
+                }
+            };
+        } else {
+            historialContainer.style.display = 'none';
+            historialList.innerHTML = '';
+            historialList.classList.remove('is-open');
         }
     }
 
