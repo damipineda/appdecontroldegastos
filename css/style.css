@@ -638,27 +638,38 @@ html.mobile-app-mode #landingPage { display: none !important; }
 }
 
 .app-tabs {
-  border: none; gap: 0.25rem;
+  border: none !important; gap: 0.25rem;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-lg); padding: 0.25rem; display: inline-flex;
-  position: relative; z-index: 1;
+  position: relative; z-index: 10;
 }
-.app-tabs .nav-item { margin: 0; }
+.app-tabs::before, .app-tabs::after { display: none !important; content: none !important; }
+.app-tabs .nav-item { margin: 0; position: relative; z-index: 11; }
 .app-tabs .nav-link,
-#myTab .nav-link {
+#myTab .nav-link,
+#myTab button.nav-link {
   border: none !important; border-radius: var(--radius-md) !important;
-  padding: 0.5rem 1rem; font-size: 0.8125rem; font-weight: 600;
-  color: var(--text-tertiary) !important; background: transparent; transition: all 0.15s;
+  padding: 0.5rem 1rem !important; font-size: 0.8125rem !important; font-weight: 600 !important;
+  color: var(--text-tertiary) !important; background: transparent !important; transition: all 0.15s !important;
   cursor: pointer !important;
-  position: relative; z-index: 2;
+  pointer-events: auto !important;
+  position: relative !important; z-index: 12 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .app-tabs .nav-link::after, .app-tabs .nav-link::before,
-#myTab .nav-link::after, #myTab .nav-link::before {
+#myTab .nav-link::after, #myTab .nav-link::before,
+#myTab button.nav-link::after, #myTab button.nav-link::before,
+.nav-tabs .nav-link::after, .nav-tabs .nav-link::before {
   display: none !important;
   content: none !important;
+  width: 0 !important;
+  height: 0 !important;
   pointer-events: none !important;
+  position: absolute !important;
+  opacity: 0 !important;
 }
-.app-tabs .nav-link:hover, #myTab .nav-link:hover { color: var(--text-secondary) !important; background: var(--surface-hover); cursor: pointer !important; }
+.app-tabs .nav-link:hover, #myTab .nav-link:hover { color: var(--text-secondary) !important; background: var(--surface-hover) !important; cursor: pointer !important; }
 .app-tabs .nav-link.active, #myTab .nav-link.active { color: #fff !important; background: var(--accent) !important; }
 
 /* =========================
