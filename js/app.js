@@ -1417,32 +1417,31 @@ class UI {
 
     static actualizarDashboard(ingresos, gastos) {
         const totalIngresos = ingresos.reduce((sum, i) => sum + i.monto, 0);
-        const totalGastos = gastos.reduce((sum, g) => sum + g.monto, 0);
-        const balance = totalIngresos - totalGastos;
+        const totalGastos   = gastos.reduce((sum, g) => sum + g.monto, 0);
+        const balance       = totalIngresos - totalGastos;
+        const pctAhorro     = totalIngresos > 0 ? ((balance / totalIngresos) * 100).toFixed(1) : 0;
+        const pctGasto      = totalIngresos > 0 ? Math.min((totalGastos / totalIngresos) * 100, 100) : 0;
 
-        document.querySelector('#dashIngresos').textContent = UI.formatearMoneda(totalIngresos);
-        document.querySelector('#dashGastos').textContent = UI.formatearMoneda(totalGastos);
-        const elBalance = document.querySelector('#dashBalance');
-        elBalance.textContent = UI.formatearMoneda(balance);
+        // Valores
+        document.querySelector('#dashBalance').textContent   = UI.formatearMoneda(balance);
+        document.querySelector('#dashIngresos').textContent  = UI.formatearMoneda(totalIngresos);
+        document.querySelector('#dashGastos').textContent    = UI.formatearMoneda(totalGastos);
+        document.querySelector('#dashAhorro').textContent    = UI.formatearMoneda(balance);
+        document.querySelector('#dashAhorroPct').textContent = `${pctGasto.toFixed(1)}% del ingreso en gastos`;
 
-        const pctAhorro = totalIngresos > 0 ? ((balance / totalIngresos) * 100).toFixed(1) : 0;
-        const elAhorro = document.querySelector('#dashAhorro');
-        elAhorro.textContent = UI.formatearMoneda(balance);
-        elAhorro.style.color = balance >= 0 ? '#22C55E' : '#EF4444';
-        const elAhorroPct = document.querySelector('#dashAhorroPct');
-        elAhorroPct.textContent = `${pctAhorro}% del ingreso`;
-        elAhorroPct.style.color = balance >= 0 ? '#22C55E' : '#EF4444';
+        // Barra de gastos vs ingresos
+        const barGastos = document.getElementById('dashGastosBar');
+        if (barGastos) barGastos.style.width = pctGasto + '%';
 
+        // Chip de balance
         const chip = document.querySelector('#dashBalanceChip');
-        if (balance >= 0) {
-            chip.className = 'dashboard-chip dashboard-chip-positive';
-            chip.textContent = 'Balance positivo';
-        } else {
-            chip.className = 'dashboard-chip dashboard-chip-negative';
-            chip.textContent = 'Balance negativo';
+        if (chip) {
+            chip.textContent = balance >= 0 ? 'Positivo' : 'Negativo';
+            chip.className = 'dash-kpi-chip' + (balance < 0 ? ' negative' : '');
         }
 
         UI.renderizarGraficos(ingresos, gastos);
+        UI.renderizarPanelRecurrentes();
     }
 
     static async renderizarGraficos(ingresos, gastos) {
@@ -1501,33 +1500,25 @@ class UI {
 
         Plotly.newPlot('chartBalance', dataBalance, layoutBalance, {displayModeBar: false});
 
-        // --- 3. Ranking de Categorías (HTML) ---
+        // --- 3. Ranking de Categorías ---
         const rankingContainer = document.querySelector('#rankingCategorias');
         rankingContainer.innerHTML = '';
-        
         const sortedCats = Object.entries(gastosPorCat)
             .sort(([,a], [,b]) => b.monto - a.monto)
-            .slice(0, 5); // Top 5
-
+            .slice(0, 6);
         if (sortedCats.length === 0) {
-            rankingContainer.innerHTML = '<div class="p-3 text-center text-muted">Sin datos suficientes</div>';
+            rankingContainer.innerHTML = '<div class="dash-payments-empty"><i class="bi bi-bar-chart"></i><span>Sin gastos este periodo</span></div>';
         } else {
             sortedCats.forEach(([nombre, data], index) => {
-                const porcentaje = ((data.monto / totalGastos) * 100).toFixed(1);
+                const porcentaje = ((data.monto / totalGastos) * 100).toFixed(0);
                 const item = document.createElement('div');
-                item.className = 'list-group-item d-flex justify-content-between align-items-center border-0 border-bottom';
+                item.className = 'dash-ranking-item';
                 item.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <span class="fw-bold me-3 text-muted">#${index + 1}</span>
-                        <div class="me-2 fs-5">${data.emoji}</div>
-                        <div>
-                            <div class="fw-bold">${nombre}</div>
-                            <small class="text-muted">${porcentaje}% del total</small>
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <div class="fw-bold text-dark">${UI.formatearMoneda(data.monto)}</div>
-                    </div>
+                    <span class="dash-ranking-pos">#${index + 1}</span>
+                    <span class="dash-ranking-emoji">${data.emoji}</span>
+                    <span class="dash-ranking-name">${nombre}</span>
+                    <span class="dash-ranking-pct">${porcentaje}%</span>
+                    <span class="dash-ranking-monto">${UI.formatearMoneda(data.monto)}</span>
                 `;
                 rankingContainer.appendChild(item);
             });
@@ -1567,18 +1558,83 @@ class UI {
             type: 'scatter',
             mode: 'lines+markers',
             fill: 'tozeroy',
-            line: { color: '#6366f1', shape: 'spline' }, // Suavizado
-            marker: { size: 6 }
+            fillcolor: 'rgba(99,102,241,0.08)',
+            line: { color: '#6366F1', width: 2.5, shape: 'spline' },
+            marker: { size: 5, color: '#6366F1', line: { color: '#4F46E5', width: 1.5 } },
+            hovertemplate: '<b>Día %{x}</b><br>%{y:,.0f} Gs.<extra></extra>'
         };
 
         const layoutDiario = crearLayoutPlotly({
-            height: 300,
-            margin: { t: 20, b: 30, l: 40, r: 20 },
-            xaxis: { title: 'Día del Mes' },
-            yaxis: { title: 'Monto' }
+            height: 220,
+            margin: { t: 10, b: 32, l: 52, r: 16 },
+            xaxis: { title: '', tickfont: { size: 10 }, fixedrange: true },
+            yaxis: { title: '', tickfont: { size: 10 }, fixedrange: true, gridcolor: 'rgba(255,255,255,0.04)' }
         });
 
-        Plotly.newPlot('chartGastosDiarios', [traceDiario], layoutDiario, {displayModeBar: false});
+        Plotly.newPlot('chartGastosDiarios', [traceDiario], layoutDiario, {displayModeBar: false, responsive: true});
+    }
+
+
+    static async renderizarPanelRecurrentes() {
+        const container = document.getElementById('dashPaymentsList');
+        const subLabel  = document.getElementById('dashRightSub');
+        if (!container) return;
+
+        const recurrentes = await Store.obtenerRecurrentes();
+        if (recurrentes.length === 0) {
+            container.innerHTML = '<div class="dash-payments-empty"><i class="bi bi-calendar2-check"></i><span>Sin recurrentes configurados</span></div>';
+            return;
+        }
+
+        const today = new Date();
+        const todayDay = today.getDate();
+
+        const items = recurrentes.map(r => {
+            let diff = null;
+            let statusClass = 'ok';
+            let whenLabel = 'Sin fecha';
+
+            if (r.dia_vencimiento) {
+                const dueThis = new Date(today.getFullYear(), today.getMonth(), r.dia_vencimiento);
+                diff = Math.ceil((dueThis - today) / (1000 * 60 * 60 * 24));
+                if (diff < 0) {
+                    const dueNext = new Date(today.getFullYear(), today.getMonth() + 1, r.dia_vencimiento);
+                    diff = Math.ceil((dueNext - today) / (1000 * 60 * 60 * 24));
+                }
+                if (diff === 0)       { statusClass = 'today';   whenLabel = 'Hoy'; }
+                else if (diff < 0)    { statusClass = 'overdue';  whenLabel = 'Vencido'; }
+                else if (diff <= 5)   { statusClass = 'soon';     whenLabel = `En ${diff} días`; }
+                else                  { statusClass = 'ok';       whenLabel = `Día ${r.dia_vencimiento}`; }
+            }
+            return { ...r, diff: diff ?? 999, statusClass, whenLabel };
+        }).sort((a, b) => a.diff - b.diff);
+
+        if (subLabel) subLabel.textContent = `${recurrentes.length} pago${recurrentes.length !== 1 ? 's' : ''} configurado${recurrentes.length !== 1 ? 's' : ''}`;
+
+        container.innerHTML = '';
+        items.forEach(r => {
+            const el = document.createElement('div');
+            el.className = 'dash-payment-item ' + r.statusClass;
+            el.innerHTML = `
+                <div class="dash-payment-indicator"></div>
+                <div class="dash-payment-emoji">${r.emoji || '🔄'}</div>
+                <div class="dash-payment-info">
+                    <span class="dash-payment-name">${r.concepto}</span>
+                    <span class="dash-payment-when">${r.whenLabel}</span>
+                </div>
+                <div class="dash-payment-right">
+                    <span class="dash-payment-amount">${r.monto ? UI.formatearMoneda(r.monto) : '—'}</span>
+                    <span class="dash-payment-days">${r.diff < 999 && r.diff > 0 ? r.diff + 'd' : ''}</span>
+                </div>
+            `;
+            el.addEventListener('click', () => {
+                const select = document.querySelector('#gastoPlantilla');
+                if (select) { select.value = r.id; select.dispatchEvent(new Event('change')); }
+                const gastosTabBtn = document.getElementById('gastos-tab');
+                if (gastosTabBtn) activarTab(gastosTabBtn, { scrollTop: true });
+            });
+            container.appendChild(el);
+        });
     }
 
     static async renderizarPresupuestos(gastosMes) {
@@ -1903,6 +1959,16 @@ sidebarLinks.forEach((link) => {
         activarTab(desktopBtn, { scrollTop: true });
     });
 });
+
+// Panel derecho: botón navegar a recurrentes
+document.querySelectorAll('.btn-dash-add[data-tab-trigger]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const targetTabId = btn.getAttribute('data-tab-trigger');
+        const desktopBtn  = document.getElementById(targetTabId);
+        if (desktopBtn) activarTab(desktopBtn, { scrollTop: true });
+    });
+});
+
 
 const tabActivoInicial = document.querySelector('#myTab button.active');
 if (tabActivoInicial) { sincronizarTabMovil(tabActivoInicial.id); sincronizarSidebar(tabActivoInicial.id); }

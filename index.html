@@ -22,6 +22,7 @@ document.documentElement.classList.add('mobile-app-mode');
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard-new.css">
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Saltar al contenido principal</a>
@@ -497,134 +498,134 @@ Finanzas de Nueva Generación
 
 <!-- ═══ TAB: DASHBOARD ═══ -->
 <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+<div class="dash-root">
 
-<!-- KPI Overview -->
-<div class="dashboard-overview-grid mb-4">
-<article class="dashboard-hero-card">
-<p class="dashboard-card-label">Balance actual</p>
-<h3 class="dashboard-hero-amount" id="dashBalance">0 Gs.</h3>
-<div class="dashboard-hero-insight">
-<span class="dashboard-chip dashboard-chip-positive" id="dashBalanceChip">Periodo actual</span>
-<p class="mb-0">Lectura consolidada entre ingresos y gastos del mes seleccionado.</p>
-</div>
-</article>
-<article class="dashboard-side-card dashboard-income-card">
-<div class="kpi-head">
-<span class="kpi-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
-<span class="kpi-label">Ingresos</span>
-</div>
-<h3 class="card-title fw-bold" id="dashIngresos">0 Gs.</h3>
-<p class="kpi-caption mb-0">Entradas acumuladas del periodo</p>
-</article>
-<article class="dashboard-side-card dashboard-expense-card">
-<div class="kpi-head">
-<span class="kpi-icon" aria-hidden="true"><i class="bi bi-cash-stack"></i></span>
-<span class="kpi-label">Gastos</span>
-</div>
-<h3 class="card-title fw-bold" id="dashGastos">0 Gs.</h3>
-<p class="kpi-caption mb-0">Salidas registradas en el mes</p>
-</article>
-<article class="dashboard-side-card dashboard-savings-card">
-<div class="kpi-head">
-<span class="kpi-icon" aria-hidden="true"><i class="bi bi-piggy-bank-fill"></i></span>
-<span class="kpi-label">Ahorro</span>
-</div>
-<h3 class="card-title fw-bold" id="dashAhorro">0 Gs.</h3>
-<p class="kpi-caption mb-0" id="dashAhorroPct">0% del ingreso</p>
-</article>
-</div>
+<!-- ── COLUMNA PRINCIPAL ── -->
+<div class="dash-main">
 
-<!-- Charts Row 1 -->
-<div class="row g-3 mb-4">
-<div class="col-md-6">
-<div class="card dashboard-panel h-100">
-<div class="card-header">
-<h5 class="mb-0 d-flex align-items-center gap-2"><i class="bi bi-pie-chart-fill"></i>Distribución de Gastos</h5>
-</div>
-<div class="card-body">
-<div id="chartGastos"></div>
-</div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="card dashboard-panel h-100">
-<div class="card-header">
-<h5 class="mb-0 d-flex align-items-center gap-2"><i class="bi bi-bar-chart-line-fill"></i>Ingresos vs Gastos</h5>
-</div>
-<div class="card-body">
-<div id="chartBalance"></div>
-</div>
-</div>
-</div>
-</div>
+  <!-- KPI Row -->
+  <div class="dash-kpi-row">
+    <article class="dash-kpi-card dash-kpi-balance">
+      <div class="dash-kpi-head">
+        <span class="dash-kpi-label">Balance</span>
+        <span class="dash-kpi-chip" id="dashBalanceChip">Periodo</span>
+      </div>
+      <span class="dash-kpi-value" id="dashBalance">0 Gs.</span>
+      <span class="dash-kpi-caption">Ingresos menos gastos del periodo</span>
+    </article>
+    <article class="dash-kpi-card dash-kpi-income">
+      <div class="dash-kpi-head">
+        <span class="dash-kpi-label">Ingresos</span>
+        <span class="dash-kpi-icon-sm"><i class="bi bi-graph-up-arrow"></i></span>
+      </div>
+      <span class="dash-kpi-value" id="dashIngresos">0 Gs.</span>
+      <div class="dash-kpi-bar-wrap"><div class="dash-kpi-bar dash-kpi-bar-income" id="dashIngresosBar" style="width:100%"></div></div>
+      <span class="dash-kpi-caption">Entradas acumuladas</span>
+    </article>
+    <article class="dash-kpi-card dash-kpi-expense">
+      <div class="dash-kpi-head">
+        <span class="dash-kpi-label">Gastos</span>
+        <span class="dash-kpi-icon-sm"><i class="bi bi-cash-stack"></i></span>
+      </div>
+      <span class="dash-kpi-value" id="dashGastos">0 Gs.</span>
+      <div class="dash-kpi-bar-wrap"><div class="dash-kpi-bar dash-kpi-bar-expense" id="dashGastosBar" style="width:0%"></div></div>
+      <span class="dash-kpi-caption" id="dashAhorroPct">0% del ingreso</span>
+    </article>
+    <article class="dash-kpi-card dash-kpi-saving">
+      <div class="dash-kpi-head">
+        <span class="dash-kpi-label">Ahorro neto</span>
+        <span class="dash-kpi-icon-sm"><i class="bi bi-piggy-bank-fill"></i></span>
+      </div>
+      <span class="dash-kpi-value" id="dashAhorro">0 Gs.</span>
+      <span class="dash-kpi-caption">Diferencia del periodo</span>
+    </article>
+  </div>
 
-<!-- Charts Row 2 -->
-<div class="row g-3 mb-4">
-<div class="col-md-4">
-<div class="card dashboard-panel h-100">
-<div class="card-header">
-<h5 class="mb-0">Ranking de Categorías (Gastos)</h5>
-</div>
-<div class="card-body p-0">
-<div class="list-group list-group-flush" id="rankingCategorias"></div>
-</div>
-</div>
-</div>
-<div class="col-md-8">
-<div class="card dashboard-panel h-100">
-<div class="card-header">
-<h5 class="mb-0">Análisis de Gastos Diarios</h5>
-</div>
-<div class="card-body">
-<div id="chartGastosDiarios"></div>
-</div>
-</div>
-</div>
-</div>
+  <!-- Gráfico principal: tendencia diaria -->
+  <div class="dash-chart-card">
+    <div class="dash-chart-header">
+      <div>
+        <p class="dash-chart-kicker">Evolución del mes</p>
+        <h4 class="dash-chart-title">Gastos diarios</h4>
+      </div>
+      <div class="dash-chart-meta">
+        <span class="dash-chart-meta-label">Día pico</span>
+        <span class="dash-chart-meta-val" id="diaMayorGasto">—</span>
+      </div>
+    </div>
+    <div id="chartGastosDiarios"></div>
+  </div>
 
-<!-- Día Mayor Gasto -->
-<div class="row mb-4">
-<div class="col-md-12">
-<div class="card dashboard-panel h-100">
-<div class="card-header d-flex justify-content-between">
-<h5 class="mb-0">Día con Mayor Gasto</h5>
-<span class="badge bg-danger fs-6" id="diaMayorGasto">-</span>
-</div>
-</div>
-</div>
-</div>
+  <!-- Fila inferior: pie + barras + ranking -->
+  <div class="dash-bottom-row">
+    <div class="dash-panel">
+      <div class="dash-panel-header"><h5><i class="bi bi-pie-chart-fill me-2"></i>Distribución</h5></div>
+      <div class="dash-panel-body"><div id="chartGastos"></div></div>
+    </div>
+    <div class="dash-panel">
+      <div class="dash-panel-header"><h5><i class="bi bi-bar-chart-line-fill me-2"></i>Ingresos vs Gastos</h5></div>
+      <div class="dash-panel-body"><div id="chartBalance"></div></div>
+    </div>
+    <div class="dash-panel">
+      <div class="dash-panel-header"><h5><i class="bi bi-trophy me-2"></i>Top categorías</h5></div>
+      <div class="dash-ranking-list" id="rankingCategorias"></div>
+    </div>
+  </div>
 
-<!-- Comparar Periodos -->
-<div class="card dashboard-panel mb-4">
-<div class="card-header">
-<h5 class="mb-0">Comparar Periodos</h5>
-</div>
-<div class="card-body">
-<div class="row align-items-end compare-controls p-3 rounded">
-<div class="col-md-4 mb-3">
-<label for="compMesA" class="form-label fw-bold">Periodo A (Base)</label>
-<input type="month" id="compMesA" class="form-control">
-</div>
-<div class="col-md-4 mb-3">
-<label for="compMesB" class="form-label fw-bold">Periodo B (Comparar)</label>
-<input type="month" id="compMesB" class="form-control">
-</div>
-<div class="col-md-4 mb-3">
-<button class="btn btn-primary w-100" id="btnComparar">Generar Comparativa</button>
-</div>
-</div>
-<div class="row mt-4" id="resultadosComparativa" style="display: none;">
-<div class="col-md-6 mb-4">
-<h6 class="text-center mb-3">Balance Comparativo</h6>
-<div id="chartCompBalance"></div>
-</div>
-<div class="col-md-6 mb-4">
-<h6 class="text-center mb-3">Evolución de Gastos</h6>
-<div id="chartCompGastos"></div>
-</div>
-</div>
-</div>
-</div>
+  <!-- Comparar periodos -->
+  <div class="dash-panel dash-compare-card">
+    <div class="dash-panel-header"><h5><i class="bi bi-arrow-left-right me-2"></i>Comparar periodos</h5></div>
+    <div class="dash-compare-body">
+      <div class="dash-compare-controls">
+        <div>
+          <label class="form-label" for="compMesA">Periodo A</label>
+          <input type="month" id="compMesA" class="form-control">
+        </div>
+        <div>
+          <label class="form-label" for="compMesB">Periodo B</label>
+          <input type="month" id="compMesB" class="form-control">
+        </div>
+        <div class="align-self-end">
+          <button class="btn btn-primary w-100" id="btnComparar">Comparar</button>
+        </div>
+      </div>
+      <div id="resultadosComparativa" style="display:none;" class="mt-3">
+        <div class="dash-bottom-row">
+          <div class="dash-panel">
+            <div class="dash-panel-header"><h5>Balance comparativo</h5></div>
+            <div class="dash-panel-body"><div id="chartCompBalance"></div></div>
+          </div>
+          <div class="dash-panel" style="grid-column: span 2;">
+            <div class="dash-panel-header"><h5>Evolución de gastos</h5></div>
+            <div class="dash-panel-body"><div id="chartCompGastos"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.dash-main -->
+
+<!-- ── PANEL DERECHO ── -->
+<aside class="dash-right-panel">
+  <div class="dash-right-header">
+    <div>
+      <h5 class="dash-right-title">Próximos pagos</h5>
+      <p class="dash-right-sub" id="dashRightSub">Recurrentes del mes</p>
+    </div>
+    <button class="btn-dash-add" data-tab-trigger="recurrentes-tab" title="Ver recurrentes">
+      <i class="bi bi-plus-lg"></i>
+    </button>
+  </div>
+  <div class="dash-payments-list" id="dashPaymentsList">
+    <div class="dash-payments-empty">
+      <i class="bi bi-calendar2-check"></i>
+      <span>Sin recurrentes configurados</span>
+    </div>
+  </div>
+</aside>
+
+</div><!-- /.dash-root -->
 </div>
 
 <!-- ═══ TAB: GASTOS ═══ -->
