@@ -159,15 +159,47 @@ function compararVersiones(versionA, versionB) {
 }
 
 function crearLayoutPlotly(base = {}) {
-    return {
+    const defaultLayout = {
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         font: {
-            color: '#dae2fd',
-            family: 'Inter, sans-serif'
+            color: '#A2A9CE',
+            family: 'Inter, sans-serif',
+            size: 11
         },
-        ...base
+        margin: { t: 30, b: 40, l: 45, r: 15 },
+        hoverlabel: {
+            bgcolor: '#1E234F',
+            bordercolor: '#4F46E5',
+            font: { color: '#ffffff', family: 'Inter, sans-serif', size: 12 }
+        },
+        xaxis: {
+            gridcolor: 'rgba(255, 255, 255, 0.03)',
+            zerolinecolor: 'rgba(255, 255, 255, 0.08)',
+            tickfont: { color: '#8B94B8', size: 10 },
+            title: { font: { color: '#8B94B8', size: 11 } }
+        },
+        yaxis: {
+            gridcolor: 'rgba(255, 255, 255, 0.03)',
+            zerolinecolor: 'rgba(255, 255, 255, 0.08)',
+            tickfont: { color: '#8B94B8', size: 10 },
+            title: { font: { color: '#8B94B8', size: 11 } }
+        }
     };
+
+    const merge = (target, source) => {
+        for (const key in source) {
+            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                if (!target[key]) target[key] = {};
+                merge(target[key], source[key]);
+            } else {
+                target[key] = source[key];
+            }
+        }
+        return target;
+    };
+
+    return merge(defaultLayout, base);
 }
 
 function construirDownloadUrl(info) {
@@ -1463,17 +1495,18 @@ class UI {
             values: values,
             labels: labels,
             type: 'pie',
-            hole: 0.5, // Más moderno
-            marker: { colors: colors },
-            textinfo: 'percent', // Solo porcentaje para limpieza
-            hoverinfo: 'label+value+percent'
+            hole: 0.65,
+            marker: { colors: colors, line: { color: '#0c0e27', width: 2 } },
+            textinfo: 'none',
+            hoverinfo: 'label+value+percent',
+            hovertemplate: '<b>%{label}</b><br>%{value:,.0f} Gs. (%{percent})<extra></extra>'
         }];
 
         const layoutGastos = crearLayoutPlotly({
             height: 350,
-            margin: { t: 0, b: 0, l: 0, r: 0 },
+            margin: { t: 10, b: 10, l: 10, r: 10 },
             showlegend: true,
-            legend: { orientation: 'h', y: -0.1 }
+            legend: { orientation: 'h', y: -0.15, font: { size: 10 } }
         });
 
         Plotly.newPlot('chartGastos', dataGastos, layoutGastos, {displayModeBar: false});
@@ -1486,14 +1519,20 @@ class UI {
             x: ['Ingresos', 'Gastos'],
             y: [totalIngresos, totalGastos],
             type: 'bar',
-            marker: { color: ['#10b981', '#ef4444'] },
+            width: [0.45, 0.45],
+            marker: {
+                color: ['#10B981', '#F43F5E'],
+                line: { color: ['rgba(16, 185, 129, 0.2)', 'rgba(244, 63, 94, 0.2)'], width: 1 }
+            },
             text: [UI.formatearMoneda(totalIngresos), UI.formatearMoneda(totalGastos)],
             textposition: 'auto',
+            textfont: { family: 'Inter', weight: 'bold', color: '#ffffff' },
+            hovertemplate: '<b>%{x}</b><br>%{y:,.0f} Gs.<extra></extra>'
         }];
 
         const layoutBalance = crearLayoutPlotly({
             height: 350,
-            margin: { t: 20, b: 30, l: 40, r: 20 },
+            margin: { t: 20, b: 30, l: 45, r: 15 },
             xaxis: { fixedrange: true },
             yaxis: { fixedrange: true, title: 'Guaraníes' }
         });
@@ -2514,13 +2553,46 @@ document.querySelector('#btnComparar').addEventListener('click', async () => {
     const totalIngresosB = ingresosB.reduce((s, i) => s + i.monto, 0);
 
     // Gráficos (Plotly) - Igual que antes
-    const traceA = { x: ['Ingresos', 'Gastos'], y: [totalIngresosA, totalGastosA], name: mesA, type: 'bar', marker: { color: '#4361ee' } };
-    const traceB = { x: ['Ingresos', 'Gastos'], y: [totalIngresosB, totalGastosB], name: mesB, type: 'bar', marker: { color: '#f72585' } };
+    const traceA = {
+        x: ['Ingresos', 'Gastos'],
+        y: [totalIngresosA, totalGastosA],
+        name: mesA,
+        type: 'bar',
+        width: [0.35, 0.35],
+        marker: { color: '#6366F1', line: { color: 'rgba(99, 102, 241, 0.2)', width: 1 } },
+        hovertemplate: '<b>' + mesA + ': %{x}</b><br>%{y:,.0f} Gs.<extra></extra>'
+    };
+    const traceB = {
+        x: ['Ingresos', 'Gastos'],
+        y: [totalIngresosB, totalGastosB],
+        name: mesB,
+        type: 'bar',
+        width: [0.35, 0.35],
+        marker: { color: '#EC4899', line: { color: 'rgba(236, 72, 153, 0.2)', width: 1 } },
+        hovertemplate: '<b>' + mesB + ': %{x}</b><br>%{y:,.0f} Gs.<extra></extra>'
+    };
     
-        Plotly.newPlot('chartCompBalance', [traceA, traceB], crearLayoutPlotly({ barmode: 'group', height: 300, margin: { t: 20, b: 30, l: 40, r: 20 }, legend: { orientation: 'h', y: -0.1 } }), {displayModeBar: false});
+    Plotly.newPlot('chartCompBalance', [traceA, traceB], crearLayoutPlotly({
+        barmode: 'group',
+        height: 300,
+        margin: { t: 20, b: 30, l: 45, r: 15 },
+        legend: { orientation: 'h', y: -0.15, font: { size: 10 } }
+    }), {displayModeBar: false});
 
-    const data2 = [{ x: [mesA, mesB], y: [totalGastosA, totalGastosB], type: 'scatter', mode: 'lines+markers', line: { color: '#ef4444', width: 3 }, marker: { size: 10 } }];
-        Plotly.newPlot('chartCompGastos', data2, crearLayoutPlotly({ height: 300, margin: { t: 20, b: 30, l: 40, r: 20 }, yaxis: { title: 'Gastos Totales' } }), {displayModeBar: false});
+    const data2 = [{
+        x: [mesA, mesB],
+        y: [totalGastosA, totalGastosB],
+        type: 'scatter',
+        mode: 'lines+markers',
+        line: { color: '#F43F5E', width: 3, shape: 'spline' },
+        marker: { size: 8, color: '#F43F5E' },
+        hovertemplate: '<b>Gastos %{x}</b><br>%{y:,.0f} Gs.<extra></extra>'
+    }];
+    Plotly.newPlot('chartCompGastos', data2, crearLayoutPlotly({
+        height: 300,
+        margin: { t: 20, b: 30, l: 45, r: 15 },
+        yaxis: { title: 'Gastos Totales' }
+    }), {displayModeBar: false});
 });
 
 // Refresco suave al volver a la pestaña para evitar estados colgados del loader
