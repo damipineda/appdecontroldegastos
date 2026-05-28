@@ -795,6 +795,16 @@ class Store {
         return data;
     }
 
+    static async obtenerCategoriaDeuda(debtId) {
+        const { data, error } = await supabaseClient
+            .from('transactions')
+            .select('category_id')
+            .eq('debt_id', debtId)
+            .limit(1);
+        if (error || !data || data.length === 0) return null;
+        return data[0].category_id;
+    }
+
     static async actualizarProgresoDeuda(id, pagadoExtra = 1) {
         // Incrementa cuotas pagadas (simple)
         // En una app real, verificaríamos que no pase el total
@@ -986,11 +996,32 @@ class UI {
     }
 
     static async renderizarDeudas() {
-        const deudas = await Store.obtenerDeudas();
         const listaDeudas = document.querySelector('#listaDeudas');
         const noDeudas = document.querySelector('#noDeudas');
         if (!listaDeudas) return;
-        
+
+        // Mostrar esqueletos si no hay tarjetas de deudas mostradas
+        if (listaDeudas.children.length === 0) {
+            listaDeudas.innerHTML = `
+                <div class="skeleton-deuda-card">
+                    <div class="skeleton-deuda-header">
+                        <div class="skeleton skeleton-emoji"></div>
+                        <div class="skeleton-title-group">
+                            <div class="skeleton skeleton-deuda-title"></div>
+                            <div class="skeleton skeleton-deuda-badge"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-deuda-numbers">
+                        <div class="skeleton skeleton-deuda-number"></div>
+                        <div class="skeleton skeleton-deuda-number"></div>
+                        <div class="skeleton skeleton-deuda-number"></div>
+                    </div>
+                    <div class="skeleton skeleton-deuda-bar"></div>
+                </div>
+            `;
+        }
+
+        const deudas = await Store.obtenerDeudas();
         listaDeudas.innerHTML = '';
 
         const deudasOrdenadas = [...deudas].sort((a, b) => {
@@ -1042,6 +1073,29 @@ class UI {
                     ? d.cuota_monto * cuotasRestantes
                     : Math.round(d.monto_total * (100 - progreso) / 100);
 
+                // Generar visualización del progreso de cuotas (círculos/píldoras)
+                let dotsHtml = '';
+                const maxDotsToShow = 24;
+                const dotsToRender = Math.min(totalCuotas, maxDotsToShow);
+                for (let idx = 1; idx <= dotsToRender; idx++) {
+                    let dotClass = 'installment-dot';
+                    let tooltipText = `Cuota ${idx}`;
+                    if (idx <= cuotasPagadas) {
+                        dotClass += ' paid';
+                        tooltipText += ' (Pagada)';
+                    } else if (idx === cuotasPagadas + 1) {
+                        dotClass += ' next-to-pay';
+                        tooltipText += ' (Siguiente - Clic para Pagar)';
+                    } else {
+                        dotClass += ' pending';
+                        tooltipText += ' (Pendiente)';
+                    }
+                    dotsHtml += `<div class="${dotClass}" data-id="${d.id}" title="${tooltipText}"></div>`;
+                }
+                if (totalCuotas > maxDotsToShow) {
+                    dotsHtml += `<div class="installment-dots-more" title="+${totalCuotas - maxDotsToShow} cuotas más">+${totalCuotas - maxDotsToShow}</div>`;
+                }
+
                 const div = document.createElement('div');
                 div.className = 'deuda-card' + (isEndingSoon ? ' ending' : '');
                 div.innerHTML = `
@@ -1078,6 +1132,12 @@ class UI {
                             <button class="btn btn-sm btn-outline-danger btn-del-deuda" data-id="${d.id}" title="Eliminar"><i class="bi bi-trash"></i></button>
                         </div>
                     </div>
+                    <div class="deuda-card-installments-row">
+                        <span class="installments-label">Visualización de Cuotas:</span>
+                        <div class="installments-grid">
+                            ${dotsHtml}
+                        </div>
+                    </div>
                     <div class="deuda-card-bar-row">
                         <div class="deuda-bar-track">
                             <div class="deuda-bar-fill-new" style="width: ${progreso}%"></div>
@@ -1086,13 +1146,19 @@ class UI {
                             <span class="deuda-bar-pct">${Math.round(progreso)}%</span>
                             ${fechaFin !== '-' ? '<span class="deuda-bar-fin">· hasta ' + fechaFin + '</span>' : ''}
                         </div>
+                        ${cuotasPagadas < totalCuotas ? `
+                            <button class="btn btn-sm btn-pagar-deuda ms-auto" data-id="${d.id}" title="Registrar Pago de Cuota">
+                                <i class="bi bi-wallet2 me-1"></i>Pagar Cuota
+                            </button>
+                        ` : ''}
                     </div>
                 `;
                 listaDeudas.appendChild(div);
             });
 
             listaDeudas.querySelectorAll('.btn-del-deuda').forEach(btn => {
-                btn.addEventListener('click', async () => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
                     if(confirm('¿Eliminar registro de deuda?')) {
                         await Store.eliminarDeuda(btn.dataset.id);
                         UI.renderizarDeudas();
@@ -1101,7 +1167,8 @@ class UI {
             });
 
             listaDeudas.querySelectorAll('.btn-edit-deuda').forEach(btn => {
-                btn.addEventListener('click', async () => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
                     try {
                         const item = await Store.obtenerDeudaPorId(btn.dataset.id);
                         if (!item) throw new Error('No se encontró la deuda');
@@ -1120,6 +1187,17 @@ class UI {
                     } catch (err) {
                         console.error(err);
                         alert('Error al cargar la deuda.');
+                    }
+                });
+            });
+
+            // Listeners para Pagar Cuota directa
+            listaDeudas.querySelectorAll('.btn-pagar-deuda, .installment-dot.next-to-pay').forEach(el => {
+                el.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const debtId = el.dataset.id;
+                    if (debtId) {
+                        await UI.pagarCuotaDeuda(debtId);
                     }
                 });
             });
@@ -1203,6 +1281,89 @@ class UI {
             historialContainer.style.display = 'none';
             historialList.innerHTML = '';
             historialList.classList.remove('is-open');
+        }
+    }
+
+    static async pagarCuotaDeuda(debtId) {
+        try {
+            const debt = await Store.obtenerDeudaPorId(debtId);
+            if (!debt) {
+                alert('No se pudo encontrar la deuda.');
+                return;
+            }
+
+            const totalCuotas = Math.max(Number(debt.total_cuotas || 0), 1);
+            const cuotasPagadas = Number(debt.cuotas_pagadas || 0);
+            if (cuotasPagadas >= totalCuotas) {
+                alert('Esta deuda ya está totalmente saldada.');
+                return;
+            }
+
+            // Calcular monto cuota
+            const montoCuota = debt.cuota_monto 
+                ? Number(debt.cuota_monto) 
+                : Math.round(Number(debt.monto_total) / totalCuotas);
+
+            // Formatear mensaje para confirmación
+            const confirmMsg = `¿Confirmas el pago de la cuota ${cuotasPagadas + 1} de ${totalCuotas} para la deuda "${debt.concepto}"?\n\n` +
+                               `Monto de la cuota: ${UI.formatearMoneda(montoCuota)}`;
+            
+            if (!confirm(confirmMsg)) return;
+
+            // Mostrar el loader global mientras se realiza la operación
+            UI.toggleLoader(true);
+
+            // 1. Resolver categoría
+            let catId = await Store.obtenerCategoriaDeuda(debtId);
+            if (!catId) {
+                const expenseCats = UI.categoriasCache.filter(c => c.tipo === 'gasto');
+                const bestCat = expenseCats.find(c => {
+                    const norm = c.nombre.toLowerCase();
+                    return norm.includes('deuda') || norm.includes('prestamo') || norm.includes('credito') || norm.includes('finanza') || norm.includes('pago');
+                });
+                if (bestCat) {
+                    catId = bestCat.id;
+                } else if (expenseCats.length > 0) {
+                    catId = expenseCats[0].id;
+                }
+            }
+
+            if (!catId) {
+                UI.toggleLoader(false);
+                alert('Para registrar el pago, necesitas crear al menos una categoría de tipo Gasto primero.');
+                return;
+            }
+
+            // 2. Crear transacción de Gasto
+            const hoy = new Date();
+            const fechaStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+            const horaStr = hoy.toTimeString().slice(0, 5);
+
+            const gasto = {
+                concepto: `Pago Cuota: ${debt.concepto} (${cuotasPagadas + 1}/${totalCuotas})`,
+                monto: montoCuota,
+                categoriaId: catId,
+                fecha: fechaStr,
+                hora: horaStr,
+                metodoPago: 'Tarjeta Crédito',
+                recurrente: false,
+                debtId: debtId
+            };
+
+            // Guardar en la DB
+            await Store.guardarDato(gasto, 'gasto');
+
+            // 3. Incrementar las cuotas pagadas
+            await Store.actualizarProgresoDeuda(debtId);
+
+            // 4. Recargar toda la app
+            await UI.cargarTodo();
+            
+        } catch (err) {
+            console.error(err);
+            alert('Ocurrió un error al procesar el pago de la cuota.');
+        } finally {
+            UI.toggleLoader(false);
         }
     }
 
@@ -1327,6 +1488,72 @@ class UI {
             if (hora < 12) saludo = 'Buenos días';
             else if (hora < 18) saludo = 'Buenas tardes';
             appGreeting.textContent = saludo;
+        }
+
+        // Inyectar Esqueletos de Carga inmediatamente para mejorar el rendimiento percibido
+        const listaGastosSkeleton = document.querySelector('#listaGastos');
+        const listaIngresosSkeleton = document.querySelector('#listaIngresos');
+        
+        if (listaGastosSkeleton) {
+            listaGastosSkeleton.innerHTML = `
+                <div class="skeleton-activity-item">
+                    <div class="skeleton skeleton-icon"></div>
+                    <div class="skeleton-copy">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-subtitle"></div>
+                    </div>
+                    <div class="skeleton skeleton-amount"></div>
+                </div>
+                <div class="skeleton-activity-item">
+                    <div class="skeleton skeleton-icon"></div>
+                    <div class="skeleton-copy">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-subtitle"></div>
+                    </div>
+                    <div class="skeleton skeleton-amount"></div>
+                </div>
+            `;
+        }
+        if (listaIngresosSkeleton) {
+            listaIngresosSkeleton.innerHTML = `
+                <div class="skeleton-activity-item">
+                    <div class="skeleton skeleton-icon"></div>
+                    <div class="skeleton-copy">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-subtitle"></div>
+                    </div>
+                    <div class="skeleton skeleton-amount"></div>
+                </div>
+            `;
+        }
+
+        // Esqueletos en KPIs
+        const dashBalanceSel = document.querySelector('#dashBalance');
+        const dashIngresosSel = document.querySelector('#dashIngresos');
+        const dashGastosSel = document.querySelector('#dashGastos');
+        const dashAhorroSel = document.querySelector('#dashAhorro');
+        
+        if (dashBalanceSel) dashBalanceSel.innerHTML = '<span class="skeleton-kpi-text skeleton"></span>';
+        if (dashIngresosSel) dashIngresosSel.innerHTML = '<span class="skeleton-kpi-text skeleton"></span>';
+        if (dashGastosSel) dashGastosSel.innerHTML = '<span class="skeleton-kpi-text skeleton"></span>';
+        if (dashAhorroSel) dashAhorroSel.innerHTML = '<span class="skeleton-kpi-text skeleton"></span>';
+
+        // Esqueletos en Gráficos
+        const chartGastosEl = document.getElementById('chartGastos');
+        const chartBalanceEl = document.getElementById('chartBalance');
+        if (chartGastosEl) {
+            chartGastosEl.innerHTML = `
+                <div class="skeleton-chart-container">
+                    <div class="skeleton skeleton-chart-circle"></div>
+                </div>
+            `;
+        }
+        if (chartBalanceEl) {
+            chartBalanceEl.innerHTML = `
+                <div class="skeleton-chart-container">
+                    <div class="skeleton skeleton-chart-bars"></div>
+                </div>
+            `;
         }
 
         // Obtener datos DB ya filtrados por mes (Paralelo)
